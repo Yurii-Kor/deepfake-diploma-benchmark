@@ -2,6 +2,20 @@
 *__pycache__*
 *.vscode*
 *.pyc
-*.pth
 *.pt
 *.dat
+
+# local dataset link
+datasets/rgb
+
+# preprocessing artifacts
+preprocessing/dataset_json/
+preprocessing/dataset_json_v6/
+preprocessing/logs/
+
+# local weights / checkpoints
+training/weights/
+*.pth
+
+# windows metadata garbage
+*:Zone.Identifier
