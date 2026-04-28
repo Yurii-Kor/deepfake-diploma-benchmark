@@ -2,9 +2,11 @@
 eval pretrained model.
 """
 import os
+import csv
 import numpy as np
 import random
 import yaml
+from datetime import datetime
 from tqdm import tqdm
 
 from metrics.utils import get_test_metrics
@@ -123,6 +125,94 @@ def _extract_feat_tensor(predictions):
     return None
 
 
+def _dataset_id_from_subset(subset_name: str) -> str:
+    ffpp_subsets = {'FF-DF', 'FF-F2F', 'FF-FS', 'FF-NT'}
+    return 'FF++' if subset_name in ffpp_subsets else subset_name
+
+
+def _source_video_id_from_img_name(img_name):
+    """
+    Mirror benchmark video grouping key:
+    parent directory name of the frame path.
+    Works for both string paths and list-based video entries.
+    """
+    if isinstance(img_name, list):
+        img_name = img_name[0]
+
+    s = str(img_name).replace('\\', '/')
+    parts = s.split('/')
+    if len(parts) >= 2:
+        return parts[-2]
+    return os.path.splitext(os.path.basename(s))[0]
+
+
+def _stringify_img_name(img_name):
+    """
+    Store original image reference in CSV.
+    For video-level entries (list of paths), join them safely.
+    """
+    if isinstance(img_name, list):
+        return ' || '.join(str(x) for x in img_name)
+    return str(img_name)
+
+
+def _make_run_id(config, weights_path):
+    model_id = config.get('model_name', 'unknown_model')
+    condition_code = config.get('condition_code', 'C0')
+    weights_stem = os.path.splitext(os.path.basename(weights_path or 'unknown'))[0]
+    ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+    return f'{model_id}_{condition_code}_{weights_stem}_{ts}'
+
+
+def _write_sample_scores_csv(csv_path, run_id, config, subset_name, img_names, predictions, labels):
+    os.makedirs(os.path.dirname(os.path.abspath(csv_path)), exist_ok=True)
+
+    with open(csv_path, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            'run_id',
+            'model_id',
+            'family_id',
+            'checkpoint_id',
+            'dataset_id',
+            'subset_id',
+            'split',
+            'condition_code',
+            'image_path',
+            'video_id',
+            'source_video_id',
+            'score',
+            'label',
+            'score_available',
+            'face_found',
+            'failure_stage',
+            'failure_reason',
+        ])
+
+        for img_name, score, label in zip(img_names, predictions, labels):
+            source_video_id = _source_video_id_from_img_name(img_name)
+
+            writer.writerow([
+                run_id,
+                config.get('model_name', 'unknown_model'),
+                config.get('family_id', 'unknown_family'),
+                os.path.basename(config.get('weights_path', 'unknown')),
+                _dataset_id_from_subset(subset_name),
+                subset_name,
+                config.get('split_tag', 'test'),
+                config.get('condition_code', 'C0'),
+                _stringify_img_name(img_name),
+                source_video_id,
+                source_video_id,
+                float(score),
+                int(label),
+                True,
+                True,
+                '',
+                '',
+            ])
+
+
 def test_one_dataset(model, data_loader):
     prediction_lists = []
     feature_lists = []
@@ -159,7 +249,7 @@ def test_one_dataset(model, data_loader):
     return np.array(prediction_lists), np.array(label_lists), feat_array
 
 
-def test_epoch(model, test_data_loaders):
+def test_epoch(model, test_data_loaders, config, run_id):
     model.eval()
     metrics_all_datasets = {}
 
@@ -169,6 +259,25 @@ def test_epoch(model, test_data_loaders):
 
         predictions_nps, label_nps, feat_nps = test_one_dataset(model, test_data_loaders[key])
 
+        study_output_root = os.path.expanduser(
+            config.get('study_output_root', '~/deepfake_lab/study_outputs')
+        )
+        raw_scores_dir = os.path.join(study_output_root, 'raw_scores', config.get('split_tag', 'test'))
+        raw_scores_path = os.path.join(
+            raw_scores_dir,
+            f'{run_id}_{key}_frame.csv'
+        )
+
+        _write_sample_scores_csv(
+            csv_path=raw_scores_path,
+            run_id=run_id,
+            config=config,
+            subset_name=key,
+            img_names=data_dict['image'],
+            predictions=predictions_nps,
+            labels=label_nps,
+        )
+
         metric_one_dataset = get_test_metrics(
             y_pred=predictions_nps,
             y_true=label_nps,
@@ -177,6 +286,7 @@ def test_epoch(model, test_data_loaders):
         metrics_all_datasets[key] = metric_one_dataset
 
         tqdm.write(f"dataset: {key}")
+        tqdm.write(f"raw_scores_csv: {raw_scores_path}")
         for k, v in metric_one_dataset.items():
             tqdm.write(f"{k}: {v}")
 
@@ -191,14 +301,13 @@ def inference(model, data_dict):
 
 def main():
     with open(args.detector_path, 'r') as f:
-        config = yaml.safe_load(f)
+        detector_config = yaml.safe_load(f)
 
     with open('./training/config/test_config.yaml', 'r') as f:
-        config2 = yaml.safe_load(f)
+        base_config = yaml.safe_load(f)
 
-    config.update(config2)
-    if 'label_dict' in config:
-        config2['label_dict'] = config['label_dict']
+    config = dict(base_config)
+    config.update(detector_config)
 
     weights_path = None
 
@@ -226,7 +335,8 @@ def main():
     else:
         print('Fail to load the pre-trained weights')
 
-    best_metric = test_epoch(model, test_data_loaders)
+    run_id = _make_run_id(config, weights_path)
+    best_metric = test_epoch(model, test_data_loaders, config, run_id)
     print('===> Test Done!')
     print(best_metric)
 

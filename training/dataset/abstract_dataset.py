@@ -50,6 +50,9 @@ class DeepfakeAbstractBaseDataset(data.Dataset):
     def __init__(self, config=None, mode='train'):
         self.config = config
         self.mode = mode
+        self.dataset_split = config.get('dataset_split', mode)
+        if self.dataset_split == 'validation':
+            self.dataset_split = 'val'
         self.compression = config['compression']
         self.frame_num = config['frame_num'][mode]
 
@@ -196,7 +199,7 @@ class DeepfakeAbstractBaseDataset(data.Dataset):
             cp = 'c40'
 
         for label in dataset_info[dataset_name]:
-            sub_dataset_info = dataset_info[dataset_name][label][self.mode]
+            sub_dataset_info = dataset_info[dataset_name][label][self.dataset_split]
 
             if cp is None and dataset_name in ['FF-DF', 'FF-F2F', 'FF-FS', 'FF-NT', 'FaceForensics++', 'DeepFakeDetection', 'FaceShifter']:
                 sub_dataset_info = sub_dataset_info[self.compression]
@@ -260,6 +263,13 @@ class DeepfakeAbstractBaseDataset(data.Dataset):
 
         shuffled = list(zip(label_list, frame_path_list, video_name_list))
         random.shuffle(shuffled)
+
+        if not shuffled:
+            raise ValueError(
+                f"No samples collected for dataset={dataset_name}, "
+                f"split={self.dataset_split}, compression={self.compression}"
+            )
+            
         label_list, frame_path_list, video_name_list = zip(*shuffled)
 
         return frame_path_list, label_list, video_name_list

@@ -19,7 +19,7 @@ all_dataset: [FaceForensics++, FF-F2F, FF-DF, FF-FS, FF-NT, FaceShifter, DeepFak
 train_dataset: [FF-F2F, FF-DF, FF-FS, FF-NT]
 test_dataset: [FF-DF]
 dataset_type: pair
-dataset_json_folder: ./preprocessing/dataset_json_v6
+dataset_json_folder: ./preprocessing/dataset_json_study_ce
 
 compression: raw
 train_batchSize: 16
@@ -117,7 +117,8 @@ cuda: false
 cudnn: false
 
 # study-layer metadata
-family_id: spatial
+dataset_split: val
+split_tag: validation
 condition_code: C0
-split_tag: test
+family_id: spatial
 study_output_root: /home/abc/deepfake_lab/study_outputs
