@@ -1,5 +1,5 @@
 # log dir
-log_dir: ./debug_logs/ucf_C0_smoke
+log_dir: ./debug_logs/ucf_P1_platform_like_test
 
 # model setting
 pretrained: ./training/pretrained/xception-b5690688.pth
@@ -19,7 +19,7 @@ all_dataset: [FaceForensics++, FF-F2F, FF-DF, FF-FS, FF-NT, FaceShifter, DeepFak
 train_dataset: [FF-F2F, FF-DF, FF-FS, FF-NT]
 test_dataset: [FF-DF]
 dataset_type: pair
-dataset_json_folder: ./preprocessing/dataset_json_study_ce
+dataset_json_folder: ./preprocessing/dataset_json_study_P1_platform_like
 
 compression: raw
 train_batchSize: 16
@@ -97,7 +97,7 @@ nEpochs: 5
 start_epoch: 0
 save_epoch: 1
 rec_iter: 100
-logdir: ./logs/ucf_C0_smoke
+logdir: ./logs/ucf_P1_platform_like_test
 manualSeed: 1024
 save_ckpt: false
 
@@ -119,6 +119,6 @@ cudnn: false
 # study-layer metadata
 dataset_split: test
 split_tag: test
-condition_code: C0
+condition_code: P1_platform_like
 family_id: spatial
 study_output_root: ../study_outputs
