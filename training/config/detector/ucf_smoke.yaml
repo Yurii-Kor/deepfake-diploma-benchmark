@@ -120,4 +120,4 @@ cudnn: false
 family_id: spatial
 condition_code: C0
 split_tag: test
-study_output_root: /home/abc/deepfake_lab/study_outputs
+study_output_root: ../study_outputs
