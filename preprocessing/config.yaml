@@ -4,7 +4,7 @@ preprocess:
     default: 'FaceForensics++'
   dataset_root_path: # the root path to the dataset
     type: str
-    default: '/home/abc/deepfake_lab/DeepfakeBench/datasets/rgb'
+    default: '../datasets/rgb'
   comp: # the compression level of videos, only in the dataset of FaceForensics++.
     choices: ['raw', 'c23', 'c40']
     default: 'raw'
@@ -24,10 +24,10 @@ rearrange:
     default: 'FaceForensics++'
   dataset_root_path: # the root path to the dataset
     type: str
-    default: '/home/abc/deepfake_lab/DeepfakeBench/datasets/rgb'
+    default: '../datasets/rgb'
   output_file_path: # the json path to the dataset
     type: str
-    default: '/home/abc/deepfake_lab/DeepfakeBench/preprocessing/dataset_json_v6'
+    default: './dataset_json_v6'
   comp: # the compression level of videos, only in the dataset of FaceForensics++.
     choices: ['raw', 'c23', 'c40']
     default: 'raw'
@@ -43,10 +43,10 @@ to_lmdb:
     default: 'FaceForensics++'
   dataset_root_path: # the root path to the dataset
     type: str
-    default: '/home/abc/deepfake_lab/DeepfakeBench/datasets/rgb'
+    default: '../datasets/rgb'
   output_lmdb_dir: # the json path to the dataset
     type: str
-    default: '/home/abc/deepfake_lab/DeepfakeBench/datasets_lmdbs'
+    default: '../datasets_lmdbs'
   comp: # the compression level of videos, only in the dataset of FaceForensics++.
     choices: ['raw', 'c23', 'c40']
     default: 'raw'
