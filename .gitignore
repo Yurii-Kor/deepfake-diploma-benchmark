@@ -19,3 +19,6 @@ training/weights/
 
 # windows metadata garbage
 *:Zone.Identifier
+# Local result archives
+*.tar.gz
+*.tgz
