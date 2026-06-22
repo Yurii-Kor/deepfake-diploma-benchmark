@@ -90,7 +90,10 @@ PY
 
 echo
 echo "Running preprocessing for clean FTCN16 frames..."
-python3 preprocessing/preprocess.py
+(
+  cd preprocessing
+  python3 preprocess.py
+)
 
 echo
 echo "Checking extracted frame counts..."
