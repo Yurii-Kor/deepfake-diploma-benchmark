@@ -15,11 +15,24 @@ The script joins video-level master result CSV files across all five conditions,
 selects representative cases for qualitative error analysis, and optionally copies
 the corresponding MP4 videos into grouped folders.
 
-Important sampling rule:
+Important sampling rules:
     - Real-video groups are selected once over unique original videos, because the
       same real videos appear in each FF++ manipulation-family subset.
     - Fake-video groups are selected per manipulation subset, because fake videos
       are family-specific.
+    - Groups are processed in priority order A -> H.
+    - Once a video/case is selected in an earlier group, it is not selected again
+      in later groups. This keeps the final qualitative sample non-overlapping.
+
+Final qualitative groups:
+    A_persistent_FP_all
+    B_L1_induced_FP
+    C_P1_induced_FP
+    D_C2_only_FN
+    E_P1_only_FN
+    F_C2_P1_FN
+    G_near_threshold_real
+    H_near_threshold_fake
 
 Default mode writes CSV/metadata only.
 Use --copy-videos only when the clean/degraded video folders are available.
@@ -59,7 +72,7 @@ REAL_ONLY_GROUPS = {
     "A_persistent_FP_all",
     "B_L1_induced_FP",
     "C_P1_induced_FP",
-    "H_near_threshold_real",
+    "G_near_threshold_real",
 }
 
 DEFAULT_MASTER_ROOT = Path("/home/sceuser/deepfake_lab/study_outputs/master")
@@ -173,7 +186,10 @@ def safe_name(value: object) -> str:
     return text.strip("_")
 
 
-def first_existing_column(fieldnames: Iterable[str], candidates: Iterable[str]) -> Optional[str]:
+def first_existing_column(
+    fieldnames: Iterable[str],
+    candidates: Iterable[str],
+) -> Optional[str]:
     fieldname_set = set(fieldnames)
 
     for candidate in candidates:
@@ -460,27 +476,14 @@ def group_definitions(
             False,
             "Fake video: C0/R1/L1 are correct fake, but both C2 and P1 become false negative.",
         ),
-        "G_L1_stable_fake_severe_failure": (
-            lambda row: is_fake(row)
-            and row_decision(row, "C0") == 1
-            and row_decision(row, "R1_resize_x05") == 1
-            and row_decision(row, "L1_blur_sigma1") == 1
-            and (
-                row_decision(row, "C2_h264_crf40") == 0
-                or row_decision(row, "P1_platform_like") == 0
-            ),
-            "score_drop_C0_to_mean_C2_P1",
-            False,
-            "Fake video remains correct under L1 but fails under C2 and/or P1.",
-        ),
-        "H_near_threshold_real": (
+        "G_near_threshold_real": (
             lambda row: is_real(row)
             and near_threshold_distance(row) <= near_threshold_margin,
             "near_threshold_distance",
             True,
             "Real video score is close to the fixed threshold in at least one condition.",
         ),
-        "I_near_threshold_fake": (
+        "H_near_threshold_fake": (
             lambda row: is_fake(row)
             and near_threshold_distance(row) <= near_threshold_margin,
             "near_threshold_distance",
@@ -490,12 +493,27 @@ def group_definitions(
     }
 
 
+def case_identity(row: dict) -> tuple:
+    if int(row["label"]) == 0:
+        return (
+            "real",
+            "FF-real",
+            row.get("source_video_id") or row["video_id"],
+        )
+
+    return (
+        "fake",
+        row["subset_id"],
+        row["video_id"],
+    )
+
+
 def select_unique_cases(
     rows: List[dict],
     metric_name: str,
     ascending: bool,
     limit: int,
-    unique_key: Callable[[dict], str],
+    unique_key: Callable[[dict], tuple],
 ) -> List[dict]:
     ranked = sorted(
         rows,
@@ -530,25 +548,24 @@ def select_cases(
 
     selected_rows: List[dict] = []
     summary_rows: List[dict] = []
+    selected_identities = set()
     case_number = 1
 
     for group_name, (predicate, metric_name, ascending, logic) in definitions.items():
-        candidates = [row for row in joined_rows if predicate(row)]
+        candidates = [
+            row for row in joined_rows
+            if predicate(row) and case_identity(row) not in selected_identities
+        ]
 
         if group_name in REAL_ONLY_GROUPS:
-            unique_candidate_count = len(
-                {
-                    row.get("source_video_id") or row["video_id"]
-                    for row in candidates
-                }
-            )
+            unique_candidate_count = len({case_identity(row) for row in candidates})
 
             selected_group = select_unique_cases(
                 rows=candidates,
                 metric_name=metric_name,
                 ascending=ascending,
                 limit=max_per_group_per_subset,
-                unique_key=lambda row: row.get("source_video_id") or row["video_id"],
+                unique_key=case_identity,
             )
 
             summary_rows.append(
@@ -564,6 +581,9 @@ def select_cases(
             )
 
             for row in selected_group:
+                identity = case_identity(row)
+                selected_identities.add(identity)
+
                 selected = dict(row)
                 selected["case_id"] = f"{case_number:03d}"
                 selected["case_group"] = group_name
@@ -579,6 +599,7 @@ def select_cases(
             subset_candidates = [
                 row for row in candidates
                 if row["subset_id"] == subset
+                and case_identity(row) not in selected_identities
             ]
 
             selected_subset = select_unique_cases(
@@ -586,7 +607,7 @@ def select_cases(
                 metric_name=metric_name,
                 ascending=ascending,
                 limit=max_per_group_per_subset,
-                unique_key=lambda row: row["video_id"],
+                unique_key=case_identity,
             )
 
             summary_rows.append(
@@ -602,6 +623,9 @@ def select_cases(
             )
 
             for row in selected_subset:
+                identity = case_identity(row)
+                selected_identities.add(identity)
+
                 selected = dict(row)
                 selected["case_id"] = f"{case_number:03d}"
                 selected["case_group"] = group_name
