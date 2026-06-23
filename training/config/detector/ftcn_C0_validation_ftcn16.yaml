@@ -1,0 +1,120 @@
+log_dir: ./debug_logs/ftcn_C0_validation_ftcn16
+
+pretrained: null
+model_name: ftcn
+backbone_name: null
+
+backbone_config:
+  mode: original
+  num_classes: 1
+  inc: 3
+  dropout: false
+
+dataset_json_folder: ./preprocessing/dataset_json_study_ce_ftcn16
+
+all_dataset:
+  - FaceForensics++
+  - FF-F2F
+  - FF-DF
+  - FF-FS
+  - FF-NT
+  - FaceShifter
+  - DeepFakeDetection
+  - Celeb-DF-v1
+  - Celeb-DF-v2
+  - DFDCP
+  - DFDC
+  - DeeperForensics-1.0
+  - UADFV
+
+train_dataset:
+  - FaceForensics++
+
+test_dataset:
+  - FF-DF
+  - FF-F2F
+  - FF-FS
+  - FF-NT
+
+compression: raw
+
+train_batchSize: 1
+test_batchSize: 1
+workers: 0
+
+frame_num:
+  train: 16
+  test: 16
+
+resolution: 224
+
+with_mask: false
+with_landmark: false
+video_mode: true
+clip_size: 16
+
+use_data_augmentation: false
+
+data_aug:
+  flip_prob: 0.5
+  rotate_prob: 0.5
+  rotate_limit:
+    - -10
+    - 10
+  blur_prob: 0.5
+  blur_limit:
+    - 3
+    - 7
+  brightness_prob: 0.5
+  brightness_limit:
+    - -0.1
+    - 0.1
+  contrast_limit:
+    - -0.1
+    - 0.1
+  quality_lower: 40
+  quality_upper: 100
+
+mean:
+  - 0.5
+  - 0.5
+  - 0.5
+
+std:
+  - 0.5
+  - 0.5
+  - 0.5
+
+optimizer:
+  type: adam
+  adam:
+    lr: 0.0002
+    beta1: 0.9
+    beta2: 0.999
+    eps: 0.00000001
+    weight_decay: 0.0005
+    amsgrad: false
+  sgd:
+    lr: 0.0002
+    momentum: 0.9
+    weight_decay: 0.0005
+
+lr_scheduler: null
+nEpochs: 10
+start_epoch: 0
+save_epoch: 1
+rec_iter: 100
+logdir: ./logs
+manualSeed: 1024
+save_ckpt: true
+save_feat: true
+
+loss_func: cross_entropy
+losstype: null
+
+metric_scoring: auc
+
+cuda: true
+cudnn: true
+
+study_output_root: ../study_outputs
