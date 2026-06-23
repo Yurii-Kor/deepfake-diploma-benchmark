@@ -213,10 +213,11 @@ def _write_sample_scores_csv(csv_path, run_id, config, subset_name, img_names, p
             ])
 
 
-def test_one_dataset(model, data_loader):
+def test_one_dataset(model, data_loader, config=None):
     prediction_lists = []
     feature_lists = []
     label_lists = []
+    save_feat = bool(config.get('save_feat', False)) if config is not None else False
 
     for _, data_dict in tqdm(enumerate(data_loader), total=len(data_loader)):
         data, label, mask, landmark = (
@@ -237,7 +238,7 @@ def test_one_dataset(model, data_loader):
         predictions = inference(model, data_dict)
 
         prob_tensor = _extract_prob_tensor(predictions)
-        feat_tensor = _extract_feat_tensor(predictions)
+        feat_tensor = _extract_feat_tensor(predictions) if save_feat else None
 
         label_lists += list(data_dict['label'].cpu().detach().numpy())
         prediction_lists += list(prob_tensor.cpu().detach().numpy())
@@ -257,7 +258,7 @@ def test_epoch(model, test_data_loaders, config, run_id):
     for key in keys:
         data_dict = test_data_loaders[key].dataset.data_dict
 
-        predictions_nps, label_nps, feat_nps = test_one_dataset(model, test_data_loaders[key])
+        predictions_nps, label_nps, feat_nps = test_one_dataset(model, test_data_loaders[key], config)
 
         study_output_root = os.path.expanduser(
             config.get('study_output_root', '~/deepfake_lab/study_outputs')
