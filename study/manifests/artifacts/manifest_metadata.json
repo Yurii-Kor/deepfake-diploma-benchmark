@@ -1,0 +1,33 @@
+{
+  "inputs": {
+    "celeb_df_v2_test_list": {
+      "filename": "List_of_testing_videos.txt",
+      "sha256": "07063d46206e011aef9d1ad8d1854f5b87ae519ba6e452b897cc528c3dcfcdc0"
+    },
+    "ffpp_test_split": {
+      "filename": "test.json",
+      "sha256": "886f5a0da623c25820692e0d8dc33d197ddb1db527a7f1cfcb9bcbca60fe4f40"
+    },
+    "ffpp_train_split": {
+      "filename": "train.json",
+      "sha256": "e59386911255e6fb0a79a7808ec2210536b8c0474268342694c4bca766d1b347"
+    },
+    "ffpp_validation_split": {
+      "filename": "val.json",
+      "sha256": "b48cc511f66938e05356aaa9c67e150b1e3638c355db3d745225b0022884b36e"
+    }
+  },
+  "outputs": {
+    "ffpp_train_pair_assignment.json": {
+      "sha256": "b0bf0ad46d27cb2adb41c18824395d792816dee6b2ec9bab2b9908846c6cdb35"
+    },
+    "manifest_summary.json": {
+      "sha256": "2d73044d12c31115ddf9c25de71694451d029b6c32fb0c3c2613dd3122129599"
+    },
+    "study_manifest.csv": {
+      "sha256": "f34fbf934def4d240d319a90ba091a3a28b306eeacc8145d5fdad1e3b706f224"
+    }
+  },
+  "schema_version": 1,
+  "split_seed": 1024
+}

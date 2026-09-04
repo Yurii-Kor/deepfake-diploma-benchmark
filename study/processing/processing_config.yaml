@@ -1,0 +1,92 @@
+schema_version: 1
+
+tools:
+  ffmpeg: ffmpeg
+  ffprobe: ffprobe
+
+video_policy:
+  drop_audio: true
+
+  # r_frame_rate != avg_frame_rate is retained as QC information,
+  # but is not by itself an exclusion criterion.
+  require_cfr_rate_match: false
+
+  # All processed outputs use a deterministic temporal grid derived
+  # from the clean source avg_frame_rate. Cross-condition matching
+  # is based on decoded frame index rather than original container PTS.
+  timing_mode: regularized_from_source_avg_frame_rate
+
+  # Allowed absolute difference between the target processing rate
+  # and the processed video's reported average frame rate.
+  output_rate_tolerance_fps: 0.001
+
+conditions:
+  RSZ:
+    description: Factor-of-two bicubic downscale followed by bicubic restoration.
+    pipeline: frame_processing
+    output_extension: ".mkv"
+    operations:
+      - type: resize_restore
+        scale: 0.5
+        interpolation: INTER_CUBIC
+    encoder:
+      codec: ffv1
+      level: 3
+      pixel_format: bgr0
+    validation:
+      require_pixel_exact_roundtrip: true
+
+  BLR:
+    description: Gaussian smoothing with sigma 1 and reflection boundary handling.
+    pipeline: frame_processing
+    output_extension: ".mkv"
+    operations:
+      - type: gaussian_blur
+        kernel_size: 7
+        sigma_x: 1.0
+        sigma_y: 1.0
+        border_type: BORDER_REFLECT_101
+    encoder:
+      codec: ffv1
+      level: 3
+      pixel_format: bgr0
+    validation:
+      require_pixel_exact_roundtrip: true
+
+  H40:
+    description: Strong H.264 recompression at CRF 40.
+    pipeline: direct_transcode
+    output_extension: ".mp4"
+    operations: []
+    encoder:
+      codec: libx264
+      expected_codec_name: h264
+      preset: veryfast
+      crf: 40
+      pixel_format: yuv420p
+      movflags: "+faststart"
+    validation:
+      require_pixel_exact_roundtrip: false
+
+  PLT:
+    description: Composite platform-like processing.
+    pipeline: frame_processing
+    output_extension: ".mp4"
+    operations:
+      - type: resize_restore
+        scale: 0.75
+        interpolation: INTER_CUBIC
+      - type: gaussian_blur
+        kernel_size: 7
+        sigma_x: 1.0
+        sigma_y: 1.0
+        border_type: BORDER_REFLECT_101
+    encoder:
+      codec: libx264
+      expected_codec_name: h264
+      preset: veryfast
+      crf: 35
+      pixel_format: yuv420p
+      movflags: "+faststart"
+    validation:
+      require_pixel_exact_roundtrip: false

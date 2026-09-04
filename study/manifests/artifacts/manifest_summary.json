@@ -1,0 +1,32 @@
+{
+  "dataset_counts": {
+    "Celeb-DF-v2": 518,
+    "FaceForensics++": 5000
+  },
+  "dataset_role_counts": {
+    "Celeb-DF-v2|external_evaluation": 518,
+    "FaceForensics++|development": 720,
+    "FaceForensics++|fit": 2880,
+    "FaceForensics++|test": 700,
+    "FaceForensics++|validation": 700
+  },
+  "dataset_role_label_counts": {
+    "Celeb-DF-v2|external_evaluation|0": 178,
+    "Celeb-DF-v2|external_evaluation|1": 340,
+    "FaceForensics++|development|0": 144,
+    "FaceForensics++|development|1": 576,
+    "FaceForensics++|fit|0": 576,
+    "FaceForensics++|fit|1": 2304,
+    "FaceForensics++|test|0": 140,
+    "FaceForensics++|test|1": 560,
+    "FaceForensics++|validation|0": 140,
+    "FaceForensics++|validation|1": 560
+  },
+  "ffpp_fake_manipulation_counts": {
+    "DeepFakes": 1000,
+    "Face2Face": 1000,
+    "FaceSwap": 1000,
+    "NeuralTextures": 1000
+  },
+  "total_records": 5518
+}

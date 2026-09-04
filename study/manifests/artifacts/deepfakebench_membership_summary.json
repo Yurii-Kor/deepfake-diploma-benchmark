@@ -1,0 +1,25 @@
+{
+  "counts": {
+    "aggregate|test|FaceForensics++|0": 144,
+    "aggregate|test|FaceForensics++|1": 576,
+    "aggregate|train|FaceForensics++|0": 576,
+    "aggregate|train|FaceForensics++|1": 2304,
+    "ucf_method|test|FF-DF|0": 36,
+    "ucf_method|test|FF-DF|1": 144,
+    "ucf_method|test|FF-F2F|0": 36,
+    "ucf_method|test|FF-F2F|1": 144,
+    "ucf_method|test|FF-FS|0": 36,
+    "ucf_method|test|FF-FS|1": 144,
+    "ucf_method|test|FF-NT|0": 36,
+    "ucf_method|test|FF-NT|1": 144,
+    "ucf_method|train|FF-DF|0": 144,
+    "ucf_method|train|FF-DF|1": 576,
+    "ucf_method|train|FF-F2F|0": 144,
+    "ucf_method|train|FF-F2F|1": 576,
+    "ucf_method|train|FF-FS|0": 144,
+    "ucf_method|train|FF-FS|1": 576,
+    "ucf_method|train|FF-NT|0": 144,
+    "ucf_method|train|FF-NT|1": 576
+  },
+  "total_membership_rows": 7200
+}

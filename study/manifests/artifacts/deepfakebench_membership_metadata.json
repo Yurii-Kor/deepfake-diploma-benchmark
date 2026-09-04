@@ -1,0 +1,30 @@
+{
+  "execution_contract": {
+    "aggregate_dataset": "FaceForensics++",
+    "contains_external_evaluation": false,
+    "contains_frame_paths": false,
+    "contains_official_test": false,
+    "contains_official_validation": false,
+    "development_role": "test",
+    "fit_role": "train",
+    "ucf_method_datasets": [
+      "FF-DF",
+      "FF-F2F",
+      "FF-FS",
+      "FF-NT"
+    ]
+  },
+  "outputs": {
+    "deepfakebench_membership.csv": {
+      "sha256": "5eea95eb1fd5a26a0f98f21e2dd8f64514bdb1c1aaf6b7a6a6286a0209de8bca"
+    },
+    "deepfakebench_membership_summary.json": {
+      "sha256": "62bdadb505d928e5faeb1e55843a614d928d3ccfe9b0b7921eb30ff049811376"
+    }
+  },
+  "schema_version": 1,
+  "source_manifest": {
+    "filename": "study_manifest.csv",
+    "sha256": "f34fbf934def4d240d319a90ba091a3a28b306eeacc8145d5fdad1e3b706f224"
+  }
+}
