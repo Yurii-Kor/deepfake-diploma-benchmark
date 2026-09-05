@@ -63,8 +63,11 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "--detector_path",
     type=str,
-    default="./training/config/detector/xception.yaml",
-    help="path to the study detector YAML file",
+    default="./training/config/detector/study_xception.yaml",
+    help=(
+        "path to study_xception.yaml, study_ucf.yaml, "
+        "or study_spsl.yaml"
+    ),
 )
 
 parser.add_argument(
