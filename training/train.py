@@ -426,9 +426,9 @@ def choose_metric(
         "metric_scoring"
     )
 
-    if metric != "auc":
+    if metric != "video_auc":
         raise ValueError(
-            "study checkpoint selection requires metric_scoring: auc"
+            "study checkpoint selection requires metric_scoring: video_auc"
         )
 
     return metric

@@ -1,0 +1,166 @@
+# Controlled-study configuration: UCF
+#
+# FIT:
+#   four method-specific FF++ execution views
+#
+# DEV:
+#   one binary aggregate FaceForensics++ execution view
+#
+# The union of the four FIT views is required to equal the canonical
+# FaceForensics++ FIT universe exactly.
+
+study_controlled_training: true
+
+# ---------------------------------------------------------------------------
+# Study data
+# ---------------------------------------------------------------------------
+
+lmdb: false
+
+dataset_json_folder: ./study/training/materialized/dataset_json
+rgb_dir: ./study/training/materialized/rgb
+
+# UCF retains method identity during fitting.
+train_dataset:
+  - FF-F2F
+  - FF-DF
+  - FF-FS
+  - FF-NT
+
+# Checkpoint selection uses the same binary aggregate DEV universe
+# as Xception and SPSL.
+test_dataset:
+  - FaceForensics++
+
+dataset_type: pair
+
+compression: raw
+
+frame_num:
+  train: 32
+  test: 32
+
+resolution: 256
+
+with_mask: false
+with_landmark: false
+
+# Aggregate DEV labels:
+#   FF-real -> 0
+#   FF-fake -> 1
+#
+# Method-view FIT labels preserve the UCF manipulation-specific target.
+label_dict:
+  FF-real: 0
+  FF-fake: 1
+  FF-DF: 1
+  FF-F2F: 2
+  FF-FS: 3
+  FF-NT: 4
+
+# ---------------------------------------------------------------------------
+# Detector
+# ---------------------------------------------------------------------------
+
+model_name: ucf
+backbone_name: xception
+
+pretrained: ./training/pretrained/xception-b5690688.pth
+
+encoder_feat_dim: 512
+
+backbone_config:
+  mode: adjust_channel
+  num_classes: 2
+  inc: 3
+  dropout: false
+
+mean:
+  - 0.5
+  - 0.5
+  - 0.5
+
+std:
+  - 0.5
+  - 0.5
+  - 0.5
+
+# ---------------------------------------------------------------------------
+# Study-controlled augmentation policy
+# ---------------------------------------------------------------------------
+
+use_data_augmentation: false
+
+data_aug:
+  flip_prob: 0.5
+  rotate_prob: 0.0
+  rotate_limit:
+    - -10
+    - 10
+  blur_prob: 0.0
+  blur_limit:
+    - 3
+    - 7
+  brightness_limit:
+    - -0.1
+    - 0.1
+  contrast_limit:
+    - -0.1
+    - 0.1
+  quality_lower: 40
+  quality_upper: 100
+
+# ---------------------------------------------------------------------------
+# Optimization
+# ---------------------------------------------------------------------------
+
+# pairDataset produces one real + one fake image per pair-item.
+# Therefore:
+#   loader batch = 16 pair-items
+#   effective optimizer batch = 32 images
+train_batchSize: 16
+
+test_batchSize: 32
+workers: 8
+
+optimizer:
+  type: adam
+  adam:
+    lr: 0.0002
+    beta1: 0.9
+    beta2: 0.999
+    eps: 0.00000001
+    weight_decay: 0.0005
+    amsgrad: false
+
+lr_scheduler: null
+
+nEpochs: 10
+start_epoch: 0
+
+save_epoch: 1
+rec_iter: 100
+logdir: ./logs
+
+manualSeed: 1024
+
+# ---------------------------------------------------------------------------
+# UCF objective
+# ---------------------------------------------------------------------------
+
+loss_func:
+  cls_loss: cross_entropy
+  spe_loss: cross_entropy
+  con_loss: contrastive_regularization
+  rec_loss: l1loss
+
+losstype: null
+
+metric_scoring: video_auc
+
+# ---------------------------------------------------------------------------
+# Runtime
+# ---------------------------------------------------------------------------
+
+cuda: true
+cudnn: true

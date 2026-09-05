@@ -1,0 +1,144 @@
+# Controlled-study configuration: Xception
+#
+# FIT:
+#   aggregate FaceForensics++ view
+# DEV:
+#   aggregate FaceForensics++ view
+#
+# The materialized DeepfakeBench JSON maps:
+#   canonical FIT -> train
+#   canonical DEV -> test
+
+study_controlled_training: true
+
+# ---------------------------------------------------------------------------
+# Study data
+# ---------------------------------------------------------------------------
+
+lmdb: false
+
+dataset_json_folder: ./study/training/materialized/dataset_json
+rgb_dir: ./study/training/materialized/rgb
+
+train_dataset:
+  - FaceForensics++
+
+test_dataset:
+  - FaceForensics++
+
+compression: raw
+
+frame_num:
+  train: 32
+  test: 32
+
+resolution: 256
+
+with_mask: false
+with_landmark: false
+
+# Aggregate study view uses binary labels only.
+label_dict:
+  FF-real: 0
+  FF-fake: 1
+
+# ---------------------------------------------------------------------------
+# Detector
+# ---------------------------------------------------------------------------
+
+model_name: xception
+backbone_name: xception
+
+pretrained: ./training/pretrained/xception-b5690688.pth
+
+backbone_config:
+  mode: original
+  num_classes: 2
+  inc: 3
+  dropout: false
+
+mean:
+  - 0.5
+  - 0.5
+  - 0.5
+
+std:
+  - 0.5
+  - 0.5
+  - 0.5
+
+# ---------------------------------------------------------------------------
+# Study-controlled augmentation policy
+# ---------------------------------------------------------------------------
+
+# Disabled deliberately so that fitting is not exposed to blur or
+# recompression operations related to the robustness conditions.
+use_data_augmentation: false
+
+# DeepfakeAbstractBaseDataset constructs the augmentation pipeline even when
+# augmentation is disabled, so the required parameters remain explicit.
+data_aug:
+  flip_prob: 0.5
+  rotate_prob: 0.0
+  rotate_limit:
+    - -10
+    - 10
+  blur_prob: 0.0
+  blur_limit:
+    - 3
+    - 7
+  brightness_limit:
+    - -0.1
+    - 0.1
+  contrast_limit:
+    - -0.1
+    - 0.1
+  quality_lower: 40
+  quality_upper: 100
+
+# ---------------------------------------------------------------------------
+# Optimization
+# ---------------------------------------------------------------------------
+
+train_batchSize: 32
+test_batchSize: 32
+workers: 8
+
+optimizer:
+  type: adam
+  adam:
+    lr: 0.0002
+    beta1: 0.9
+    beta2: 0.999
+    eps: 0.00000001
+    weight_decay: 0.0005
+    amsgrad: false
+
+lr_scheduler: null
+
+# nEpochs is the total completed-epoch budget.
+# Study runtime executes epochs 0..9 exactly once.
+nEpochs: 10
+start_epoch: 0
+
+save_epoch: 1
+rec_iter: 100
+logdir: ./logs
+
+manualSeed: 1024
+
+# ---------------------------------------------------------------------------
+# Objective / model selection
+# ---------------------------------------------------------------------------
+
+loss_func: cross_entropy
+losstype: null
+
+metric_scoring: video_auc
+
+# ---------------------------------------------------------------------------
+# Runtime
+# ---------------------------------------------------------------------------
+
+cuda: true
+cudnn: true

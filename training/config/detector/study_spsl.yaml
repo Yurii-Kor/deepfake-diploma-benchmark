@@ -1,0 +1,139 @@
+# Controlled-study configuration: SPSL
+#
+# FIT:
+#   aggregate FaceForensics++ view
+# DEV:
+#   aggregate FaceForensics++ view
+#
+# SPSL retains its detector-specific four-channel RGB + phase input,
+# while exposure and optimization budget follow the common study protocol.
+
+study_controlled_training: true
+
+# ---------------------------------------------------------------------------
+# Study data
+# ---------------------------------------------------------------------------
+
+lmdb: false
+
+dataset_json_folder: ./study/training/materialized/dataset_json
+rgb_dir: ./study/training/materialized/rgb
+
+train_dataset:
+  - FaceForensics++
+
+test_dataset:
+  - FaceForensics++
+
+compression: raw
+
+frame_num:
+  train: 32
+  test: 32
+
+resolution: 256
+
+with_mask: false
+with_landmark: false
+
+label_dict:
+  FF-real: 0
+  FF-fake: 1
+
+# ---------------------------------------------------------------------------
+# Detector
+# ---------------------------------------------------------------------------
+
+model_name: spsl
+backbone_name: xception
+
+pretrained: ./training/pretrained/xception-b5690688.pth
+
+# SPSL uses the full/original Xception implementation with a four-channel
+# first convolution. The fourth phase-derived channel is constructed by
+# SPSL internally.
+backbone_config:
+  mode: original
+  num_classes: 2
+  inc: 4
+  dropout: false
+
+mean:
+  - 0.5
+  - 0.5
+  - 0.5
+
+std:
+  - 0.5
+  - 0.5
+  - 0.5
+
+# ---------------------------------------------------------------------------
+# Study-controlled augmentation policy
+# ---------------------------------------------------------------------------
+
+use_data_augmentation: false
+
+data_aug:
+  flip_prob: 0.5
+  rotate_prob: 0.0
+  rotate_limit:
+    - -10
+    - 10
+  blur_prob: 0.0
+  blur_limit:
+    - 3
+    - 7
+  brightness_limit:
+    - -0.1
+    - 0.1
+  contrast_limit:
+    - -0.1
+    - 0.1
+  quality_lower: 40
+  quality_upper: 100
+
+# ---------------------------------------------------------------------------
+# Optimization
+# ---------------------------------------------------------------------------
+
+train_batchSize: 32
+test_batchSize: 32
+workers: 8
+
+optimizer:
+  type: adam
+  adam:
+    lr: 0.0002
+    beta1: 0.9
+    beta2: 0.999
+    eps: 0.00000001
+    weight_decay: 0.0005
+    amsgrad: false
+
+lr_scheduler: null
+
+nEpochs: 10
+start_epoch: 0
+
+save_epoch: 1
+rec_iter: 100
+logdir: ./logs
+
+manualSeed: 1024
+
+# ---------------------------------------------------------------------------
+# Objective / model selection
+# ---------------------------------------------------------------------------
+
+loss_func: cross_entropy
+losstype: null
+
+metric_scoring: video_auc
+
+# ---------------------------------------------------------------------------
+# Runtime
+# ---------------------------------------------------------------------------
+
+cuda: true
+cudnn: true

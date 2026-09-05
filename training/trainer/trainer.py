@@ -1,41 +1,69 @@
-# author: Zhiyuan Yan
-# email: zhiyuanyan@link.cuhk.edu.cn
-# date: 2023-03-30
-# description: trainer
+import datetime
+import json
 import os
 import sys
-current_file_path = os.path.abspath(__file__)
-parent_dir = os.path.dirname(os.path.dirname(current_file_path))
-project_root_dir = os.path.dirname(parent_dir)
-sys.path.append(parent_dir)
-sys.path.append(project_root_dir)
-
-import pickle
-import datetime
-import logging
-import numpy as np
-from copy import deepcopy
 from collections import defaultdict
-from tqdm import tqdm
-import time
+from collections.abc import Mapping
+from pathlib import Path
+
+import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.nn import DataParallel
-from torch.utils.tensorboard import SummaryWriter
-from metrics.base_metrics_class import Recorder
-from torch.optim.swa_utils import AveragedModel, SWALR
-from torch import distributed as dist
-from torch.nn.parallel import DistributedDataParallel as DDP
-from sklearn import metrics
-from metrics.utils import get_test_metrics
-
-FFpp_pool=['FaceForensics++','FF-DF','FF-F2F','FF-FS','FF-NT']#
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+from torch.utils.data import SequentialSampler
+from tqdm import tqdm
 
 
-class Trainer(object):
+PROJECT_ROOT = (
+    Path(
+        __file__
+    )
+    .resolve()
+    .parents[
+        2
+    ]
+)
+
+if str(
+    PROJECT_ROOT
+) not in sys.path:
+    sys.path.append(
+        str(
+            PROJECT_ROOT
+        )
+    )
+
+
+from study.training.dev_metrics import (
+    compute_dev_metrics,
+)
+
+
+SUPPORTED_STUDY_MODELS = {
+    "xception",
+    "ucf",
+    "spsl",
+}
+
+CHECKPOINT_SELECTION_METRIC = (
+    "video_auc"
+)
+
+
+class Trainer:
+    """
+    Controlled trainer for the Xception/UCF/SPSL robustness study.
+
+    Study contract:
+      * single-process training only;
+      * Adam optimizer only;
+      * no scheduler;
+      * one complete optimizer epoch before DEV evaluation;
+      * exactly one DEV evaluation per completed epoch;
+      * checkpoint selection by aggregate DEV video-level AUC;
+      * a strictly greater DEV video AUC replaces the best checkpoint;
+      * equal values retain the earlier checkpoint;
+      * held-out validation/test/external partitions are never used here.
+    """
+
     def __init__(
         self,
         config,
@@ -43,423 +71,1055 @@ class Trainer(object):
         optimizer,
         scheduler,
         logger,
-        metric_scoring='auc',
-        time_now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
-        swa_model=None
+        metric_scoring="video_auc",
+        time_now=None,
+        swa_model=None,
+    ):
+        if config is None:
+            raise ValueError(
+                "config must be provided."
+            )
+
+        if model is None:
+            raise ValueError(
+                "model must be provided."
+            )
+
+        if optimizer is None:
+            raise ValueError(
+                "optimizer must be provided."
+            )
+
+        if logger is None:
+            raise ValueError(
+                "logger must be provided."
+            )
+
+        if not config.get(
+            "study_controlled_training",
+            False,
         ):
-        # check if all the necessary components are implemented
-        if config is None or model is None or optimizer is None or logger is None:
-            raise ValueError("config, model, optimizier, logger, and tensorboard writer must be implemented")
+            raise ValueError(
+                "Controlled Trainer may only be used when "
+                "study_controlled_training=true."
+            )
+
+        model_name = config.get(
+            "model_name"
+        )
+
+        if model_name not in (
+            SUPPORTED_STUDY_MODELS
+        ):
+            raise ValueError(
+                "Unsupported study model: "
+                f"{model_name}"
+            )
+
+        if config.get(
+            "ddp",
+            False,
+        ):
+            raise ValueError(
+                "DDP is not supported by the controlled study Trainer."
+            )
+
+        if scheduler is not None:
+            raise ValueError(
+                "The controlled study uses no learning-rate scheduler."
+            )
+
+        if config.get(
+            "lr_scheduler"
+        ) is not None:
+            raise ValueError(
+                "Study config must set lr_scheduler: null."
+            )
+
+        if (
+            config.get(
+                "optimizer",
+                {},
+            ).get(
+                "type"
+            )
+            != "adam"
+        ):
+            raise ValueError(
+                "The controlled study Trainer requires Adam."
+            )
 
         self.config = config
         self.model = model
         self.optimizer = optimizer
-        self.scheduler = scheduler
-        self.swa_model = swa_model
-        self.writers = {}  # dict to maintain different tensorboard writers for each dataset and metric
+        self.scheduler = None
         self.logger = logger
-        self.metric_scoring = metric_scoring
-        # maintain the best metric of all epochs
-        self.best_metrics_all_time = defaultdict(
-            lambda: defaultdict(lambda: float('-inf')
-            if self.metric_scoring != 'eer' else float('inf'))
+
+        # Retained only for compatibility with the current train.py API.
+        # Checkpoint selection is intentionally fixed to video_auc.
+        self.metric_scoring = (
+            metric_scoring
         )
-        self.speed_up()  # move model to GPU
 
-        # get current time
-        self.timenow = time_now
-        # create directory path
-        if 'task_target' not in config:
-            self.log_dir = os.path.join(
-                self.config['log_dir'],
-                self.config['model_name'] + '_' + self.timenow
+        self.selection_metric = (
+            CHECKPOINT_SELECTION_METRIC
+        )
+
+        self.writers = {}
+
+        if config.get(
+            "cuda",
+            False,
+        ):
+            if not torch.cuda.is_available():
+                raise RuntimeError(
+                    "CUDA was requested but is unavailable."
+                )
+
+            self.device = torch.device(
+                "cuda",
+                torch.cuda.current_device(),
             )
         else:
-            task_str = f"_{config['task_target']}" if config['task_target'] is not None else ""
-            self.log_dir = os.path.join(
-                self.config['log_dir'],
-                self.config['model_name'] + task_str + '_' + self.timenow
+            self.device = torch.device(
+                "cpu"
             )
-        os.makedirs(self.log_dir, exist_ok=True)
 
-    def get_writer(self, phase, dataset_key, metric_key):
-        writer_key = f"{phase}-{dataset_key}-{metric_key}"
-        if writer_key not in self.writers:
-            # update directory path
-            writer_path = os.path.join(
+        self.model.to(
+            self.device
+        )
+
+        self.model.device = (
+            self.device
+        )
+
+        if time_now is None:
+            time_now = (
+                datetime.datetime.now().strftime(
+                    "%Y-%m-%d-%H-%M-%S"
+                )
+            )
+
+        self.timenow = (
+            time_now
+        )
+
+        task_target = config.get(
+            "task_target"
+        )
+
+        task_suffix = (
+            f"_{task_target}"
+            if task_target
+            else ""
+        )
+
+        self.log_dir = os.path.join(
+            config[
+                "log_dir"
+            ],
+            (
+                f"{model_name}"
+                f"{task_suffix}_"
+                f"{self.timenow}"
+            ),
+        )
+
+        self.checkpoint_dir = (
+            os.path.join(
                 self.log_dir,
-                phase,
-                dataset_key,
-                metric_key,
-                "metric_board"
+                "checkpoints",
             )
-            os.makedirs(writer_path, exist_ok=True)
-            # update writers dictionary
-            self.writers[writer_key] = SummaryWriter(writer_path)
-        return self.writers[writer_key]
+        )
 
+        self.dev_dir = (
+            os.path.join(
+                self.log_dir,
+                "dev",
+            )
+        )
 
-    def speed_up(self):
-        self.model.to(device)
-        self.model.device = device
-        if self.config['ddp'] == True:
-            num_gpus = torch.cuda.device_count()
-            print(f'avai gpus: {num_gpus}')
-            # local_rank=[i for i in range(0,num_gpus)]
-            self.model = DDP(self.model, device_ids=[self.config['local_rank']],find_unused_parameters=True, output_device=self.config['local_rank'])
-            #self.optimizer =  nn.DataParallel(self.optimizer, device_ids=[int(os.environ['LOCAL_RANK'])])
+        os.makedirs(
+            self.checkpoint_dir,
+            exist_ok=True,
+        )
 
-    def setTrain(self):
+        os.makedirs(
+            self.dev_dir,
+            exist_ok=True,
+        )
+
+        self.best_video_auc = float(
+            "-inf"
+        )
+
+        self.best_epoch = None
+
+        self.best_metrics_all_time = {
+            "DEV": {}
+        }
+
+        self.logger.info(
+            "Controlled Trainer initialized."
+        )
+
+        self.logger.info(
+            "Checkpoint selection metric: %s",
+            self.selection_metric,
+        )
+
+        self.logger.info(
+            "Checkpoint tie policy: retain earlier checkpoint."
+        )
+
+    def setTrain(
+        self,
+    ):
         self.model.train()
-        self.train = True
 
-    def setEval(self):
+    def setEval(
+        self,
+    ):
         self.model.eval()
-        self.train = False
 
-    def load_ckpt(self, model_path):
-        if os.path.isfile(model_path):
-            saved = torch.load(model_path, map_location='cpu')
-            suffix = model_path.split('.')[-1]
-            if suffix == 'p':
-                self.model.load_state_dict(saved.state_dict())
+    def _move_batch_to_device(
+        self,
+        data_dict,
+    ):
+        moved = {}
+
+        for (
+            key,
+            value,
+        ) in data_dict.items():
+            if torch.is_tensor(
+                value
+            ):
+                moved[
+                    key
+                ] = value.to(
+                    self.device,
+                    non_blocking=True,
+                )
             else:
-                self.model.load_state_dict(saved)
-            self.logger.info('Model found in {}'.format(model_path))
-        else:
-            raise NotImplementedError(
-                "=> no model found at '{}'".format(model_path))
+                moved[
+                    key
+                ] = value
 
-    def save_ckpt(self, phase, dataset_key,ckpt_info=None):
-        save_dir = os.path.join(self.log_dir, phase, dataset_key)
-        os.makedirs(save_dir, exist_ok=True)
-        ckpt_name = f"ckpt_best.pth"
-        save_path = os.path.join(save_dir, ckpt_name)
-        if self.config['ddp'] == True:
-            torch.save(self.model.state_dict(), save_path)
-        else:
-            if 'svdd' in self.config['model_name']:
-                torch.save({'R': self.model.R,
-                            'c': self.model.c,
-                            'state_dict': self.model.state_dict(),}, save_path)
-            else:
-                torch.save(self.model.state_dict(), save_path)
-        self.logger.info(f"Checkpoint saved to {save_path}, current ckpt is {ckpt_info}")
+        return moved
 
-    def save_swa_ckpt(self):
-        save_dir = self.log_dir
-        os.makedirs(save_dir, exist_ok=True)
-        ckpt_name = f"swa.pth"
-        save_path = os.path.join(save_dir, ckpt_name)
-        torch.save(self.swa_model.state_dict(), save_path)
-        self.logger.info(f"SWA Checkpoint saved to {save_path}")
+    @staticmethod
+    def _loss_to_float(
+        value,
+    ):
+        if torch.is_tensor(
+            value
+        ):
+            if value.numel() != 1:
+                raise ValueError(
+                    "Study losses must be scalar tensors."
+                )
 
+            return float(
+                value.detach().cpu().item()
+            )
 
-    def save_feat(self, phase, fea, dataset_key):
-        save_dir = os.path.join(self.log_dir, phase, dataset_key)
-        os.makedirs(save_dir, exist_ok=True)
-        features = fea
-        feat_name = f"feat_best.npy"
-        save_path = os.path.join(save_dir, feat_name)
-        np.save(save_path, features)
-        self.logger.info(f"Feature saved to {save_path}")
+        return float(
+            value
+        )
 
-    def save_data_dict(self, phase, data_dict, dataset_key):
-        save_dir = os.path.join(self.log_dir, phase, dataset_key)
-        os.makedirs(save_dir, exist_ok=True)
-        file_path = os.path.join(save_dir, f'data_dict_{phase}.pickle')
-        with open(file_path, 'wb') as file:
-            pickle.dump(data_dict, file)
-        self.logger.info(f"data_dict saved to {file_path}")
+    def train_step(
+        self,
+        data_dict,
+    ):
+        predictions = self.model(
+            data_dict
+        )
 
-    def save_metrics(self, phase, metric_one_dataset, dataset_key):
-        save_dir = os.path.join(self.log_dir, phase, dataset_key)
-        os.makedirs(save_dir, exist_ok=True)
-        file_path = os.path.join(save_dir, 'metric_dict_best.pickle')
-        with open(file_path, 'wb') as file:
-            pickle.dump(metric_one_dataset, file)
-        self.logger.info(f"Metrics saved to {file_path}")
+        losses = self.model.get_losses(
+            data_dict,
+            predictions,
+        )
 
-    def train_step(self,data_dict):
-        if self.config['optimizer']['type']=='sam':
-            for i in range(2):
-                predictions = self.model(data_dict)
-                losses = self.model.get_losses(data_dict, predictions)
-                if i == 0:
-                    pred_first = predictions
-                    losses_first = losses
-                self.optimizer.zero_grad()
-                losses['overall'].backward()
-                if i == 0:
-                    self.optimizer.first_step(zero_grad=True)
-                else:
-                    self.optimizer.second_step(zero_grad=True)
-            return losses_first, pred_first
-        else:
+        if not isinstance(
+            losses,
+            Mapping,
+        ):
+            raise TypeError(
+                "Detector get_losses() must return a mapping."
+            )
 
-            predictions = self.model(data_dict)
-            if type(self.model) is DDP:
-                losses = self.model.module.get_losses(data_dict, predictions)
-            else:
-                losses = self.model.get_losses(data_dict, predictions)
-            self.optimizer.zero_grad()
-            losses['overall'].backward()
-            self.optimizer.step()
+        if "overall" not in losses:
+            raise KeyError(
+                "Detector losses must contain 'overall'."
+            )
 
+        overall_loss = losses[
+            "overall"
+        ]
 
-            return losses,predictions
+        if not torch.is_tensor(
+            overall_loss
+        ):
+            raise TypeError(
+                "'overall' loss must be a torch.Tensor."
+            )
 
+        if overall_loss.numel() != 1:
+            raise ValueError(
+                "'overall' loss must be scalar."
+            )
+
+        if not torch.isfinite(
+            overall_loss
+        ).item():
+            raise ValueError(
+                "Non-finite training loss encountered."
+            )
+
+        self.optimizer.zero_grad(
+            set_to_none=True
+        )
+
+        overall_loss.backward()
+
+        self.optimizer.step()
+
+        return losses
+
+    @staticmethod
+    def _extract_probability_vector(
+        predictions,
+    ):
+        if not isinstance(
+            predictions,
+            Mapping,
+        ):
+            raise TypeError(
+                "Study detector inference must return a mapping."
+            )
+
+        if "prob" not in predictions:
+            raise KeyError(
+                "Study detector inference must expose 'prob'."
+            )
+
+        probabilities = predictions[
+            "prob"
+        ]
+
+        if not torch.is_tensor(
+            probabilities
+        ):
+            raise TypeError(
+                "predictions['prob'] must be a torch.Tensor."
+            )
+
+        if probabilities.ndim == 2:
+            if probabilities.shape[
+                1
+            ] != 1:
+                raise ValueError(
+                    "Study detector 'prob' output must contain "
+                    "one manipulation-oriented probability per frame."
+                )
+
+            probabilities = (
+                probabilities[
+                    :,
+                    0
+                ]
+            )
+
+        if probabilities.ndim != 1:
+            raise ValueError(
+                "Study detector 'prob' output must be one-dimensional."
+            )
+
+        if not torch.isfinite(
+            probabilities
+        ).all().item():
+            raise ValueError(
+                "Non-finite DEV detector probabilities encountered."
+            )
+
+        return probabilities
+
+    @torch.no_grad()
+    def evaluate_dev(
+        self,
+        test_data_loaders,
+    ):
+        if not isinstance(
+            test_data_loaders,
+            Mapping,
+        ):
+            raise TypeError(
+                "DEV loaders must be provided as a mapping."
+            )
+
+        loader_keys = list(
+            test_data_loaders.keys()
+        )
+
+        if len(
+            loader_keys
+        ) != 1:
+            raise ValueError(
+                "Controlled checkpoint selection requires exactly "
+                "one aggregate DEV dataset."
+            )
+
+        configured_dev = (
+            self.config.get(
+                "test_dataset"
+            )
+        )
+
+        if not isinstance(
+            configured_dev,
+            list,
+        ):
+            raise ValueError(
+                "Study test_dataset must be a one-item list."
+            )
+
+        if len(
+            configured_dev
+        ) != 1:
+            raise ValueError(
+                "Study checkpoint selection requires exactly "
+                "one DEV dataset."
+            )
+
+        dev_key = loader_keys[
+            0
+        ]
+
+        if dev_key != configured_dev[
+            0
+        ]:
+            raise ValueError(
+                "DEV loader key does not match configured test_dataset: "
+                f"{dev_key} != {configured_dev[0]}"
+            )
+
+        if dev_key != "FaceForensics++":
+            raise ValueError(
+                "Controlled training expects the aggregate "
+                "FaceForensics++ DEV execution view."
+            )
+
+        data_loader = (
+            test_data_loaders[
+                dev_key
+            ]
+        )
+
+        if not isinstance(
+            data_loader.sampler,
+            SequentialSampler,
+        ):
+            raise ValueError(
+                "DEV loader must preserve deterministic dataset order."
+            )
+
+        if not hasattr(
+            data_loader.dataset,
+            "data_dict",
+        ):
+            raise ValueError(
+                "DEV dataset must expose data_dict."
+            )
+
+        frame_paths = list(
+            data_loader.dataset.data_dict[
+                "image"
+            ]
+        )
+
+        self.setEval()
+
+        prediction_parts = []
+        label_parts = []
+
+        for data_dict in tqdm(
+            data_loader,
+            total=len(
+                data_loader
+            ),
+            desc="DEV",
+        ):
+            data_dict = dict(
+                data_dict
+            )
+
+            if "label_spe" in data_dict:
+                data_dict.pop(
+                    "label_spe"
+                )
+
+            if "label" not in data_dict:
+                raise KeyError(
+                    "DEV batch does not contain 'label'."
+                )
+
+            if not torch.is_tensor(
+                data_dict[
+                    "label"
+                ]
+            ):
+                raise TypeError(
+                    "DEV labels must be torch tensors."
+                )
+
+            data_dict[
+                "label"
+            ] = torch.where(
+                data_dict[
+                    "label"
+                ]
+                != 0,
+                1,
+                0,
+            ).long()
+
+            data_dict = (
+                self._move_batch_to_device(
+                    data_dict
+                )
+            )
+
+            predictions = self.model(
+                data_dict,
+                inference=True,
+            )
+
+            probabilities = (
+                self._extract_probability_vector(
+                    predictions
+                )
+            )
+
+            labels = data_dict[
+                "label"
+            ]
+
+            if labels.ndim != 1:
+                labels = labels.reshape(
+                    -1
+                )
+
+            if (
+                len(
+                    probabilities
+                )
+                != len(
+                    labels
+                )
+            ):
+                raise ValueError(
+                    "DEV prediction and label batch sizes do not match."
+                )
+
+            prediction_parts.append(
+                probabilities
+                .detach()
+                .cpu()
+                .numpy()
+            )
+
+            label_parts.append(
+                labels
+                .detach()
+                .cpu()
+                .numpy()
+            )
+
+        if not prediction_parts:
+            raise ValueError(
+                "DEV loader produced no predictions."
+            )
+
+        frame_predictions = (
+            np.concatenate(
+                prediction_parts,
+                axis=0,
+            )
+        )
+
+        frame_labels = (
+            np.concatenate(
+                label_parts,
+                axis=0,
+            )
+        )
+
+        if len(
+            frame_paths
+        ) != len(
+            frame_predictions
+        ):
+            raise ValueError(
+                "DEV frame-path order does not align with predictions: "
+                f"{len(frame_paths)} paths vs "
+                f"{len(frame_predictions)} predictions."
+            )
+
+        dev_metrics = (
+            compute_dev_metrics(
+                frame_paths=frame_paths,
+                frame_scores=frame_predictions,
+                frame_labels=frame_labels,
+            )
+        )
+
+        return (
+            dev_key,
+            dev_metrics,
+        )
+
+    def _write_json_atomic(
+        self,
+        destination,
+        payload,
+    ):
+        destination = Path(
+            destination
+        )
+
+        destination.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        temporary_path = (
+            destination.with_name(
+                destination.name
+                + ".tmp"
+            )
+        )
+
+        with temporary_path.open(
+            "w",
+            encoding="utf-8",
+        ) as file:
+            json.dump(
+                payload,
+                file,
+                indent=2,
+                sort_keys=True,
+            )
+
+            file.write(
+                "\n"
+            )
+
+        os.replace(
+            temporary_path,
+            destination,
+        )
+
+    def _append_dev_history(
+        self,
+        record,
+    ):
+        history_path = os.path.join(
+            self.dev_dir,
+            "dev_history.jsonl",
+        )
+
+        with open(
+            history_path,
+            "a",
+            encoding="utf-8",
+        ) as file:
+            file.write(
+                json.dumps(
+                    record,
+                    sort_keys=True,
+                )
+            )
+
+            file.write(
+                "\n"
+            )
+
+    def _save_best_checkpoint(
+        self,
+        metadata,
+    ):
+        if not self.config.get(
+            "save_ckpt",
+            True,
+        ):
+            self.logger.info(
+                "Checkpoint saving disabled; "
+                "best DEV state not written to disk."
+            )
+
+            return
+
+        checkpoint_path = os.path.join(
+            self.checkpoint_dir,
+            "best.pth",
+        )
+
+        temporary_checkpoint = (
+            checkpoint_path
+            + ".tmp"
+        )
+
+        torch.save(
+            self.model.state_dict(),
+            temporary_checkpoint,
+        )
+
+        os.replace(
+            temporary_checkpoint,
+            checkpoint_path,
+        )
+
+        metadata_path = os.path.join(
+            self.checkpoint_dir,
+            "best_metadata.json",
+        )
+
+        self._write_json_atomic(
+            metadata_path,
+            metadata,
+        )
+
+        self.logger.info(
+            "Best checkpoint saved: %s",
+            checkpoint_path,
+        )
+
+        self.logger.info(
+            "Best checkpoint metadata saved: %s",
+            metadata_path,
+        )
+
+    def _update_best(
+        self,
+        epoch,
+        optimizer_steps_completed,
+        dev_key,
+        dev_metrics,
+    ):
+        current_video_auc = float(
+            dev_metrics[
+                "video_auc"
+            ]
+        )
+
+        improved = (
+            current_video_auc
+            > self.best_video_auc
+        )
+
+        if improved:
+            self.best_video_auc = (
+                current_video_auc
+            )
+
+            self.best_epoch = int(
+                epoch
+            )
+
+            best_summary = {
+                "video_auc": current_video_auc,
+                "frame_auc": float(
+                    dev_metrics[
+                        "frame_auc"
+                    ]
+                ),
+                "completed_epoch": int(
+                    epoch
+                ),
+                "optimizer_steps_completed": int(
+                    optimizer_steps_completed
+                ),
+                "video_count": int(
+                    dev_metrics[
+                        "video_count"
+                    ]
+                ),
+                "real_video_count": int(
+                    dev_metrics[
+                        "real_video_count"
+                    ]
+                ),
+                "fake_video_count": int(
+                    dev_metrics[
+                        "fake_video_count"
+                    ]
+                ),
+            }
+
+            self.best_metrics_all_time = {
+                "DEV": best_summary
+            }
+
+            metadata = {
+                "model_name": self.config[
+                    "model_name"
+                ],
+                "dev_dataset": dev_key,
+                "selection_metric": (
+                    self.selection_metric
+                ),
+                "selection_value": (
+                    current_video_auc
+                ),
+                "selection_rule": (
+                    "strictly_greater_video_auc_earliest_tie"
+                ),
+                "completed_epoch": int(
+                    epoch
+                ),
+                "optimizer_steps_completed": int(
+                    optimizer_steps_completed
+                ),
+                "manual_seed": int(
+                    self.config[
+                        "manualSeed"
+                    ]
+                ),
+                "dev_metrics": {
+                    key: (
+                        float(
+                            value
+                        )
+                        if isinstance(
+                            value,
+                            float,
+                        )
+                        else int(
+                            value
+                        )
+                    )
+                    for (
+                        key,
+                        value,
+                    ) in dev_metrics.items()
+                },
+            }
+
+            self._save_best_checkpoint(
+                metadata
+            )
+
+        return improved
 
     def train_epoch(
         self,
         epoch,
         train_data_loader,
         test_data_loaders=None,
+    ):
+        if test_data_loaders is None:
+            raise ValueError(
+                "Controlled study training requires DEV evaluation "
+                "after every completed epoch."
+            )
+
+        if len(
+            train_data_loader
+        ) <= 0:
+            raise ValueError(
+                "Training loader contains no optimizer steps."
+            )
+
+        self.logger.info(
+            "===> Epoch[%s] start",
+            epoch,
+        )
+
+        self.setTrain()
+
+        loss_sums = defaultdict(
+            float
+        )
+
+        rec_iter = max(
+            1,
+            int(
+                self.config.get(
+                    "rec_iter",
+                    100,
+                )
+            ),
+        )
+
+        for (
+            iteration,
+            data_dict,
+        ) in tqdm(
+            enumerate(
+                train_data_loader
+            ),
+            total=len(
+                train_data_loader
+            ),
+            desc=f"TRAIN epoch {epoch}",
         ):
+            data_dict = (
+                self._move_batch_to_device(
+                    data_dict
+                )
+            )
 
-        self.logger.info("===> Epoch[{}] start!".format(epoch))
-        if epoch>=1:
-            times_per_epoch = 2
-        else:
-            times_per_epoch = 1
+            losses = self.train_step(
+                data_dict
+            )
 
+            for (
+                loss_name,
+                loss_value,
+            ) in losses.items():
+                loss_sums[
+                    loss_name
+                ] += self._loss_to_float(
+                    loss_value
+                )
 
-        #times_per_epoch=4
-
-        test_step = len(train_data_loader) // times_per_epoch    # test 10 times per epoch
-        step_cnt = epoch * len(train_data_loader)
-
-        # save the training data_dict
-        data_dict = train_data_loader.dataset.data_dict
-        self.save_data_dict('train', data_dict, ','.join(self.config['train_dataset']))
-        # define training recorder
-        train_recorder_loss = defaultdict(Recorder)
-        train_recorder_metric = defaultdict(Recorder)
-
-        for iteration, data_dict in tqdm(enumerate(train_data_loader),total=len(train_data_loader)):
-            self.setTrain()
-            # more elegant and more scalable way of moving data to GPU
-            for key in data_dict.keys():
-                if data_dict[key]!=None and key!='name':
-                    data_dict[key]=data_dict[key].cuda()
-
-            losses,predictions=self.train_step(data_dict)
-
-            # update learning rate
-
-            if 'SWA' in self.config and self.config['SWA'] and epoch>self.config['swa_start']:
-                self.swa_model.update_parameters(self.model)
-
-            # compute training metric for each batch data
-            if type(self.model) is DDP:
-                batch_metrics = self.model.module.get_train_metrics(data_dict, predictions)
-            else:
-                batch_metrics = self.model.get_train_metrics(data_dict, predictions)
-
-            # store data by recorder
-            ## store metric
-            for name, value in batch_metrics.items():
-                train_recorder_metric[name].update(value)
-            ## store loss
-            for name, value in losses.items():
-                train_recorder_loss[name].update(value)
-
-            # run tensorboard to visualize the training process
-            if iteration % 300 == 0 and self.config['local_rank']==0:
-                if self.config['SWA'] and (epoch>self.config['swa_start'] or self.config['dry_run']):
-                    self.scheduler.step()
-                # info for loss
-                loss_str = f"Iter: {step_cnt}    "
-                for k, v in train_recorder_loss.items():
-                    v_avg = v.average()
-                    if v_avg == None:
-                        loss_str += f"training-loss, {k}: not calculated"
-                        continue
-                    loss_str += f"training-loss, {k}: {v_avg}    "
-                    # tensorboard-1. loss
-                    writer = self.get_writer('train', ','.join(self.config['train_dataset']), k)
-                    writer.add_scalar(f'train_loss/{k}', v_avg, global_step=step_cnt)
-                self.logger.info(loss_str)
-                # info for metric
-                metric_str = f"Iter: {step_cnt}    "
-                for k, v in train_recorder_metric.items():
-                    v_avg = v.average()
-                    if v_avg == None:
-                        metric_str += f"training-metric, {k}: not calculated    "
-                        continue
-                    metric_str += f"training-metric, {k}: {v_avg}    "
-                    # tensorboard-2. metric
-                    writer = self.get_writer('train', ','.join(self.config['train_dataset']), k)
-                    writer.add_scalar(f'train_metric/{k}', v_avg, global_step=step_cnt)
-                self.logger.info(metric_str)
-
-
-
-                # clear recorder.
-                # Note we only consider the current 300 samples for computing batch-level loss/metric
-                for name, recorder in train_recorder_loss.items():  # clear loss recorder
-                    recorder.clear()
-                for name, recorder in train_recorder_metric.items():  # clear metric recorder
-                    recorder.clear()
-
-            # run test
-            if (step_cnt+1) % test_step == 0:
-                if test_data_loaders is not None and (not self.config['ddp'] ):
-                    self.logger.info("===> Test start!")
-                    test_best_metric = self.test_epoch(
-                        epoch,
-                        iteration,
-                        test_data_loaders,
-                        step_cnt,
+            if (
+                iteration == 0
+                or (
+                    iteration
+                    + 1
+                )
+                % rec_iter
+                == 0
+                or (
+                    iteration
+                    + 1
+                )
+                == len(
+                    train_data_loader
+                )
+            ):
+                loss_text = ", ".join(
+                    (
+                        f"{name}="
+                        f"{loss_sums[name] / (iteration + 1):.6f}"
                     )
-                elif test_data_loaders is not None and (self.config['ddp'] and dist.get_rank() == 0):
-                    self.logger.info("===> Test start!")
-                    test_best_metric = self.test_epoch(
-                        epoch,
-                        iteration,
-                        test_data_loaders,
-                        step_cnt,
+                    for name in sorted(
+                        loss_sums
                     )
-                else:
-                    test_best_metric = None
+                )
 
-                    # total_end_time = time.time()
-            # total_elapsed_time = total_end_time - total_start_time
-            # print("总花费的时间: {:.2f} 秒".format(total_elapsed_time))
-            step_cnt += 1
-        return test_best_metric
+                self.logger.info(
+                    "Epoch[%s] optimizer-step %s/%s: %s",
+                    epoch,
+                    iteration + 1,
+                    len(
+                        train_data_loader
+                    ),
+                    loss_text,
+                )
 
-    def get_respect_acc(self, prob, label):
-        pred = np.where(prob > 0.5, 1, 0)
-        judge = (pred == label)
-        real_idx = np.where(label == 0)[0]
-        fake_idx = np.where(label == 1)[0]
-        acc_real = np.count_nonzero(judge[real_idx]) / len(real_idx)
-        acc_fake = np.count_nonzero(judge[fake_idx]) / len(fake_idx)
+        # This point is the only DEV entry point:
+        # the complete optimizer epoch has finished.
+        dev_key, dev_metrics = (
+            self.evaluate_dev(
+                test_data_loaders
+            )
+        )
 
-        return acc_real, acc_fake
+        optimizer_steps_completed = (
+            (
+                int(
+                    epoch
+                )
+                + 1
+            )
+            * len(
+                train_data_loader
+            )
+        )
 
-    def test_one_dataset(self, data_loader):
-        # define test recorder
-        test_recorder_loss = defaultdict(Recorder)
-        prediction_lists = []
-        feature_lists=[]
-        label_lists = []
-        for i, data_dict in tqdm(enumerate(data_loader),total=len(data_loader)):
-            # get data
-            if 'label_spe' in data_dict:
-                data_dict.pop('label_spe')  # remove the specific label
-            data_dict['label'] = torch.where(data_dict['label']!=0, 1, 0)  # fix the label to 0 and 1 only
-            # move data to GPU elegantly
-            for key in data_dict.keys():
-                if data_dict[key]!=None:
-                    data_dict[key]=data_dict[key].cuda()
-            # model forward without considering gradient computation
-            predictions = self.inference(data_dict)
-            label_lists += list(data_dict['label'].cpu().detach().numpy())
-            prediction_lists += list(predictions['prob'].cpu().detach().numpy())
-            feature_lists += list(predictions['feat'].cpu().detach().numpy())
-            if type(self.model) is not AveragedModel:
-                # compute all losses for each batch data
-                if type(self.model) is DDP:
-                    losses = self.model.module.get_losses(data_dict, predictions)
-                else:
-                    losses = self.model.get_losses(data_dict, predictions)
+        improved = self._update_best(
+            epoch=epoch,
+            optimizer_steps_completed=(
+                optimizer_steps_completed
+            ),
+            dev_key=dev_key,
+            dev_metrics=dev_metrics,
+        )
 
-                # store data by recorder
-                for name, value in losses.items():
-                    test_recorder_loss[name].update(value)
+        history_record = {
+            "model_name": self.config[
+                "model_name"
+            ],
+            "dev_dataset": dev_key,
+            "completed_epoch": int(
+                epoch
+            ),
+            "optimizer_steps_completed": int(
+                optimizer_steps_completed
+            ),
+            "selection_metric": (
+                self.selection_metric
+            ),
+            "selection_value": float(
+                dev_metrics[
+                    "video_auc"
+                ]
+            ),
+            "improved_best": bool(
+                improved
+            ),
+            "best_epoch_after_evaluation": int(
+                self.best_epoch
+            ),
+            "best_video_auc_after_evaluation": float(
+                self.best_video_auc
+            ),
+            "dev_metrics": {
+                key: (
+                    float(
+                        value
+                    )
+                    if isinstance(
+                        value,
+                        float,
+                    )
+                    else int(
+                        value
+                    )
+                )
+                for (
+                    key,
+                    value,
+                ) in dev_metrics.items()
+            },
+        }
 
-        return test_recorder_loss, np.array(prediction_lists), np.array(label_lists),np.array(feature_lists)
+        self._append_dev_history(
+            history_record
+        )
 
-    def save_best(self,epoch,iteration,step,losses_one_dataset_recorder,key,metric_one_dataset):
-        best_metric = self.best_metrics_all_time[key].get(self.metric_scoring,
-                                                          float('-inf') if self.metric_scoring != 'eer' else float(
-                                                              'inf'))
-        # Check if the current score is an improvement
-        improved = (metric_one_dataset[self.metric_scoring] > best_metric) if self.metric_scoring != 'eer' else (
-                    metric_one_dataset[self.metric_scoring] < best_metric)
-        if improved:
-            # Update the best metric
-            self.best_metrics_all_time[key][self.metric_scoring] = metric_one_dataset[self.metric_scoring]
-            if key == 'avg':
-                self.best_metrics_all_time[key]['dataset_dict'] = metric_one_dataset['dataset_dict']
-            # Save checkpoint, feature, and metrics if specified in config
-            if self.config['save_ckpt'] and key not in FFpp_pool:
-                self.save_ckpt('test', key, f"{epoch}+{iteration}")
-            self.save_metrics('test', metric_one_dataset, key)
-        if losses_one_dataset_recorder is not None:
-            # info for each dataset
-            loss_str = f"dataset: {key}    step: {step}    "
-            for k, v in losses_one_dataset_recorder.items():
-                writer = self.get_writer('test', key, k)
-                v_avg = v.average()
-                if v_avg == None:
-                    print(f'{k} is not calculated')
-                    continue
-                # tensorboard-1. loss
-                writer.add_scalar(f'test_losses/{k}', v_avg, global_step=step)
-                loss_str += f"testing-loss, {k}: {v_avg}    "
-            self.logger.info(loss_str)
-        # tqdm.write(loss_str)
-        metric_str = f"dataset: {key}    step: {step}    "
-        for k, v in metric_one_dataset.items():
-            if k == 'pred' or k == 'label' or k=='dataset_dict':
-                continue
-            metric_str += f"testing-metric, {k}: {v}    "
-            # tensorboard-2. metric
-            writer = self.get_writer('test', key, k)
-            writer.add_scalar(f'test_metrics/{k}', v, global_step=step)
-        if 'pred' in metric_one_dataset:
-            acc_real, acc_fake = self.get_respect_acc(metric_one_dataset['pred'], metric_one_dataset['label'])
-            metric_str += f'testing-metric, acc_real:{acc_real}; acc_fake:{acc_fake}'
-            writer.add_scalar(f'test_metrics/acc_real', acc_real, global_step=step)
-            writer.add_scalar(f'test_metrics/acc_fake', acc_fake, global_step=step)
-        self.logger.info(metric_str)
-    def test_epoch(self, epoch, iteration, test_data_loaders, step):
-        # set model to eval mode
-        self.setEval()
+        self.logger.info(
+            (
+                "===> Epoch[%s] completed; "
+                "DEV frame_auc=%.6f, "
+                "video_auc=%.6f, "
+                "videos=%s, "
+                "best=%s"
+            ),
+            epoch,
+            dev_metrics[
+                "frame_auc"
+            ],
+            dev_metrics[
+                "video_auc"
+            ],
+            dev_metrics[
+                "video_count"
+            ],
+            improved,
+        )
 
-        # define test recorder
-        losses_all_datasets = {}
-        metrics_all_datasets = {}
-        best_metrics_per_dataset = defaultdict(dict)  # best metric for each dataset, for each metric
-        avg_metric = {'acc': 0, 'auc': 0, 'eer': 0, 'ap': 0,'video_auc': 0,'dataset_dict':{}}
-        # testing for all test data
-        keys = test_data_loaders.keys()
-        for key in keys:
-            # save the testing data_dict
-            data_dict = test_data_loaders[key].dataset.data_dict
-            self.save_data_dict('test', data_dict, key)
-
-            # compute loss for each dataset
-            losses_one_dataset_recorder, predictions_nps, label_nps, feature_nps = self.test_one_dataset(test_data_loaders[key])
-            # print(f'stack len:{predictions_nps.shape};{label_nps.shape};{len(data_dict["image"])}')
-            losses_all_datasets[key] = losses_one_dataset_recorder
-            metric_one_dataset=get_test_metrics(y_pred=predictions_nps,y_true=label_nps,img_names=data_dict['image'])
-            for metric_name, value in metric_one_dataset.items():
-                if metric_name in avg_metric:
-                    avg_metric[metric_name]+=value
-            avg_metric['dataset_dict'][key] = metric_one_dataset[self.metric_scoring]
-            if type(self.model) is AveragedModel:
-                metric_str = f"Iter Final for SWA:    "
-                for k, v in metric_one_dataset.items():
-                    metric_str += f"testing-metric, {k}: {v}    "
-                self.logger.info(metric_str)
-                continue
-            self.save_best(epoch,iteration,step,losses_one_dataset_recorder,key,metric_one_dataset)
-
-        if len(keys)>0 and self.config.get('save_avg',False):
-            # calculate avg value
-            for key in avg_metric:
-                if key != 'dataset_dict':
-                    avg_metric[key] /= len(keys)
-            self.save_best(epoch, iteration, step, None, 'avg', avg_metric)
-
-        self.logger.info('===> Test Done!')
-        return self.best_metrics_all_time  # return all types of mean metrics for determining the best ckpt
-
-    @torch.no_grad()
-    def inference(self, data_dict):
-        predictions = self.model(data_dict, inference=True)
-        return predictions
+        return self.best_metrics_all_time
