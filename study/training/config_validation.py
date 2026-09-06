@@ -37,6 +37,23 @@ STUDY_CONFIG_PATHS = {
 }
 
 
+BINARY_FFPP_LABEL_DICT = {
+    "FF-real": 0,
+    "FF-DF": 1,
+    "FF-F2F": 1,
+    "FF-FS": 1,
+    "FF-NT": 1,
+}
+
+UCF_LABEL_DICT = {
+    "FF-real": 0,
+    "FF-DF": 1,
+    "FF-F2F": 2,
+    "FF-FS": 3,
+    "FF-NT": 4,
+}
+
+
 def _load_yaml(
     path: Path,
 ):
@@ -165,12 +182,6 @@ def _validate_common(
         == "adam"
     )
 
-    adam = config[
-        "optimizer"
-    ][
-        "adam"
-    ]
-
     expected_adam = {
         "lr": 0.0002,
         "beta1": 0.9,
@@ -181,10 +192,16 @@ def _validate_common(
     }
 
     assert (
-        adam
+        config[
+            "optimizer"
+        ][
+            "adam"
+        ]
         == expected_adam
     )
 
+    # Common study augmentation policy:
+    # all three detectors train only from the materialized clean/raw inputs.
     assert (
         config[
             "use_data_augmentation"
@@ -196,14 +213,20 @@ def _validate_common(
         config[
             "dataset_json_folder"
         ]
-        == "./study/training/materialized/dataset_json"
+        == (
+            "./study/training/"
+            "materialized/dataset_json"
+        )
     )
 
     assert (
         config[
             "rgb_dir"
         ]
-        == "./study/training/materialized/rgb"
+        == (
+            "./study/training/"
+            "materialized/rgb"
+        )
     )
 
     assert (
@@ -211,6 +234,20 @@ def _validate_common(
             "metric_scoring"
         ]
         == "video_auc"
+    )
+
+    assert (
+        config[
+            "with_mask"
+        ]
+        is False
+    )
+
+    assert (
+        config[
+            "with_landmark"
+        ]
+        is False
     )
 
 
@@ -244,11 +281,27 @@ def _validate_xception(
 
     assert (
         config[
+            "label_dict"
+        ]
+        == BINARY_FFPP_LABEL_DICT
+    )
+
+    assert (
+        config[
             "backbone_config"
         ][
             "inc"
         ]
         == 3
+    )
+
+    assert (
+        config[
+            "backbone_config"
+        ][
+            "num_classes"
+        ]
+        == 2
     )
 
     assert (
@@ -290,6 +343,7 @@ def _validate_ucf(
         == "pair"
     )
 
+    # 16 pair-items -> 16 fake + 16 real = 32 effective images.
     assert (
         config[
             "train_batchSize"
@@ -299,56 +353,18 @@ def _validate_ucf(
 
     assert (
         config[
+            "label_dict"
+        ]
+        == UCF_LABEL_DICT
+    )
+
+    assert (
+        config[
             "backbone_config"
         ][
             "inc"
         ]
         == 3
-    )
-
-    assert (
-        config[
-            "label_dict"
-        ][
-            "FF-real"
-        ]
-        == 0
-    )
-
-    assert (
-        config[
-            "label_dict"
-        ][
-            "FF-DF"
-        ]
-        == 1
-    )
-
-    assert (
-        config[
-            "label_dict"
-        ][
-            "FF-F2F"
-        ]
-        == 2
-    )
-
-    assert (
-        config[
-            "label_dict"
-        ][
-            "FF-FS"
-        ]
-        == 3
-    )
-
-    assert (
-        config[
-            "label_dict"
-        ][
-            "FF-NT"
-        ]
-        == 4
     )
 
 
@@ -382,6 +398,13 @@ def _validate_spsl(
 
     assert (
         config[
+            "label_dict"
+        ]
+        == BINARY_FFPP_LABEL_DICT
+    )
+
+    assert (
+        config[
             "backbone_config"
         ][
             "mode"
@@ -396,6 +419,15 @@ def _validate_spsl(
             "inc"
         ]
         == 4
+    )
+
+    assert (
+        config[
+            "backbone_config"
+        ][
+            "num_classes"
+        ]
+        == 2
     )
 
     assert (
@@ -416,11 +448,11 @@ def main() -> None:
     for (
         model_name,
         path,
-    ) in (
-        STUDY_CONFIG_PATHS.items()
-    ):
-        config = _merged_config(
-            path
+    ) in STUDY_CONFIG_PATHS.items():
+        config = (
+            _merged_config(
+                path
+            )
         )
 
         _validate_common(

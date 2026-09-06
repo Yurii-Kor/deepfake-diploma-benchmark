@@ -36,9 +36,14 @@ resolution: 256
 with_mask: false
 with_landmark: false
 
+# The aggregate execution view preserves FF++ manipulation provenance in
+# source labels, while SPSL remains a binary real/fake classifier.
 label_dict:
   FF-real: 0
-  FF-fake: 1
+  FF-DF: 1
+  FF-F2F: 1
+  FF-FS: 1
+  FF-NT: 1
 
 # ---------------------------------------------------------------------------
 # Detector

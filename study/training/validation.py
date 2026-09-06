@@ -1,5 +1,5 @@
 """
-Executable validation of the study-controlled training sampler.
+Executable validation of the study-controlled training samplers.
 
 Run from the repository root:
 
@@ -9,7 +9,28 @@ Run from the repository root:
 from collections import Counter
 from typing import Callable, Dict, List
 
-from .sampling import BalancedRealFakeBatchSampler
+from .sampling import (
+    FAKE_METHODS,
+    TARGET_FAKE_EXPOSURES_PER_METHOD,
+    BalancedRealFakeBatchSampler,
+    FixedMethodExposureSampler,
+)
+
+
+FROZEN_FIT_SOURCE_COUNTS = {
+    "FF-real": 18426,
+    "FF-DF": 18398,
+    "FF-F2F": 18423,
+    "FF-FS": 18423,
+    "FF-NT": 18407,
+}
+
+FROZEN_REPEAT_COUNTS = {
+    "FF-DF": 34,
+    "FF-F2F": 9,
+    "FF-FS": 9,
+    "FF-NT": 25,
+}
 
 
 def _expect_failure(
@@ -18,7 +39,10 @@ def _expect_failure(
 ) -> None:
     try:
         operation()
-    except (TypeError, ValueError):
+    except (
+        TypeError,
+        ValueError,
+    ):
         return
 
     raise AssertionError(
@@ -28,29 +52,78 @@ def _expect_failure(
     )
 
 
-def _validate_batches(
-    labels: List[int],
-    sampler: BalancedRealFakeBatchSampler,
-) -> Dict[str, int]:
-    batches = list(sampler)
+def _make_frame_population(
+    source_counts: Dict[str, int],
+):
+    source_labels = []
+    labels = []
 
-    if len(batches) != len(sampler):
+    for source_label in (
+        "FF-real",
+        "FF-DF",
+        "FF-F2F",
+        "FF-FS",
+        "FF-NT",
+    ):
+        count = source_counts[
+            source_label
+        ]
+
+        source_labels.extend(
+            [source_label] * count
+        )
+
+        binary_label = (
+            0
+            if source_label == "FF-real"
+            else 1
+        )
+
+        labels.extend(
+            [binary_label] * count
+        )
+
+    return (
+        labels,
+        source_labels,
+    )
+
+
+def _validate_balanced_batches(
+    labels: List[int],
+    source_labels: List[str],
+    sampler: BalancedRealFakeBatchSampler,
+):
+    batches = list(
+        sampler
+    )
+
+    if len(batches) != len(
+        sampler
+    ):
         raise AssertionError(
             "reported sampler length does not match generated batches"
         )
 
-    fake_source = {
+    fake_source_indices = {
         index
-        for index, label in enumerate(labels)
+        for index, label
+        in enumerate(labels)
         if label == 1
     }
 
     fake_seen = []
+    method_exposures = Counter()
+
     real_exposures = 0
     fake_exposures = 0
 
-    for batch_number, batch in enumerate(batches):
-        if len(batch) != sampler.batch_size:
+    for batch_number, batch in enumerate(
+        batches
+    ):
+        if len(
+            batch
+        ) != sampler.batch_size:
             raise AssertionError(
                 "batch {} has size {}, expected {}".format(
                     batch_number,
@@ -69,7 +142,10 @@ def _validate_batches(
             for index in batch
         )
 
-        if real_count != sampler.half_batch_size:
+        if (
+            real_count
+            != sampler.half_batch_size
+        ):
             raise AssertionError(
                 "batch {} contains {} real items, expected {}".format(
                     batch_number,
@@ -78,7 +154,10 @@ def _validate_batches(
                 )
             )
 
-        if fake_count != sampler.half_batch_size:
+        if (
+            fake_count
+            != sampler.half_batch_size
+        ):
             raise AssertionError(
                 "batch {} contains {} fake items, expected {}".format(
                     batch_number,
@@ -90,335 +169,611 @@ def _validate_batches(
         real_exposures += real_count
         fake_exposures += fake_count
 
-        fake_seen.extend(
-            index
-            for index in batch
-            if labels[index] == 1
-        )
+        for index in batch:
+            if labels[
+                index
+            ] != 1:
+                continue
+
+            fake_seen.append(
+                index
+            )
+
+            method_exposures[
+                source_labels[
+                    index
+                ]
+            ] += 1
 
     fake_counter = Counter(
         fake_seen
     )
 
-    if set(fake_counter) != fake_source:
+    if set(
+        fake_counter
+    ) != fake_source_indices:
         missing = sorted(
-            fake_source - set(fake_counter)
+            fake_source_indices
+            - set(
+                fake_counter
+            )
         )
+
         unexpected = sorted(
-            set(fake_counter) - fake_source
+            set(
+                fake_counter
+            )
+            - fake_source_indices
         )
 
         raise AssertionError(
-            "fake population mismatch; missing={}, unexpected={}".format(
+            "fake population mismatch; "
+            "missing={}, unexpected={}".format(
                 missing[:10],
                 unexpected[:10],
             )
         )
 
-    duplicated_fake = [
-        index
-        for index, count in fake_counter.items()
-        if count != 1
-    ]
-
-    if duplicated_fake:
-        raise AssertionError(
-            "fake items were not exposed exactly once: {}".format(
-                duplicated_fake[:10]
+    for source_index in fake_source_indices:
+        if fake_counter[
+            source_index
+        ] < 1:
+            raise AssertionError(
+                "valid fake source item was not exposed"
             )
-        )
 
-    if real_exposures != len(fake_source):
+    if (
+        real_exposures
+        != fake_exposures
+    ):
         raise AssertionError(
             "real/fake epoch exposures are not balanced"
         )
 
     return {
-        "batches": len(batches),
+        "batches": len(
+            batches
+        ),
         "real_exposures": real_exposures,
         "fake_exposures": fake_exposures,
+        "method_exposures": dict(
+            method_exposures
+        ),
+        "fake_counter": fake_counter,
     }
 
 
 def _validate_small_synthetic_case() -> None:
-    # 8 source real items.
-    real_count = 8
-
-    # 16 fake items:
-    # 4 DF + 4 F2F + 4 FS + 4 NT.
-    fake_methods = (
-        ["DF"] * 4
-        + ["F2F"] * 4
-        + ["FS"] * 4
-        + ["NT"] * 4
-    )
-
-    labels = (
-        [0] * real_count
-        + [1] * len(fake_methods)
-    )
-
-    method_by_index = {
-        real_count + offset: method
-        for offset, method in enumerate(
-            fake_methods
-        )
+    source_counts = {
+        "FF-real": 8,
+        "FF-DF": 4,
+        "FF-F2F": 5,
+        "FF-FS": 5,
+        "FF-NT": 3,
     }
 
-    sampler = BalancedRealFakeBatchSampler(
-        labels=labels,
-        batch_size=8,
-        seed=1024,
-    )
+    target_per_method = 5
 
-    sampler.set_epoch(0)
-
-    stats = _validate_batches(
+    (
         labels,
-        sampler,
+        source_labels,
+    ) = _make_frame_population(
+        source_counts
     )
+
+    sampler = (
+        BalancedRealFakeBatchSampler(
+            labels=labels,
+            source_labels=source_labels,
+            batch_size=8,
+            target_fake_exposures_per_method=(
+                target_per_method
+            ),
+            seed=1024,
+        )
+    )
+
+    sampler.set_epoch(
+        0
+    )
+
+    stats = (
+        _validate_balanced_batches(
+            labels=labels,
+            source_labels=source_labels,
+            sampler=sampler,
+        )
+    )
+
+    expected_method_exposures = {
+        method: target_per_method
+        for method in FAKE_METHODS
+    }
+
+    if (
+        stats[
+            "method_exposures"
+        ]
+        != expected_method_exposures
+    ):
+        raise AssertionError(
+            "unexpected fake-method exposures: {}".format(
+                stats[
+                    "method_exposures"
+                ]
+            )
+        )
+
+    summary = (
+        sampler.contract_summary()
+    )
+
+    expected_repeats = {
+        "FF-DF": 1,
+        "FF-F2F": 0,
+        "FF-FS": 0,
+        "FF-NT": 2,
+    }
+
+    if (
+        summary[
+            "fake_method_repeat_counts"
+        ]
+        != expected_repeats
+    ):
+        raise AssertionError(
+            "unexpected synthetic top-up counts"
+        )
 
     batches_epoch_0_a = list(
         sampler
     )
 
-    sampler_same = BalancedRealFakeBatchSampler(
-        labels=labels,
-        batch_size=8,
-        seed=1024,
+    sampler_same = (
+        BalancedRealFakeBatchSampler(
+            labels=labels,
+            source_labels=source_labels,
+            batch_size=8,
+            target_fake_exposures_per_method=(
+                target_per_method
+            ),
+            seed=1024,
+        )
     )
-    sampler_same.set_epoch(0)
+
+    sampler_same.set_epoch(
+        0
+    )
 
     batches_epoch_0_b = list(
         sampler_same
     )
 
-    if batches_epoch_0_a != batches_epoch_0_b:
+    if (
+        batches_epoch_0_a
+        != batches_epoch_0_b
+    ):
         raise AssertionError(
             "same seed and epoch did not reproduce identical batches"
         )
 
-    sampler.set_epoch(1)
+    sampler.set_epoch(
+        1
+    )
+
     batches_epoch_1 = list(
         sampler
     )
 
-    if batches_epoch_1 == batches_epoch_0_a:
+    if (
+        batches_epoch_1
+        == batches_epoch_0_a
+    ):
         raise AssertionError(
             "different epochs unexpectedly produced identical batches"
         )
 
-    method_counts = Counter()
+    print(
+        "SMALL SYNTHETIC TOP-UP CASE"
+    )
 
-    for batch in batches_epoch_0_a:
-        for index in batch:
-            if labels[index] == 1:
-                method_counts[
-                    method_by_index[index]
-                ] += 1
+    print(
+        "  real source items:          8"
+    )
 
-    expected_method_counts = {
-        "DF": 4,
-        "F2F": 4,
-        "FS": 4,
-        "NT": 4,
-    }
+    print(
+        "  fake source items:          17"
+    )
 
-    if dict(method_counts) != expected_method_counts:
-        raise AssertionError(
-            "fake-method exposure changed: {}".format(
-                dict(method_counts)
-            )
-        )
+    print(
+        "  fake target/method:         5"
+    )
 
-    print("SMALL SYNTHETIC CASE")
     print(
-        "  real source items:          {}".format(
-            real_count
+        "  fake exposures/epoch:       20"
+    )
+
+    print(
+        "  real exposures/epoch:       20"
+    )
+
+    print(
+        "  batches/epoch:              {}".format(
+            stats[
+                "batches"
+            ]
         )
     )
+
     print(
-        "  fake source items:          {}".format(
-            len(fake_methods)
+        "  top-up counts:              {}".format(
+            expected_repeats
         )
     )
+
     print(
-        "  batch size:                 {}".format(
-            sampler.batch_size
-        )
+        "  every valid fake:           exposed >= 1 time"
     )
-    print(
-        "  real/fake per batch:        {}/{}".format(
-            sampler.half_batch_size,
-            sampler.half_batch_size,
-        )
-    )
-    print(
-        "  batches per epoch:          {}".format(
-            stats["batches"]
-        )
-    )
-    print(
-        "  fake exposure:              exactly once"
-    )
-    print(
-        "  real sampling:              with replacement"
-    )
-    print(
-        "  fake-method counts:         {}".format(
-            dict(method_counts)
-        )
-    )
+
     print(
         "  same seed + epoch:          reproducible"
     )
+
     print(
-        "  different epoch:            different ordering"
+        "  next epoch:                 different ordering/top-up"
     )
 
 
-def _validate_nominal_ffpp_fit_case() -> None:
-    frames_per_video = 32
-
-    real_videos = 576
-
-    fake_videos_per_method = {
-        "DF": 576,
-        "F2F": 576,
-        "FS": 576,
-        "NT": 576,
-    }
-
-    real_frames = (
-        real_videos
-        * frames_per_video
-    )
-
-    fake_frames_by_method = {
-        method: video_count * frames_per_video
-        for method, video_count
-        in fake_videos_per_method.items()
-    }
-
-    fake_frames = sum(
-        fake_frames_by_method.values()
-    )
-
-    labels = (
-        [0] * real_frames
-        + [1] * fake_frames
-    )
-
-    sampler = BalancedRealFakeBatchSampler(
-        labels=labels,
-        batch_size=32,
-        seed=1024,
-    )
-    sampler.set_epoch(0)
-
-    stats = _validate_batches(
+def _validate_frozen_ffpp_fit_case() -> None:
+    (
         labels,
-        sampler,
+        source_labels,
+    ) = _make_frame_population(
+        FROZEN_FIT_SOURCE_COUNTS
     )
 
-    expected_steps = 4608
-    expected_real_exposures = 73728
-    expected_fake_exposures = 73728
-    expected_total_exposures = 147456
-
-    if len(sampler) != expected_steps:
-        raise AssertionError(
-            "expected {} optimizer steps, got {}".format(
-                expected_steps,
-                len(sampler),
-            )
+    sampler = (
+        BalancedRealFakeBatchSampler(
+            labels=labels,
+            source_labels=source_labels,
+            batch_size=32,
+            target_fake_exposures_per_method=(
+                TARGET_FAKE_EXPOSURES_PER_METHOD
+            ),
+            seed=1024,
         )
+    )
+
+    sampler.set_epoch(
+        0
+    )
+
+    stats = (
+        _validate_balanced_batches(
+            labels=labels,
+            source_labels=source_labels,
+            sampler=sampler,
+        )
+    )
+
+    expected_method_exposures = {
+        method: (
+            TARGET_FAKE_EXPOSURES_PER_METHOD
+        )
+        for method in FAKE_METHODS
+    }
 
     if (
-        sampler.real_exposures_per_epoch
-        != expected_real_exposures
+        stats[
+            "method_exposures"
+        ]
+        != expected_method_exposures
     ):
         raise AssertionError(
-            "unexpected real exposure count"
+            "frozen fake-method exposure targets were not preserved"
+        )
+
+    if len(
+        sampler
+    ) != 4608:
+        raise AssertionError(
+            "expected 4608 optimizer steps"
         )
 
     if (
         sampler.fake_exposures_per_epoch
-        != expected_fake_exposures
+        != 73728
     ):
         raise AssertionError(
             "unexpected fake exposure count"
         )
 
     if (
+        sampler.real_exposures_per_epoch
+        != 73728
+    ):
+        raise AssertionError(
+            "unexpected real exposure count"
+        )
+
+    if (
         sampler.image_exposures_per_epoch
-        != expected_total_exposures
+        != 147456
     ):
         raise AssertionError(
             "unexpected total image exposure count"
         )
 
+    summary = (
+        sampler.contract_summary()
+    )
+
+    if (
+        summary[
+            "fake_method_source_counts"
+        ]
+        != {
+            method: (
+                FROZEN_FIT_SOURCE_COUNTS[
+                    method
+                ]
+            )
+            for method in FAKE_METHODS
+        }
+    ):
+        raise AssertionError(
+            "frozen fake source counts changed"
+        )
+
+    if (
+        summary[
+            "fake_method_repeat_counts"
+        ]
+        != FROZEN_REPEAT_COUNTS
+    ):
+        raise AssertionError(
+            "frozen minimal top-up counts changed"
+        )
+
     print()
-    print("NOMINAL FF++ FIT CASE")
     print(
-        "  frames/video:               {}".format(
-            frames_per_video
-        )
+        "FROZEN FF++ FIT CASE"
     )
+
     print(
-        "  real source frames:         {}".format(
-            real_frames
-        )
-    )
-    print(
-        "  fake source frames:         {}".format(
-            fake_frames
+        "  real valid source frames:   {}".format(
+            FROZEN_FIT_SOURCE_COUNTS[
+                "FF-real"
+            ]
         )
     )
 
-    for method in (
-        "DF",
-        "F2F",
-        "FS",
-        "NT",
-    ):
+    for method in FAKE_METHODS:
         print(
-            "  {:<4} source frames:         {}".format(
+            "  {:<6} valid/target/repeat:   "
+            "{}/{}/{}".format(
                 method,
-                fake_frames_by_method[method],
+                FROZEN_FIT_SOURCE_COUNTS[
+                    method
+                ],
+                TARGET_FAKE_EXPOSURES_PER_METHOD,
+                FROZEN_REPEAT_COUNTS[
+                    method
+                ],
             )
         )
 
     print(
-        "  effective batch size:       {}".format(
-            sampler.batch_size
+        "  optimizer steps/epoch:      4608"
+    )
+
+    print(
+        "  effective images/step:      32"
+    )
+
+    print(
+        "  real exposures/epoch:       73728"
+    )
+
+    print(
+        "  fake exposures/epoch:       73728"
+    )
+
+    print(
+        "  image exposures/epoch:      147456"
+    )
+
+    print(
+        "  materialization failures:   no temporal replacement"
+    )
+
+
+def _validate_ucf_sampler() -> None:
+    source_counts = {
+        1: 4,
+        2: 5,
+        3: 5,
+        4: 3,
+    }
+
+    method_labels = []
+
+    for method_label in (
+        1,
+        2,
+        3,
+        4,
+    ):
+        method_labels.extend(
+            [
+                method_label
+            ]
+            * source_counts[
+                method_label
+            ]
+        )
+
+    method_names = {
+        1: "FF-DF",
+        2: "FF-F2F",
+        3: "FF-FS",
+        4: "FF-NT",
+    }
+
+    method_targets = {
+        method_label: 5
+        for method_label in (
+            1,
+            2,
+            3,
+            4,
+        )
+    }
+
+    sampler = (
+        FixedMethodExposureSampler(
+            method_labels=method_labels,
+            method_order=[
+                1,
+                2,
+                3,
+                4,
+            ],
+            method_targets=method_targets,
+            method_names=method_names,
+            seed=1024,
         )
     )
-    print(
-        "  real/fake per batch:        {}/{}".format(
-            sampler.half_batch_size,
-            sampler.half_batch_size,
+
+    sampler.set_epoch(
+        0
+    )
+
+    plan_a = list(
+        sampler
+    )
+
+    if len(
+        plan_a
+    ) != 20:
+        raise AssertionError(
+            "unexpected UCF pair exposure count"
+        )
+
+    if set(
+        plan_a
+    ) != set(
+        range(
+            len(
+                method_labels
+            )
+        )
+    ):
+        raise AssertionError(
+            "UCF sampler did not preserve every valid fake source item"
+        )
+
+    exposure_counts = Counter(
+        method_labels[
+            index
+        ]
+        for index in plan_a
+    )
+
+    if exposure_counts != Counter(
+        method_targets
+    ):
+        raise AssertionError(
+            "UCF fake-method targets were not preserved"
+        )
+
+    sampler_same = (
+        FixedMethodExposureSampler(
+            method_labels=method_labels,
+            method_order=[
+                1,
+                2,
+                3,
+                4,
+            ],
+            method_targets=method_targets,
+            method_names=method_names,
+            seed=1024,
         )
     )
-    print(
-        "  optimizer steps/epoch:      {}".format(
-            stats["batches"]
-        )
+
+    sampler_same.set_epoch(
+        0
     )
-    print(
-        "  real exposures/epoch:       {}".format(
-            stats["real_exposures"]
+
+    if plan_a != list(
+        sampler_same
+    ):
+        raise AssertionError(
+            "UCF sampler is not reproducible for same seed and epoch"
         )
+
+    sampler.set_epoch(
+        1
     )
-    print(
-        "  fake exposures/epoch:       {}".format(
-            stats["fake_exposures"]
+
+    if plan_a == list(
+        sampler
+    ):
+        raise AssertionError(
+            "UCF sampler did not change between epochs"
         )
+
+    summary = (
+        sampler_same.contract_summary()
     )
-    print(
-        "  total image exposures:      {}".format(
-            sampler.image_exposures_per_epoch
+
+    if (
+        summary[
+            "fake_method_repeat_counts"
+        ]
+        != {
+            "FF-DF": 1,
+            "FF-F2F": 0,
+            "FF-FS": 0,
+            "FF-NT": 2,
+        }
+    ):
+        raise AssertionError(
+            "unexpected UCF top-up counts"
         )
+
+    print()
+    print(
+        "UCF FIXED-METHOD SAMPLER"
+    )
+
+    print(
+        "  valid fake pair-items:      17"
+    )
+
+    print(
+        "  target pair-items:          20"
+    )
+
+    print(
+        "  method balance:             5 each"
+    )
+
+    print(
+        "  every valid fake:           exposed >= 1 time"
+    )
+
+    print(
+        "  same seed + epoch:          reproducible"
+    )
+
+    print(
+        "  next epoch:                 different ordering/top-up"
+    )
+
+    print(
+        "  real partner selection:     remains pairDataset responsibility"
     )
 
 
@@ -426,70 +781,179 @@ def _validate_negative_cases() -> None:
     _expect_failure(
         "odd batch size",
         lambda: BalancedRealFakeBatchSampler(
-            labels=[0, 0, 1, 1],
+            labels=[
+                0,
+                1,
+            ],
+            source_labels=[
+                "FF-real",
+                "FF-DF",
+            ],
             batch_size=3,
+            target_fake_exposures_per_method=1,
         ),
     )
 
     _expect_failure(
         "non-binary label",
         lambda: BalancedRealFakeBatchSampler(
-            labels=[0, 1, 2, 1],
+            labels=[
+                0,
+                2,
+            ],
+            source_labels=[
+                "FF-real",
+                "FF-DF",
+            ],
             batch_size=2,
+            target_fake_exposures_per_method=1,
         ),
     )
 
     _expect_failure(
-        "missing real class",
-        lambda: BalancedRealFakeBatchSampler(
-            labels=[1, 1, 1, 1],
-            batch_size=2,
-        ),
-    )
-
-    _expect_failure(
-        "missing fake class",
-        lambda: BalancedRealFakeBatchSampler(
-            labels=[0, 0, 0, 0],
-            batch_size=2,
-        ),
-    )
-
-    _expect_failure(
-        "fake population not divisible by half batch",
+        "metadata length mismatch",
         lambda: BalancedRealFakeBatchSampler(
             labels=[
-                0, 0, 0,
-                1, 1, 1,
+                0,
+                1,
             ],
-            batch_size=4,
+            source_labels=[
+                "FF-real",
+            ],
+            batch_size=2,
+            target_fake_exposures_per_method=1,
         ),
     )
 
-    sampler = BalancedRealFakeBatchSampler(
-        labels=[0, 0, 1, 1],
-        batch_size=2,
+    _expect_failure(
+        "missing fake manipulation group",
+        lambda: BalancedRealFakeBatchSampler(
+            labels=[
+                0,
+                1,
+            ],
+            source_labels=[
+                "FF-real",
+                "FF-DF",
+            ],
+            batch_size=2,
+            target_fake_exposures_per_method=1,
+        ),
+    )
+
+    _expect_failure(
+        "valid source population exceeds target",
+        lambda: BalancedRealFakeBatchSampler(
+            labels=[
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+            ],
+            source_labels=[
+                "FF-real",
+                "FF-DF",
+                "FF-DF",
+                "FF-F2F",
+                "FF-FS",
+                "FF-NT",
+            ],
+            batch_size=2,
+            target_fake_exposures_per_method=1,
+        ),
+    )
+
+    valid_sampler = (
+        BalancedRealFakeBatchSampler(
+            labels=[
+                0,
+                1,
+                1,
+                1,
+                1,
+            ],
+            source_labels=[
+                "FF-real",
+                "FF-DF",
+                "FF-F2F",
+                "FF-FS",
+                "FF-NT",
+            ],
+            batch_size=2,
+            target_fake_exposures_per_method=1,
+        )
     )
 
     _expect_failure(
         "negative epoch",
-        lambda: sampler.set_epoch(-1),
+        lambda: valid_sampler.set_epoch(
+            -1
+        ),
+    )
+
+    _expect_failure(
+        "UCF target-key mismatch",
+        lambda: FixedMethodExposureSampler(
+            method_labels=[
+                1,
+                2,
+                3,
+                4,
+            ],
+            method_order=[
+                1,
+                2,
+                3,
+                4,
+            ],
+            method_targets={
+                1: 1,
+                2: 1,
+                3: 1,
+            },
+            method_names={
+                1: "FF-DF",
+                2: "FF-F2F",
+                3: "FF-FS",
+                4: "FF-NT",
+            },
+        ),
     )
 
     print()
-    print("NEGATIVE / INVARIANT TESTS")
+    print(
+        "NEGATIVE / INVARIANT TESTS"
+    )
+
     print(
         "  invalid configurations:     rejected"
+    )
+
+    print(
+        "  missing method group:       rejected"
+    )
+
+    print(
+        "  dropping valid inputs:      rejected"
+    )
+
+    print(
+        "  metadata mismatch:          rejected"
     )
 
 
 def main() -> None:
     _validate_small_synthetic_case()
-    _validate_nominal_ffpp_fit_case()
+    _validate_frozen_ffpp_fit_case()
+    _validate_ucf_sampler()
     _validate_negative_cases()
 
     print()
-    print("SAMPLER VALIDATION PASSED")
+    print(
+        "SAMPLER VALIDATION PASSED"
+    )
 
 
 if __name__ == "__main__":
