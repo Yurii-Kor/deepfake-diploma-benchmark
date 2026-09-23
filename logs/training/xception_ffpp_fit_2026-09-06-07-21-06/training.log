@@ -1,0 +1,605 @@
+2026-09-06 07:21:06,356 - INFO - Save log to ./logs/training/xception_ffpp_fit_2026-09-06-07-21-06
+2026-09-06 07:21:06,357 - INFO - --------------- Study Configuration ---------------
+2026-09-06 07:21:06,357 - INFO - mode: train
+2026-09-06 07:21:06,357 - INFO - lmdb: False
+2026-09-06 07:21:06,357 - INFO - dry_run: False
+2026-09-06 07:21:06,357 - INFO - rgb_dir: ./study/training/materialized/rgb
+2026-09-06 07:21:06,357 - INFO - lmdb_dir: ./datasets/lmdb
+2026-09-06 07:21:06,357 - INFO - dataset_json_folder: ./study/training/materialized/dataset_json
+2026-09-06 07:21:06,357 - INFO - SWA: False
+2026-09-06 07:21:06,357 - INFO - save_avg: True
+2026-09-06 07:21:06,357 - INFO - log_dir: ./logs/training/
+2026-09-06 07:21:06,358 - INFO - label_dict: {'FF-real': 0, 'FF-DF': 1, 'FF-F2F': 1, 'FF-FS': 1, 'FF-NT': 1}
+2026-09-06 07:21:06,358 - INFO - study_controlled_training: True
+2026-09-06 07:21:06,358 - INFO - train_dataset: ['FaceForensics++']
+2026-09-06 07:21:06,358 - INFO - test_dataset: ['FaceForensics++']
+2026-09-06 07:21:06,358 - INFO - compression: raw
+2026-09-06 07:21:06,358 - INFO - frame_num: {'train': 32, 'test': 32}
+2026-09-06 07:21:06,358 - INFO - resolution: 256
+2026-09-06 07:21:06,358 - INFO - with_mask: False
+2026-09-06 07:21:06,358 - INFO - with_landmark: False
+2026-09-06 07:21:06,358 - INFO - model_name: xception
+2026-09-06 07:21:06,358 - INFO - backbone_name: xception
+2026-09-06 07:21:06,358 - INFO - pretrained: ./training/pretrained/xception-b5690688.pth
+2026-09-06 07:21:06,359 - INFO - backbone_config: {'mode': 'original', 'num_classes': 2, 'inc': 3, 'dropout': False}
+2026-09-06 07:21:06,359 - INFO - mean: [0.5, 0.5, 0.5]
+2026-09-06 07:21:06,359 - INFO - std: [0.5, 0.5, 0.5]
+2026-09-06 07:21:06,359 - INFO - use_data_augmentation: False
+2026-09-06 07:21:06,359 - INFO - data_aug: {'flip_prob': 0.5, 'rotate_prob': 0.0, 'rotate_limit': [-10, 10], 'blur_prob': 0.0, 'blur_limit': [3, 7], 'brightness_limit': [-0.1, 0.1], 'contrast_limit': [-0.1, 0.1], 'quality_lower': 40, 'quality_upper': 100}
+2026-09-06 07:21:06,359 - INFO - train_batchSize: 32
+2026-09-06 07:21:06,359 - INFO - test_batchSize: 32
+2026-09-06 07:21:06,359 - INFO - workers: 8
+2026-09-06 07:21:06,359 - INFO - optimizer: {'type': 'adam', 'adam': {'lr': 0.0002, 'beta1': 0.9, 'beta2': 0.999, 'eps': 1e-08, 'weight_decay': 0.0005, 'amsgrad': False}}
+2026-09-06 07:21:06,359 - INFO - lr_scheduler: None
+2026-09-06 07:21:06,359 - INFO - nEpochs: 10
+2026-09-06 07:21:06,360 - INFO - start_epoch: 0
+2026-09-06 07:21:06,360 - INFO - save_epoch: 1
+2026-09-06 07:21:06,360 - INFO - rec_iter: 100
+2026-09-06 07:21:06,360 - INFO - logdir: ./logs
+2026-09-06 07:21:06,360 - INFO - manualSeed: 1024
+2026-09-06 07:21:06,360 - INFO - loss_func: cross_entropy
+2026-09-06 07:21:06,360 - INFO - losstype: None
+2026-09-06 07:21:06,360 - INFO - metric_scoring: video_auc
+2026-09-06 07:21:06,360 - INFO - cuda: True
+2026-09-06 07:21:06,361 - INFO - cudnn: True
+2026-09-06 07:21:06,361 - INFO - local_rank: 0
+2026-09-06 07:21:06,361 - INFO - ddp: False
+2026-09-06 07:21:06,361 - INFO - save_ckpt: True
+2026-09-06 07:21:06,361 - INFO - save_feat: False
+2026-09-06 07:21:06,361 - INFO - task_target: ffpp_fit
+2026-09-06 07:21:06,675 - INFO - Study training loader contract: {'model_name': 'xception', 'loader_batch_size': 32, 'effective_image_batch_size': 32, 'workers': 8, 'seed': 1024, 'optimizer_steps_per_epoch': 4608, 'image_exposures_per_epoch': 147456, 'batch_size': 32, 'real_per_batch': 16, 'fake_per_batch': 16, 'real_source_items': 18426, 'fake_source_items': 73651, 'fake_method_source_counts': {'FF-DF': 18398, 'FF-F2F': 18423, 'FF-FS': 18423, 'FF-NT': 18407}, 'fake_method_target_exposures': {'FF-DF': 18432, 'FF-F2F': 18432, 'FF-FS': 18432, 'FF-NT': 18432}, 'fake_method_repeat_counts': {'FF-DF': 34, 'FF-F2F': 9, 'FF-FS': 9, 'FF-NT': 25}, 'real_exposures_per_epoch': 73728, 'fake_exposures_per_epoch': 73728, 'real_sampling': 'with_replacement', 'epoch': 0, 'sampling_mode': 'balanced_fixed_method_exposure'}
+2026-09-06 07:21:07,070 - INFO - Load pretrained model successfully!
+2026-09-06 07:21:10,572 - INFO - Controlled Trainer initialized.
+2026-09-06 07:21:10,572 - INFO - Checkpoint selection metric: video_auc
+2026-09-06 07:21:10,572 - INFO - Checkpoint tie policy: retain earlier checkpoint.
+2026-09-06 07:21:10,572 - INFO - Study training budget: {'start_epoch': 0, 'n_epochs': 10, 'completed_epochs_this_run': 10, 'steps_per_epoch': 4608, 'effective_images_per_step': 32, 'optimizer_steps_this_run': 46080, 'image_exposures_this_run': 1474560}
+2026-09-06 07:21:10,572 - INFO - ===> Epoch[0] start
+2026-09-06 07:21:15,830 - INFO - Epoch[0] optimizer-step 1/4608: cls=0.696535, overall=0.696535
+2026-09-06 07:22:05,221 - INFO - Epoch[0] optimizer-step 100/4608: cls=0.479754, overall=0.479754
+2026-09-06 07:22:53,763 - INFO - Epoch[0] optimizer-step 200/4608: cls=0.374565, overall=0.374565
+2026-09-06 07:23:45,858 - INFO - Epoch[0] optimizer-step 300/4608: cls=0.312879, overall=0.312879
+2026-09-06 07:24:35,515 - INFO - Epoch[0] optimizer-step 400/4608: cls=0.278092, overall=0.278092
+2026-09-06 07:25:28,645 - INFO - Epoch[0] optimizer-step 500/4608: cls=0.254083, overall=0.254083
+2026-09-06 07:26:18,293 - INFO - Epoch[0] optimizer-step 600/4608: cls=0.235087, overall=0.235087
+2026-09-06 07:27:10,698 - INFO - Epoch[0] optimizer-step 700/4608: cls=0.218827, overall=0.218827
+2026-09-06 07:28:00,873 - INFO - Epoch[0] optimizer-step 800/4608: cls=0.205454, overall=0.205454
+2026-09-06 07:28:54,518 - INFO - Epoch[0] optimizer-step 900/4608: cls=0.194521, overall=0.194521
+2026-09-06 07:29:44,055 - INFO - Epoch[0] optimizer-step 1000/4608: cls=0.186176, overall=0.186176
+2026-09-06 07:30:37,018 - INFO - Epoch[0] optimizer-step 1100/4608: cls=0.178984, overall=0.178984
+2026-09-06 07:31:26,924 - INFO - Epoch[0] optimizer-step 1200/4608: cls=0.172562, overall=0.172562
+2026-09-06 07:32:19,114 - INFO - Epoch[0] optimizer-step 1300/4608: cls=0.166889, overall=0.166889
+2026-09-06 07:33:08,981 - INFO - Epoch[0] optimizer-step 1400/4608: cls=0.161677, overall=0.161677
+2026-09-06 07:33:59,980 - INFO - Epoch[0] optimizer-step 1500/4608: cls=0.156600, overall=0.156600
+2026-09-06 07:34:48,804 - INFO - Epoch[0] optimizer-step 1600/4608: cls=0.152529, overall=0.152529
+2026-09-06 07:35:37,648 - INFO - Epoch[0] optimizer-step 1700/4608: cls=0.148025, overall=0.148025
+2026-09-06 07:36:28,240 - INFO - Epoch[0] optimizer-step 1800/4608: cls=0.144789, overall=0.144789
+2026-09-06 07:37:17,160 - INFO - Epoch[0] optimizer-step 1900/4608: cls=0.140894, overall=0.140894
+2026-09-06 07:38:08,078 - INFO - Epoch[0] optimizer-step 2000/4608: cls=0.137373, overall=0.137373
+2026-09-06 07:38:56,243 - INFO - Epoch[0] optimizer-step 2100/4608: cls=0.134626, overall=0.134626
+2026-09-06 07:39:48,083 - INFO - Epoch[0] optimizer-step 2200/4608: cls=0.132168, overall=0.132168
+2026-09-06 07:40:36,798 - INFO - Epoch[0] optimizer-step 2300/4608: cls=0.130046, overall=0.130046
+2026-09-06 07:41:27,904 - INFO - Epoch[0] optimizer-step 2400/4608: cls=0.127170, overall=0.127170
+2026-09-06 07:42:16,667 - INFO - Epoch[0] optimizer-step 2500/4608: cls=0.125387, overall=0.125387
+2026-09-06 07:43:04,768 - INFO - Epoch[0] optimizer-step 2600/4608: cls=0.122963, overall=0.122963
+2026-09-06 07:43:55,779 - INFO - Epoch[0] optimizer-step 2700/4608: cls=0.121051, overall=0.121051
+2026-09-06 07:44:43,829 - INFO - Epoch[0] optimizer-step 2800/4608: cls=0.119244, overall=0.119244
+2026-09-06 07:45:35,518 - INFO - Epoch[0] optimizer-step 2900/4608: cls=0.117697, overall=0.117697
+2026-09-06 07:46:24,704 - INFO - Epoch[0] optimizer-step 3000/4608: cls=0.116292, overall=0.116292
+2026-09-06 07:47:15,464 - INFO - Epoch[0] optimizer-step 3100/4608: cls=0.114525, overall=0.114525
+2026-09-06 07:48:04,457 - INFO - Epoch[0] optimizer-step 3200/4608: cls=0.113070, overall=0.113070
+2026-09-06 07:48:53,202 - INFO - Epoch[0] optimizer-step 3300/4608: cls=0.111230, overall=0.111230
+2026-09-06 07:49:44,558 - INFO - Epoch[0] optimizer-step 3400/4608: cls=0.109883, overall=0.109883
+2026-09-06 07:50:33,112 - INFO - Epoch[0] optimizer-step 3500/4608: cls=0.108703, overall=0.108703
+2026-09-06 07:51:24,690 - INFO - Epoch[0] optimizer-step 3600/4608: cls=0.107079, overall=0.107079
+2026-09-06 07:52:13,330 - INFO - Epoch[0] optimizer-step 3700/4608: cls=0.105923, overall=0.105923
+2026-09-06 07:53:04,678 - INFO - Epoch[0] optimizer-step 3800/4608: cls=0.105087, overall=0.105087
+2026-09-06 07:53:53,351 - INFO - Epoch[0] optimizer-step 3900/4608: cls=0.103788, overall=0.103788
+2026-09-06 07:54:42,057 - INFO - Epoch[0] optimizer-step 4000/4608: cls=0.102572, overall=0.102572
+2026-09-06 07:55:33,332 - INFO - Epoch[0] optimizer-step 4100/4608: cls=0.101479, overall=0.101479
+2026-09-06 07:56:22,028 - INFO - Epoch[0] optimizer-step 4200/4608: cls=0.100661, overall=0.100661
+2026-09-06 07:57:13,237 - INFO - Epoch[0] optimizer-step 4300/4608: cls=0.099702, overall=0.099702
+2026-09-06 07:58:01,721 - INFO - Epoch[0] optimizer-step 4400/4608: cls=0.098645, overall=0.098645
+2026-09-06 07:58:52,898 - INFO - Epoch[0] optimizer-step 4500/4608: cls=0.097788, overall=0.097788
+2026-09-06 07:59:41,860 - INFO - Epoch[0] optimizer-step 4600/4608: cls=0.097018, overall=0.097018
+2026-09-06 07:59:45,477 - INFO - Epoch[0] optimizer-step 4608/4608: cls=0.096957, overall=0.096957
+2026-09-06 08:01:21,248 - INFO - Best checkpoint saved: ./logs/training/xception_ffpp_fit_2026-09-06-07-21-06/checkpoints/best.pth
+2026-09-06 08:01:21,248 - INFO - Best checkpoint metadata saved: ./logs/training/xception_ffpp_fit_2026-09-06-07-21-06/checkpoints/best_metadata.json
+2026-09-06 08:01:21,249 - INFO - ===> Epoch[0] completed; DEV frame_auc=0.987744, video_auc=0.997806, videos=720, best=True
+2026-09-06 08:01:21,250 - INFO - ===> Epoch[0] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9978057484567902  frame_auc=0.9877438359758729  completed_epoch=0  optimizer_steps_completed=4608  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 08:01:21,251 - INFO - ===> Epoch[1] start
+2026-09-06 08:01:22,188 - INFO - Epoch[1] optimizer-step 1/4608: cls=0.099557, overall=0.099557
+2026-09-06 08:02:10,264 - INFO - Epoch[1] optimizer-step 100/4608: cls=0.047549, overall=0.047549
+2026-09-06 08:03:01,875 - INFO - Epoch[1] optimizer-step 200/4608: cls=0.045812, overall=0.045812
+2026-09-06 08:03:50,268 - INFO - Epoch[1] optimizer-step 300/4608: cls=0.044009, overall=0.044009
+2026-09-06 08:04:39,241 - INFO - Epoch[1] optimizer-step 400/4608: cls=0.043557, overall=0.043557
+2026-09-06 08:05:30,654 - INFO - Epoch[1] optimizer-step 500/4608: cls=0.045412, overall=0.045412
+2026-09-06 08:06:19,563 - INFO - Epoch[1] optimizer-step 600/4608: cls=0.046471, overall=0.046471
+2026-09-06 08:07:11,390 - INFO - Epoch[1] optimizer-step 700/4608: cls=0.045701, overall=0.045701
+2026-09-06 08:07:59,376 - INFO - Epoch[1] optimizer-step 800/4608: cls=0.046714, overall=0.046714
+2026-09-06 08:08:50,268 - INFO - Epoch[1] optimizer-step 900/4608: cls=0.046478, overall=0.046478
+2026-09-06 08:09:38,219 - INFO - Epoch[1] optimizer-step 1000/4608: cls=0.047400, overall=0.047400
+2026-09-06 08:10:26,507 - INFO - Epoch[1] optimizer-step 1100/4608: cls=0.047542, overall=0.047542
+2026-09-06 08:11:17,017 - INFO - Epoch[1] optimizer-step 1200/4608: cls=0.047622, overall=0.047622
+2026-09-06 08:12:05,035 - INFO - Epoch[1] optimizer-step 1300/4608: cls=0.047807, overall=0.047807
+2026-09-06 08:12:55,257 - INFO - Epoch[1] optimizer-step 1400/4608: cls=0.048007, overall=0.048007
+2026-09-06 08:13:43,108 - INFO - Epoch[1] optimizer-step 1500/4608: cls=0.047473, overall=0.047473
+2026-09-06 08:14:33,240 - INFO - Epoch[1] optimizer-step 1600/4608: cls=0.047877, overall=0.047877
+2026-09-06 08:15:21,029 - INFO - Epoch[1] optimizer-step 1700/4608: cls=0.047957, overall=0.047957
+2026-09-06 08:16:09,143 - INFO - Epoch[1] optimizer-step 1800/4608: cls=0.047769, overall=0.047769
+2026-09-06 08:16:59,872 - INFO - Epoch[1] optimizer-step 1900/4608: cls=0.047568, overall=0.047568
+2026-09-06 08:17:48,503 - INFO - Epoch[1] optimizer-step 2000/4608: cls=0.048086, overall=0.048086
+2026-09-06 08:18:39,993 - INFO - Epoch[1] optimizer-step 2100/4608: cls=0.047926, overall=0.047926
+2026-09-06 08:19:28,833 - INFO - Epoch[1] optimizer-step 2200/4608: cls=0.047732, overall=0.047732
+2026-09-06 08:20:19,873 - INFO - Epoch[1] optimizer-step 2300/4608: cls=0.047368, overall=0.047368
+2026-09-06 08:21:09,028 - INFO - Epoch[1] optimizer-step 2400/4608: cls=0.047697, overall=0.047697
+2026-09-06 08:21:57,932 - INFO - Epoch[1] optimizer-step 2500/4608: cls=0.047942, overall=0.047942
+2026-09-06 08:22:49,386 - INFO - Epoch[1] optimizer-step 2600/4608: cls=0.047549, overall=0.047549
+2026-09-06 08:23:37,596 - INFO - Epoch[1] optimizer-step 2700/4608: cls=0.046850, overall=0.046850
+2026-09-06 08:24:29,303 - INFO - Epoch[1] optimizer-step 2800/4608: cls=0.046826, overall=0.046826
+2026-09-06 08:25:17,710 - INFO - Epoch[1] optimizer-step 2900/4608: cls=0.046838, overall=0.046838
+2026-09-06 08:26:09,385 - INFO - Epoch[1] optimizer-step 3000/4608: cls=0.046654, overall=0.046654
+2026-09-06 08:26:57,700 - INFO - Epoch[1] optimizer-step 3100/4608: cls=0.046391, overall=0.046391
+2026-09-06 08:27:46,140 - INFO - Epoch[1] optimizer-step 3200/4608: cls=0.046216, overall=0.046216
+2026-09-06 08:28:38,008 - INFO - Epoch[1] optimizer-step 3300/4608: cls=0.046116, overall=0.046116
+2026-09-06 08:29:25,715 - INFO - Epoch[1] optimizer-step 3400/4608: cls=0.046188, overall=0.046188
+2026-09-06 08:30:17,348 - INFO - Epoch[1] optimizer-step 3500/4608: cls=0.046053, overall=0.046053
+2026-09-06 08:31:05,622 - INFO - Epoch[1] optimizer-step 3600/4608: cls=0.046055, overall=0.046055
+2026-09-06 08:31:56,811 - INFO - Epoch[1] optimizer-step 3700/4608: cls=0.045976, overall=0.045976
+2026-09-06 08:32:44,825 - INFO - Epoch[1] optimizer-step 3800/4608: cls=0.045962, overall=0.045962
+2026-09-06 08:33:33,365 - INFO - Epoch[1] optimizer-step 3900/4608: cls=0.046200, overall=0.046200
+2026-09-06 08:34:24,610 - INFO - Epoch[1] optimizer-step 4000/4608: cls=0.045975, overall=0.045975
+2026-09-06 08:35:12,817 - INFO - Epoch[1] optimizer-step 4100/4608: cls=0.045807, overall=0.045807
+2026-09-06 08:36:04,225 - INFO - Epoch[1] optimizer-step 4200/4608: cls=0.045771, overall=0.045771
+2026-09-06 08:36:52,208 - INFO - Epoch[1] optimizer-step 4300/4608: cls=0.045801, overall=0.045801
+2026-09-06 08:37:40,927 - INFO - Epoch[1] optimizer-step 4400/4608: cls=0.045741, overall=0.045741
+2026-09-06 08:38:31,697 - INFO - Epoch[1] optimizer-step 4500/4608: cls=0.045512, overall=0.045512
+2026-09-06 08:39:19,705 - INFO - Epoch[1] optimizer-step 4600/4608: cls=0.045564, overall=0.045564
+2026-09-06 08:39:23,528 - INFO - Epoch[1] optimizer-step 4608/4608: cls=0.045581, overall=0.045581
+2026-09-06 08:40:59,067 - INFO - Best checkpoint saved: ./logs/training/xception_ffpp_fit_2026-09-06-07-21-06/checkpoints/best.pth
+2026-09-06 08:40:59,067 - INFO - Best checkpoint metadata saved: ./logs/training/xception_ffpp_fit_2026-09-06-07-21-06/checkpoints/best_metadata.json
+2026-09-06 08:40:59,068 - INFO - ===> Epoch[1] completed; DEV frame_auc=0.990515, video_auc=0.998384, videos=720, best=True
+2026-09-06 08:40:59,069 - INFO - ===> Epoch[1] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9983844521604939  frame_auc=0.9905152237824029  completed_epoch=1  optimizer_steps_completed=9216  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 08:40:59,069 - INFO - ===> Epoch[2] start
+2026-09-06 08:41:00,073 - INFO - Epoch[2] optimizer-step 1/4608: cls=0.010377, overall=0.010377
+2026-09-06 08:41:50,482 - INFO - Epoch[2] optimizer-step 100/4608: cls=0.037345, overall=0.037345
+2026-09-06 08:42:38,832 - INFO - Epoch[2] optimizer-step 200/4608: cls=0.032720, overall=0.032720
+2026-09-06 08:43:26,865 - INFO - Epoch[2] optimizer-step 300/4608: cls=0.034192, overall=0.034192
+2026-09-06 08:44:18,093 - INFO - Epoch[2] optimizer-step 400/4608: cls=0.032035, overall=0.032035
+2026-09-06 08:45:06,512 - INFO - Epoch[2] optimizer-step 500/4608: cls=0.031911, overall=0.031911
+2026-09-06 08:45:57,546 - INFO - Epoch[2] optimizer-step 600/4608: cls=0.032957, overall=0.032957
+2026-09-06 08:46:45,522 - INFO - Epoch[2] optimizer-step 700/4608: cls=0.033188, overall=0.033188
+2026-09-06 08:47:36,509 - INFO - Epoch[2] optimizer-step 800/4608: cls=0.033721, overall=0.033721
+2026-09-06 08:48:24,219 - INFO - Epoch[2] optimizer-step 900/4608: cls=0.033877, overall=0.033877
+2026-09-06 08:49:11,866 - INFO - Epoch[2] optimizer-step 1000/4608: cls=0.033666, overall=0.033666
+2026-09-06 08:50:02,366 - INFO - Epoch[2] optimizer-step 1100/4608: cls=0.034239, overall=0.034239
+2026-09-06 08:50:50,578 - INFO - Epoch[2] optimizer-step 1200/4608: cls=0.034817, overall=0.034817
+2026-09-06 08:51:40,946 - INFO - Epoch[2] optimizer-step 1300/4608: cls=0.034672, overall=0.034672
+2026-09-06 08:52:28,793 - INFO - Epoch[2] optimizer-step 1400/4608: cls=0.035530, overall=0.035530
+2026-09-06 08:53:16,166 - INFO - Epoch[2] optimizer-step 1500/4608: cls=0.034979, overall=0.034979
+2026-09-06 08:54:06,451 - INFO - Epoch[2] optimizer-step 1600/4608: cls=0.035334, overall=0.035334
+2026-09-06 08:54:54,633 - INFO - Epoch[2] optimizer-step 1700/4608: cls=0.035050, overall=0.035050
+2026-09-06 08:55:44,904 - INFO - Epoch[2] optimizer-step 1800/4608: cls=0.034324, overall=0.034324
+2026-09-06 08:56:32,861 - INFO - Epoch[2] optimizer-step 1900/4608: cls=0.034401, overall=0.034401
+2026-09-06 08:57:20,618 - INFO - Epoch[2] optimizer-step 2000/4608: cls=0.034214, overall=0.034214
+2026-09-06 08:58:10,864 - INFO - Epoch[2] optimizer-step 2100/4608: cls=0.034535, overall=0.034535
+2026-09-06 08:58:58,782 - INFO - Epoch[2] optimizer-step 2200/4608: cls=0.034539, overall=0.034539
+2026-09-06 08:59:49,170 - INFO - Epoch[2] optimizer-step 2300/4608: cls=0.034739, overall=0.034739
+2026-09-06 09:00:37,309 - INFO - Epoch[2] optimizer-step 2400/4608: cls=0.034768, overall=0.034768
+2026-09-06 09:01:25,449 - INFO - Epoch[2] optimizer-step 2500/4608: cls=0.034639, overall=0.034639
+2026-09-06 09:02:16,502 - INFO - Epoch[2] optimizer-step 2600/4608: cls=0.034816, overall=0.034816
+2026-09-06 09:03:04,489 - INFO - Epoch[2] optimizer-step 2700/4608: cls=0.034708, overall=0.034708
+2026-09-06 09:03:55,620 - INFO - Epoch[2] optimizer-step 2800/4608: cls=0.034927, overall=0.034927
+2026-09-06 09:04:42,834 - INFO - Epoch[2] optimizer-step 2900/4608: cls=0.034754, overall=0.034754
+2026-09-06 09:05:30,441 - INFO - Epoch[2] optimizer-step 3000/4608: cls=0.034327, overall=0.034327
+2026-09-06 09:06:20,520 - INFO - Epoch[2] optimizer-step 3100/4608: cls=0.034476, overall=0.034476
+2026-09-06 09:07:07,875 - INFO - Epoch[2] optimizer-step 3200/4608: cls=0.034573, overall=0.034573
+2026-09-06 09:07:58,167 - INFO - Epoch[2] optimizer-step 3300/4608: cls=0.034804, overall=0.034804
+2026-09-06 09:08:45,611 - INFO - Epoch[2] optimizer-step 3400/4608: cls=0.034689, overall=0.034689
+2026-09-06 09:09:32,765 - INFO - Epoch[2] optimizer-step 3500/4608: cls=0.034779, overall=0.034779
+2026-09-06 09:10:23,507 - INFO - Epoch[2] optimizer-step 3600/4608: cls=0.034901, overall=0.034901
+2026-09-06 09:11:10,962 - INFO - Epoch[2] optimizer-step 3700/4608: cls=0.034762, overall=0.034762
+2026-09-06 09:12:01,110 - INFO - Epoch[2] optimizer-step 3800/4608: cls=0.034612, overall=0.034612
+2026-09-06 09:12:48,176 - INFO - Epoch[2] optimizer-step 3900/4608: cls=0.034482, overall=0.034482
+2026-09-06 09:13:36,431 - INFO - Epoch[2] optimizer-step 4000/4608: cls=0.034527, overall=0.034527
+2026-09-06 09:14:25,943 - INFO - Epoch[2] optimizer-step 4100/4608: cls=0.034537, overall=0.034537
+2026-09-06 09:15:13,276 - INFO - Epoch[2] optimizer-step 4200/4608: cls=0.034524, overall=0.034524
+2026-09-06 09:16:03,117 - INFO - Epoch[2] optimizer-step 4300/4608: cls=0.034712, overall=0.034712
+2026-09-06 09:16:50,607 - INFO - Epoch[2] optimizer-step 4400/4608: cls=0.034719, overall=0.034719
+2026-09-06 09:17:37,939 - INFO - Epoch[2] optimizer-step 4500/4608: cls=0.034581, overall=0.034581
+2026-09-06 09:18:27,770 - INFO - Epoch[2] optimizer-step 4600/4608: cls=0.034499, overall=0.034499
+2026-09-06 09:18:31,360 - INFO - Epoch[2] optimizer-step 4608/4608: cls=0.034480, overall=0.034480
+2026-09-06 09:20:04,648 - INFO - ===> Epoch[2] completed; DEV frame_auc=0.987681, video_auc=0.997745, videos=720, best=False
+2026-09-06 09:20:04,649 - INFO - ===> Epoch[2] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9983844521604939  frame_auc=0.9905152237824029  completed_epoch=1  optimizer_steps_completed=9216  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 09:20:04,650 - INFO - ===> Epoch[3] start
+2026-09-06 09:20:05,613 - INFO - Epoch[3] optimizer-step 1/4608: cls=0.009674, overall=0.009674
+2026-09-06 09:20:53,018 - INFO - Epoch[3] optimizer-step 100/4608: cls=0.024441, overall=0.024441
+2026-09-06 09:21:40,838 - INFO - Epoch[3] optimizer-step 200/4608: cls=0.027950, overall=0.027950
+2026-09-06 09:22:31,211 - INFO - Epoch[3] optimizer-step 300/4608: cls=0.027025, overall=0.027025
+2026-09-06 09:23:18,641 - INFO - Epoch[3] optimizer-step 400/4608: cls=0.027611, overall=0.027611
+2026-09-06 09:24:08,868 - INFO - Epoch[3] optimizer-step 500/4608: cls=0.026950, overall=0.026950
+2026-09-06 09:24:57,010 - INFO - Epoch[3] optimizer-step 600/4608: cls=0.028924, overall=0.028924
+2026-09-06 09:25:44,742 - INFO - Epoch[3] optimizer-step 700/4608: cls=0.029322, overall=0.029322
+2026-09-06 09:26:35,199 - INFO - Epoch[3] optimizer-step 800/4608: cls=0.029623, overall=0.029623
+2026-09-06 09:27:22,890 - INFO - Epoch[3] optimizer-step 900/4608: cls=0.029995, overall=0.029995
+2026-09-06 09:28:13,502 - INFO - Epoch[3] optimizer-step 1000/4608: cls=0.029319, overall=0.029319
+2026-09-06 09:29:01,169 - INFO - Epoch[3] optimizer-step 1100/4608: cls=0.029027, overall=0.029027
+2026-09-06 09:29:48,788 - INFO - Epoch[3] optimizer-step 1200/4608: cls=0.028870, overall=0.028870
+2026-09-06 09:30:39,153 - INFO - Epoch[3] optimizer-step 1300/4608: cls=0.028962, overall=0.028962
+2026-09-06 09:31:26,414 - INFO - Epoch[3] optimizer-step 1400/4608: cls=0.029064, overall=0.029064
+2026-09-06 09:32:16,914 - INFO - Epoch[3] optimizer-step 1500/4608: cls=0.028769, overall=0.028769
+2026-09-06 09:33:04,259 - INFO - Epoch[3] optimizer-step 1600/4608: cls=0.028957, overall=0.028957
+2026-09-06 09:33:52,362 - INFO - Epoch[3] optimizer-step 1700/4608: cls=0.029032, overall=0.029032
+2026-09-06 09:34:42,034 - INFO - Epoch[3] optimizer-step 1800/4608: cls=0.029600, overall=0.029600
+2026-09-06 09:35:29,326 - INFO - Epoch[3] optimizer-step 1900/4608: cls=0.029088, overall=0.029088
+2026-09-06 09:36:16,868 - INFO - Epoch[3] optimizer-step 2000/4608: cls=0.029147, overall=0.029147
+2026-09-06 09:37:06,654 - INFO - Epoch[3] optimizer-step 2100/4608: cls=0.029055, overall=0.029055
+2026-09-06 09:37:53,622 - INFO - Epoch[3] optimizer-step 2200/4608: cls=0.029080, overall=0.029080
+2026-09-06 09:38:44,148 - INFO - Epoch[3] optimizer-step 2300/4608: cls=0.029101, overall=0.029101
+2026-09-06 09:39:31,672 - INFO - Epoch[3] optimizer-step 2400/4608: cls=0.029459, overall=0.029459
+2026-09-06 09:40:18,740 - INFO - Epoch[3] optimizer-step 2500/4608: cls=0.029334, overall=0.029334
+2026-09-06 09:41:08,756 - INFO - Epoch[3] optimizer-step 2600/4608: cls=0.029287, overall=0.029287
+2026-09-06 09:41:56,348 - INFO - Epoch[3] optimizer-step 2700/4608: cls=0.029305, overall=0.029305
+2026-09-06 09:42:46,006 - INFO - Epoch[3] optimizer-step 2800/4608: cls=0.029642, overall=0.029642
+2026-09-06 09:43:33,241 - INFO - Epoch[3] optimizer-step 2900/4608: cls=0.029411, overall=0.029411
+2026-09-06 09:44:20,724 - INFO - Epoch[3] optimizer-step 3000/4608: cls=0.029226, overall=0.029226
+2026-09-06 09:45:10,587 - INFO - Epoch[3] optimizer-step 3100/4608: cls=0.029117, overall=0.029117
+2026-09-06 09:45:57,300 - INFO - Epoch[3] optimizer-step 3200/4608: cls=0.029131, overall=0.029131
+2026-09-06 09:46:47,371 - INFO - Epoch[3] optimizer-step 3300/4608: cls=0.029185, overall=0.029185
+2026-09-06 09:47:34,920 - INFO - Epoch[3] optimizer-step 3400/4608: cls=0.029117, overall=0.029117
+2026-09-06 09:48:22,169 - INFO - Epoch[3] optimizer-step 3500/4608: cls=0.029251, overall=0.029251
+2026-09-06 09:49:12,293 - INFO - Epoch[3] optimizer-step 3600/4608: cls=0.029016, overall=0.029016
+2026-09-06 09:49:58,923 - INFO - Epoch[3] optimizer-step 3700/4608: cls=0.029148, overall=0.029148
+2026-09-06 09:50:45,501 - INFO - Epoch[3] optimizer-step 3800/4608: cls=0.029285, overall=0.029285
+2026-09-06 09:51:35,168 - INFO - Epoch[3] optimizer-step 3900/4608: cls=0.029451, overall=0.029451
+2026-09-06 09:52:21,695 - INFO - Epoch[3] optimizer-step 4000/4608: cls=0.029218, overall=0.029218
+2026-09-06 09:53:11,808 - INFO - Epoch[3] optimizer-step 4100/4608: cls=0.029217, overall=0.029217
+2026-09-06 09:53:58,608 - INFO - Epoch[3] optimizer-step 4200/4608: cls=0.029112, overall=0.029112
+2026-09-06 09:54:45,532 - INFO - Epoch[3] optimizer-step 4300/4608: cls=0.028882, overall=0.028882
+2026-09-06 09:55:35,801 - INFO - Epoch[3] optimizer-step 4400/4608: cls=0.028844, overall=0.028844
+2026-09-06 09:56:22,829 - INFO - Epoch[3] optimizer-step 4500/4608: cls=0.028797, overall=0.028797
+2026-09-06 09:57:09,778 - INFO - Epoch[3] optimizer-step 4600/4608: cls=0.028779, overall=0.028779
+2026-09-06 09:57:13,234 - INFO - Epoch[3] optimizer-step 4608/4608: cls=0.028780, overall=0.028780
+2026-09-06 09:58:46,487 - INFO - Best checkpoint saved: ./logs/training/xception_ffpp_fit_2026-09-06-07-21-06/checkpoints/best.pth
+2026-09-06 09:58:46,487 - INFO - Best checkpoint metadata saved: ./logs/training/xception_ffpp_fit_2026-09-06-07-21-06/checkpoints/best_metadata.json
+2026-09-06 09:58:46,489 - INFO - ===> Epoch[3] completed; DEV frame_auc=0.990477, video_auc=0.998867, videos=720, best=True
+2026-09-06 09:58:46,489 - INFO - ===> Epoch[3] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988667052469136  frame_auc=0.9904769688088321  completed_epoch=3  optimizer_steps_completed=18432  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 09:58:46,490 - INFO - ===> Epoch[4] start
+2026-09-06 09:58:47,515 - INFO - Epoch[4] optimizer-step 1/4608: cls=0.007280, overall=0.007280
+2026-09-06 09:59:34,721 - INFO - Epoch[4] optimizer-step 100/4608: cls=0.016296, overall=0.016296
+2026-09-06 10:00:25,157 - INFO - Epoch[4] optimizer-step 200/4608: cls=0.019280, overall=0.019280
+2026-09-06 10:01:12,532 - INFO - Epoch[4] optimizer-step 300/4608: cls=0.019390, overall=0.019390
+2026-09-06 10:02:03,059 - INFO - Epoch[4] optimizer-step 400/4608: cls=0.021679, overall=0.021679
+2026-09-06 10:02:50,777 - INFO - Epoch[4] optimizer-step 500/4608: cls=0.021878, overall=0.021878
+2026-09-06 10:03:37,880 - INFO - Epoch[4] optimizer-step 600/4608: cls=0.023606, overall=0.023606
+2026-09-06 10:04:28,023 - INFO - Epoch[4] optimizer-step 700/4608: cls=0.023468, overall=0.023468
+2026-09-06 10:05:14,691 - INFO - Epoch[4] optimizer-step 800/4608: cls=0.023145, overall=0.023145
+2026-09-06 10:06:01,222 - INFO - Epoch[4] optimizer-step 900/4608: cls=0.023316, overall=0.023316
+2026-09-06 10:06:51,210 - INFO - Epoch[4] optimizer-step 1000/4608: cls=0.023961, overall=0.023961
+2026-09-06 10:07:37,714 - INFO - Epoch[4] optimizer-step 1100/4608: cls=0.024869, overall=0.024869
+2026-09-06 10:08:28,570 - INFO - Epoch[4] optimizer-step 1200/4608: cls=0.025545, overall=0.025545
+2026-09-06 10:09:16,177 - INFO - Epoch[4] optimizer-step 1300/4608: cls=0.025663, overall=0.025663
+2026-09-06 10:10:03,023 - INFO - Epoch[4] optimizer-step 1400/4608: cls=0.025922, overall=0.025922
+2026-09-06 10:10:53,133 - INFO - Epoch[4] optimizer-step 1500/4608: cls=0.026352, overall=0.026352
+2026-09-06 10:11:39,858 - INFO - Epoch[4] optimizer-step 1600/4608: cls=0.026382, overall=0.026382
+2026-09-06 10:12:26,727 - INFO - Epoch[4] optimizer-step 1700/4608: cls=0.026133, overall=0.026133
+2026-09-06 10:13:16,576 - INFO - Epoch[4] optimizer-step 1800/4608: cls=0.026035, overall=0.026035
+2026-09-06 10:14:03,178 - INFO - Epoch[4] optimizer-step 1900/4608: cls=0.025965, overall=0.025965
+2026-09-06 10:14:52,734 - INFO - Epoch[4] optimizer-step 2000/4608: cls=0.026528, overall=0.026528
+2026-09-06 10:15:39,449 - INFO - Epoch[4] optimizer-step 2100/4608: cls=0.026657, overall=0.026657
+2026-09-06 10:16:26,116 - INFO - Epoch[4] optimizer-step 2200/4608: cls=0.026729, overall=0.026729
+2026-09-06 10:17:15,818 - INFO - Epoch[4] optimizer-step 2300/4608: cls=0.026269, overall=0.026269
+2026-09-06 10:18:02,459 - INFO - Epoch[4] optimizer-step 2400/4608: cls=0.025969, overall=0.025969
+2026-09-06 10:18:49,149 - INFO - Epoch[4] optimizer-step 2500/4608: cls=0.026248, overall=0.026248
+2026-09-06 10:19:39,106 - INFO - Epoch[4] optimizer-step 2600/4608: cls=0.025971, overall=0.025971
+2026-09-06 10:20:25,782 - INFO - Epoch[4] optimizer-step 2700/4608: cls=0.026164, overall=0.026164
+2026-09-06 10:21:12,594 - INFO - Epoch[4] optimizer-step 2800/4608: cls=0.025989, overall=0.025989
+2026-09-06 10:22:02,828 - INFO - Epoch[4] optimizer-step 2900/4608: cls=0.026272, overall=0.026272
+2026-09-06 10:22:49,886 - INFO - Epoch[4] optimizer-step 3000/4608: cls=0.026088, overall=0.026088
+2026-09-06 10:23:39,182 - INFO - Epoch[4] optimizer-step 3100/4608: cls=0.026107, overall=0.026107
+2026-09-06 10:24:34,039 - INFO - Epoch[4] optimizer-step 3200/4608: cls=0.026084, overall=0.026084
+2026-09-06 10:25:21,788 - INFO - Epoch[4] optimizer-step 3300/4608: cls=0.026011, overall=0.026011
+2026-09-06 10:26:08,952 - INFO - Epoch[4] optimizer-step 3400/4608: cls=0.026147, overall=0.026147
+2026-09-06 10:26:57,334 - INFO - Epoch[4] optimizer-step 3500/4608: cls=0.026101, overall=0.026101
+2026-09-06 10:27:44,671 - INFO - Epoch[4] optimizer-step 3600/4608: cls=0.026049, overall=0.026049
+2026-09-06 10:28:32,196 - INFO - Epoch[4] optimizer-step 3700/4608: cls=0.026236, overall=0.026236
+2026-09-06 10:29:22,405 - INFO - Epoch[4] optimizer-step 3800/4608: cls=0.026279, overall=0.026279
+2026-09-06 10:30:09,558 - INFO - Epoch[4] optimizer-step 3900/4608: cls=0.026273, overall=0.026273
+2026-09-06 10:30:57,654 - INFO - Epoch[4] optimizer-step 4000/4608: cls=0.026098, overall=0.026098
+2026-09-06 10:31:45,291 - INFO - Epoch[4] optimizer-step 4100/4608: cls=0.025967, overall=0.025967
+2026-09-06 10:32:33,299 - INFO - Epoch[4] optimizer-step 4200/4608: cls=0.026023, overall=0.026023
+2026-09-06 10:33:20,580 - INFO - Epoch[4] optimizer-step 4300/4608: cls=0.026218, overall=0.026218
+2026-09-06 10:34:08,247 - INFO - Epoch[4] optimizer-step 4400/4608: cls=0.026259, overall=0.026259
+2026-09-06 10:35:26,375 - INFO - Epoch[4] optimizer-step 4500/4608: cls=0.026399, overall=0.026399
+2026-09-06 10:36:13,946 - INFO - Epoch[4] optimizer-step 4600/4608: cls=0.026416, overall=0.026416
+2026-09-06 10:36:17,701 - INFO - Epoch[4] optimizer-step 4608/4608: cls=0.026390, overall=0.026390
+2026-09-06 10:37:48,274 - INFO - ===> Epoch[4] completed; DEV frame_auc=0.988273, video_auc=0.997975, videos=720, best=False
+2026-09-06 10:37:48,275 - INFO - ===> Epoch[4] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988667052469136  frame_auc=0.9904769688088321  completed_epoch=3  optimizer_steps_completed=18432  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 10:37:48,275 - INFO - ===> Epoch[5] start
+2026-09-06 10:37:49,217 - INFO - Epoch[5] optimizer-step 1/4608: cls=0.003067, overall=0.003067
+2026-09-06 10:38:36,299 - INFO - Epoch[5] optimizer-step 100/4608: cls=0.017566, overall=0.017566
+2026-09-06 10:39:23,747 - INFO - Epoch[5] optimizer-step 200/4608: cls=0.019873, overall=0.019873
+2026-09-06 10:40:11,066 - INFO - Epoch[5] optimizer-step 300/4608: cls=0.019174, overall=0.019174
+2026-09-06 10:40:58,621 - INFO - Epoch[5] optimizer-step 400/4608: cls=0.019386, overall=0.019386
+2026-09-06 10:41:46,056 - INFO - Epoch[5] optimizer-step 500/4608: cls=0.019692, overall=0.019692
+2026-09-06 10:42:33,758 - INFO - Epoch[5] optimizer-step 600/4608: cls=0.020667, overall=0.020667
+2026-09-06 10:43:22,850 - INFO - Epoch[5] optimizer-step 700/4608: cls=0.019591, overall=0.019591
+2026-09-06 10:44:10,132 - INFO - Epoch[5] optimizer-step 800/4608: cls=0.019630, overall=0.019630
+2026-09-06 10:44:57,488 - INFO - Epoch[5] optimizer-step 900/4608: cls=0.020372, overall=0.020372
+2026-09-06 10:45:45,093 - INFO - Epoch[5] optimizer-step 1000/4608: cls=0.021235, overall=0.021235
+2026-09-06 10:46:32,576 - INFO - Epoch[5] optimizer-step 1100/4608: cls=0.020269, overall=0.020269
+2026-09-06 10:47:20,105 - INFO - Epoch[5] optimizer-step 1200/4608: cls=0.020730, overall=0.020730
+2026-09-06 10:48:07,922 - INFO - Epoch[5] optimizer-step 1300/4608: cls=0.021353, overall=0.021353
+2026-09-06 10:48:55,479 - INFO - Epoch[5] optimizer-step 1400/4608: cls=0.020896, overall=0.020896
+2026-09-06 10:49:43,006 - INFO - Epoch[5] optimizer-step 1500/4608: cls=0.021835, overall=0.021835
+2026-09-06 10:50:30,226 - INFO - Epoch[5] optimizer-step 1600/4608: cls=0.022336, overall=0.022336
+2026-09-06 10:51:17,617 - INFO - Epoch[5] optimizer-step 1700/4608: cls=0.022155, overall=0.022155
+2026-09-06 10:52:05,325 - INFO - Epoch[5] optimizer-step 1800/4608: cls=0.022121, overall=0.022121
+2026-09-06 10:52:53,263 - INFO - Epoch[5] optimizer-step 1900/4608: cls=0.022400, overall=0.022400
+2026-09-06 10:53:40,593 - INFO - Epoch[5] optimizer-step 2000/4608: cls=0.022798, overall=0.022798
+2026-09-06 10:54:28,297 - INFO - Epoch[5] optimizer-step 2100/4608: cls=0.022984, overall=0.022984
+2026-09-06 10:55:15,972 - INFO - Epoch[5] optimizer-step 2200/4608: cls=0.023087, overall=0.023087
+2026-09-06 10:56:03,489 - INFO - Epoch[5] optimizer-step 2300/4608: cls=0.023222, overall=0.023222
+2026-09-06 10:56:50,657 - INFO - Epoch[5] optimizer-step 2400/4608: cls=0.023189, overall=0.023189
+2026-09-06 10:57:38,088 - INFO - Epoch[5] optimizer-step 2500/4608: cls=0.022828, overall=0.022828
+2026-09-06 10:58:25,914 - INFO - Epoch[5] optimizer-step 2600/4608: cls=0.022627, overall=0.022627
+2026-09-06 10:59:13,068 - INFO - Epoch[5] optimizer-step 2700/4608: cls=0.022796, overall=0.022796
+2026-09-06 11:00:00,364 - INFO - Epoch[5] optimizer-step 2800/4608: cls=0.022827, overall=0.022827
+2026-09-06 11:00:48,062 - INFO - Epoch[5] optimizer-step 2900/4608: cls=0.022956, overall=0.022956
+2026-09-06 11:01:35,943 - INFO - Epoch[5] optimizer-step 3000/4608: cls=0.023065, overall=0.023065
+2026-09-06 11:02:23,883 - INFO - Epoch[5] optimizer-step 3100/4608: cls=0.022849, overall=0.022849
+2026-09-06 11:03:12,168 - INFO - Epoch[5] optimizer-step 3200/4608: cls=0.022903, overall=0.022903
+2026-09-06 11:03:59,978 - INFO - Epoch[5] optimizer-step 3300/4608: cls=0.022930, overall=0.022930
+2026-09-06 11:04:47,562 - INFO - Epoch[5] optimizer-step 3400/4608: cls=0.023394, overall=0.023394
+2026-09-06 11:05:35,125 - INFO - Epoch[5] optimizer-step 3500/4608: cls=0.023451, overall=0.023451
+2026-09-06 11:06:22,760 - INFO - Epoch[5] optimizer-step 3600/4608: cls=0.023399, overall=0.023399
+2026-09-06 11:07:10,498 - INFO - Epoch[5] optimizer-step 3700/4608: cls=0.023595, overall=0.023595
+2026-09-06 11:07:58,180 - INFO - Epoch[5] optimizer-step 3800/4608: cls=0.023528, overall=0.023528
+2026-09-06 11:08:46,145 - INFO - Epoch[5] optimizer-step 3900/4608: cls=0.023443, overall=0.023443
+2026-09-06 11:09:34,164 - INFO - Epoch[5] optimizer-step 4000/4608: cls=0.023286, overall=0.023286
+2026-09-06 11:10:21,539 - INFO - Epoch[5] optimizer-step 4100/4608: cls=0.023714, overall=0.023714
+2026-09-06 11:11:09,573 - INFO - Epoch[5] optimizer-step 4200/4608: cls=0.023701, overall=0.023701
+2026-09-06 11:11:57,568 - INFO - Epoch[5] optimizer-step 4300/4608: cls=0.023621, overall=0.023621
+2026-09-06 11:12:44,988 - INFO - Epoch[5] optimizer-step 4400/4608: cls=0.023796, overall=0.023796
+2026-09-06 11:13:32,768 - INFO - Epoch[5] optimizer-step 4500/4608: cls=0.023843, overall=0.023843
+2026-09-06 11:14:20,583 - INFO - Epoch[5] optimizer-step 4600/4608: cls=0.023866, overall=0.023866
+2026-09-06 11:14:24,509 - INFO - Epoch[5] optimizer-step 4608/4608: cls=0.023849, overall=0.023849
+2026-09-06 11:15:56,162 - INFO - ===> Epoch[5] completed; DEV frame_auc=0.987986, video_auc=0.997504, videos=720, best=False
+2026-09-06 11:15:56,163 - INFO - ===> Epoch[5] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988667052469136  frame_auc=0.9904769688088321  completed_epoch=3  optimizer_steps_completed=18432  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 11:15:56,164 - INFO - ===> Epoch[6] start
+2026-09-06 11:15:57,251 - INFO - Epoch[6] optimizer-step 1/4608: cls=0.006364, overall=0.006364
+2026-09-06 11:16:44,867 - INFO - Epoch[6] optimizer-step 100/4608: cls=0.012886, overall=0.012886
+2026-09-06 11:17:33,038 - INFO - Epoch[6] optimizer-step 200/4608: cls=0.019253, overall=0.019253
+2026-09-06 11:18:21,241 - INFO - Epoch[6] optimizer-step 300/4608: cls=0.022619, overall=0.022619
+2026-09-06 11:19:08,724 - INFO - Epoch[6] optimizer-step 400/4608: cls=0.020809, overall=0.020809
+2026-09-06 11:19:56,519 - INFO - Epoch[6] optimizer-step 500/4608: cls=0.020634, overall=0.020634
+2026-09-06 11:20:43,772 - INFO - Epoch[6] optimizer-step 600/4608: cls=0.022369, overall=0.022369
+2026-09-06 11:21:31,206 - INFO - Epoch[6] optimizer-step 700/4608: cls=0.021559, overall=0.021559
+2026-09-06 11:22:19,225 - INFO - Epoch[6] optimizer-step 800/4608: cls=0.021870, overall=0.021870
+2026-09-06 11:23:07,225 - INFO - Epoch[6] optimizer-step 900/4608: cls=0.021388, overall=0.021388
+2026-09-06 11:23:54,834 - INFO - Epoch[6] optimizer-step 1000/4608: cls=0.021735, overall=0.021735
+2026-09-06 11:24:42,711 - INFO - Epoch[6] optimizer-step 1100/4608: cls=0.021876, overall=0.021876
+2026-09-06 11:25:30,249 - INFO - Epoch[6] optimizer-step 1200/4608: cls=0.021556, overall=0.021556
+2026-09-06 11:26:18,131 - INFO - Epoch[6] optimizer-step 1300/4608: cls=0.021672, overall=0.021672
+2026-09-06 11:27:06,083 - INFO - Epoch[6] optimizer-step 1400/4608: cls=0.021752, overall=0.021752
+2026-09-06 11:27:54,166 - INFO - Epoch[6] optimizer-step 1500/4608: cls=0.022023, overall=0.022023
+2026-09-06 11:28:41,676 - INFO - Epoch[6] optimizer-step 1600/4608: cls=0.022007, overall=0.022007
+2026-09-06 11:29:29,147 - INFO - Epoch[6] optimizer-step 1700/4608: cls=0.021900, overall=0.021900
+2026-09-06 11:30:16,949 - INFO - Epoch[6] optimizer-step 1800/4608: cls=0.021400, overall=0.021400
+2026-09-06 11:31:04,837 - INFO - Epoch[6] optimizer-step 1900/4608: cls=0.021815, overall=0.021815
+2026-09-06 11:31:52,099 - INFO - Epoch[6] optimizer-step 2000/4608: cls=0.022433, overall=0.022433
+2026-09-06 11:32:39,884 - INFO - Epoch[6] optimizer-step 2100/4608: cls=0.022459, overall=0.022459
+2026-09-06 11:33:27,442 - INFO - Epoch[6] optimizer-step 2200/4608: cls=0.022057, overall=0.022057
+2026-09-06 11:34:14,894 - INFO - Epoch[6] optimizer-step 2300/4608: cls=0.022473, overall=0.022473
+2026-09-06 11:35:02,534 - INFO - Epoch[6] optimizer-step 2400/4608: cls=0.022875, overall=0.022875
+2026-09-06 11:35:50,647 - INFO - Epoch[6] optimizer-step 2500/4608: cls=0.022919, overall=0.022919
+2026-09-06 11:36:38,300 - INFO - Epoch[6] optimizer-step 2600/4608: cls=0.022833, overall=0.022833
+2026-09-06 11:37:25,706 - INFO - Epoch[6] optimizer-step 2700/4608: cls=0.022881, overall=0.022881
+2026-09-06 11:38:13,421 - INFO - Epoch[6] optimizer-step 2800/4608: cls=0.022991, overall=0.022991
+2026-09-06 11:39:00,819 - INFO - Epoch[6] optimizer-step 2900/4608: cls=0.022740, overall=0.022740
+2026-09-06 11:39:48,603 - INFO - Epoch[6] optimizer-step 3000/4608: cls=0.022577, overall=0.022577
+2026-09-06 11:40:36,767 - INFO - Epoch[6] optimizer-step 3100/4608: cls=0.022507, overall=0.022507
+2026-09-06 11:41:23,940 - INFO - Epoch[6] optimizer-step 3200/4608: cls=0.022327, overall=0.022327
+2026-09-06 11:42:11,632 - INFO - Epoch[6] optimizer-step 3300/4608: cls=0.022019, overall=0.022019
+2026-09-06 11:42:59,192 - INFO - Epoch[6] optimizer-step 3400/4608: cls=0.021855, overall=0.021855
+2026-09-06 11:43:46,705 - INFO - Epoch[6] optimizer-step 3500/4608: cls=0.022140, overall=0.022140
+2026-09-06 11:44:34,543 - INFO - Epoch[6] optimizer-step 3600/4608: cls=0.022441, overall=0.022441
+2026-09-06 11:45:21,833 - INFO - Epoch[6] optimizer-step 3700/4608: cls=0.022570, overall=0.022570
+2026-09-06 11:46:09,426 - INFO - Epoch[6] optimizer-step 3800/4608: cls=0.022221, overall=0.022221
+2026-09-06 11:46:57,343 - INFO - Epoch[6] optimizer-step 3900/4608: cls=0.022380, overall=0.022380
+2026-09-06 11:47:45,200 - INFO - Epoch[6] optimizer-step 4000/4608: cls=0.022262, overall=0.022262
+2026-09-06 11:48:32,491 - INFO - Epoch[6] optimizer-step 4100/4608: cls=0.022331, overall=0.022331
+2026-09-06 11:49:20,300 - INFO - Epoch[6] optimizer-step 4200/4608: cls=0.022556, overall=0.022556
+2026-09-06 11:50:08,111 - INFO - Epoch[6] optimizer-step 4300/4608: cls=0.022623, overall=0.022623
+2026-09-06 11:50:56,212 - INFO - Epoch[6] optimizer-step 4400/4608: cls=0.022659, overall=0.022659
+2026-09-06 11:51:44,022 - INFO - Epoch[6] optimizer-step 4500/4608: cls=0.022828, overall=0.022828
+2026-09-06 11:52:32,084 - INFO - Epoch[6] optimizer-step 4600/4608: cls=0.022850, overall=0.022850
+2026-09-06 11:52:36,019 - INFO - Epoch[6] optimizer-step 4608/4608: cls=0.022838, overall=0.022838
+2026-09-06 11:54:09,973 - INFO - ===> Epoch[6] completed; DEV frame_auc=0.988192, video_auc=0.996938, videos=720, best=False
+2026-09-06 11:54:09,975 - INFO - ===> Epoch[6] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988667052469136  frame_auc=0.9904769688088321  completed_epoch=3  optimizer_steps_completed=18432  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 11:54:09,975 - INFO - ===> Epoch[7] start
+2026-09-06 11:54:11,199 - INFO - Epoch[7] optimizer-step 1/4608: cls=0.004804, overall=0.004804
+2026-09-06 11:54:58,703 - INFO - Epoch[7] optimizer-step 100/4608: cls=0.016717, overall=0.016717
+2026-09-06 11:55:46,380 - INFO - Epoch[7] optimizer-step 200/4608: cls=0.017571, overall=0.017571
+2026-09-06 11:56:33,879 - INFO - Epoch[7] optimizer-step 300/4608: cls=0.019817, overall=0.019817
+2026-09-06 11:57:21,973 - INFO - Epoch[7] optimizer-step 400/4608: cls=0.022284, overall=0.022284
+2026-09-06 11:58:09,969 - INFO - Epoch[7] optimizer-step 500/4608: cls=0.021783, overall=0.021783
+2026-09-06 11:58:57,115 - INFO - Epoch[7] optimizer-step 600/4608: cls=0.021952, overall=0.021952
+2026-09-06 11:59:44,513 - INFO - Epoch[7] optimizer-step 700/4608: cls=0.020233, overall=0.020233
+2026-09-06 12:00:31,953 - INFO - Epoch[7] optimizer-step 800/4608: cls=0.020184, overall=0.020184
+2026-09-06 12:01:19,768 - INFO - Epoch[7] optimizer-step 900/4608: cls=0.019637, overall=0.019637
+2026-09-06 12:02:07,335 - INFO - Epoch[7] optimizer-step 1000/4608: cls=0.019754, overall=0.019754
+2026-09-06 12:02:54,942 - INFO - Epoch[7] optimizer-step 1100/4608: cls=0.019840, overall=0.019840
+2026-09-06 12:03:41,850 - INFO - Epoch[7] optimizer-step 1200/4608: cls=0.020422, overall=0.020422
+2026-09-06 12:04:29,368 - INFO - Epoch[7] optimizer-step 1300/4608: cls=0.020294, overall=0.020294
+2026-09-06 12:05:16,708 - INFO - Epoch[7] optimizer-step 1400/4608: cls=0.020307, overall=0.020307
+2026-09-06 12:06:04,237 - INFO - Epoch[7] optimizer-step 1500/4608: cls=0.020573, overall=0.020573
+2026-09-06 12:06:52,470 - INFO - Epoch[7] optimizer-step 1600/4608: cls=0.020439, overall=0.020439
+2026-09-06 12:07:40,707 - INFO - Epoch[7] optimizer-step 1700/4608: cls=0.020510, overall=0.020510
+2026-09-06 12:08:30,333 - INFO - Epoch[7] optimizer-step 1800/4608: cls=0.020490, overall=0.020490
+2026-09-06 12:09:18,187 - INFO - Epoch[7] optimizer-step 1900/4608: cls=0.020059, overall=0.020059
+2026-09-06 12:10:06,066 - INFO - Epoch[7] optimizer-step 2000/4608: cls=0.021411, overall=0.021411
+2026-09-06 12:10:54,319 - INFO - Epoch[7] optimizer-step 2100/4608: cls=0.021205, overall=0.021205
+2026-09-06 12:11:42,277 - INFO - Epoch[7] optimizer-step 2200/4608: cls=0.021092, overall=0.021092
+2026-09-06 12:12:30,161 - INFO - Epoch[7] optimizer-step 2300/4608: cls=0.021069, overall=0.021069
+2026-09-06 12:13:18,455 - INFO - Epoch[7] optimizer-step 2400/4608: cls=0.020842, overall=0.020842
+2026-09-06 12:14:06,346 - INFO - Epoch[7] optimizer-step 2500/4608: cls=0.020716, overall=0.020716
+2026-09-06 12:14:54,460 - INFO - Epoch[7] optimizer-step 2600/4608: cls=0.020692, overall=0.020692
+2026-09-06 12:15:42,323 - INFO - Epoch[7] optimizer-step 2700/4608: cls=0.021245, overall=0.021245
+2026-09-06 12:16:29,952 - INFO - Epoch[7] optimizer-step 2800/4608: cls=0.021575, overall=0.021575
+2026-09-06 12:17:17,604 - INFO - Epoch[7] optimizer-step 2900/4608: cls=0.021587, overall=0.021587
+2026-09-06 12:18:05,359 - INFO - Epoch[7] optimizer-step 3000/4608: cls=0.021674, overall=0.021674
+2026-09-06 12:18:53,424 - INFO - Epoch[7] optimizer-step 3100/4608: cls=0.022015, overall=0.022015
+2026-09-06 12:19:41,092 - INFO - Epoch[7] optimizer-step 3200/4608: cls=0.021840, overall=0.021840
+2026-09-06 12:20:28,952 - INFO - Epoch[7] optimizer-step 3300/4608: cls=0.021490, overall=0.021490
+2026-09-06 12:21:16,965 - INFO - Epoch[7] optimizer-step 3400/4608: cls=0.021385, overall=0.021385
+2026-09-06 12:22:04,652 - INFO - Epoch[7] optimizer-step 3500/4608: cls=0.021370, overall=0.021370
+2026-09-06 12:22:52,367 - INFO - Epoch[7] optimizer-step 3600/4608: cls=0.021459, overall=0.021459
+2026-09-06 12:23:40,100 - INFO - Epoch[7] optimizer-step 3700/4608: cls=0.021668, overall=0.021668
+2026-09-06 12:24:27,819 - INFO - Epoch[7] optimizer-step 3800/4608: cls=0.021461, overall=0.021461
+2026-09-06 12:25:15,038 - INFO - Epoch[7] optimizer-step 3900/4608: cls=0.021334, overall=0.021334
+2026-09-06 12:26:02,824 - INFO - Epoch[7] optimizer-step 4000/4608: cls=0.021491, overall=0.021491
+2026-09-06 12:26:50,861 - INFO - Epoch[7] optimizer-step 4100/4608: cls=0.021431, overall=0.021431
+2026-09-06 12:27:38,736 - INFO - Epoch[7] optimizer-step 4200/4608: cls=0.021611, overall=0.021611
+2026-09-06 12:28:26,354 - INFO - Epoch[7] optimizer-step 4300/4608: cls=0.021689, overall=0.021689
+2026-09-06 12:29:14,185 - INFO - Epoch[7] optimizer-step 4400/4608: cls=0.021644, overall=0.021644
+2026-09-06 12:30:02,044 - INFO - Epoch[7] optimizer-step 4500/4608: cls=0.021525, overall=0.021525
+2026-09-06 12:30:49,734 - INFO - Epoch[7] optimizer-step 4600/4608: cls=0.021562, overall=0.021562
+2026-09-06 12:30:53,576 - INFO - Epoch[7] optimizer-step 4608/4608: cls=0.021553, overall=0.021553
+2026-09-06 12:32:25,035 - INFO - ===> Epoch[7] completed; DEV frame_auc=0.985930, video_auc=0.996889, videos=720, best=False
+2026-09-06 12:32:25,038 - INFO - ===> Epoch[7] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988667052469136  frame_auc=0.9904769688088321  completed_epoch=3  optimizer_steps_completed=18432  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 12:32:25,039 - INFO - ===> Epoch[8] start
+2026-09-06 12:32:26,082 - INFO - Epoch[8] optimizer-step 1/4608: cls=0.002665, overall=0.002665
+2026-09-06 12:33:13,564 - INFO - Epoch[8] optimizer-step 100/4608: cls=0.014852, overall=0.014852
+2026-09-06 12:34:01,842 - INFO - Epoch[8] optimizer-step 200/4608: cls=0.017591, overall=0.017591
+2026-09-06 12:34:49,591 - INFO - Epoch[8] optimizer-step 300/4608: cls=0.016526, overall=0.016526
+2026-09-06 12:35:37,286 - INFO - Epoch[8] optimizer-step 400/4608: cls=0.018385, overall=0.018385
+2026-09-06 12:36:24,867 - INFO - Epoch[8] optimizer-step 500/4608: cls=0.020259, overall=0.020259
+2026-09-06 12:37:13,258 - INFO - Epoch[8] optimizer-step 600/4608: cls=0.020695, overall=0.020695
+2026-09-06 12:38:00,982 - INFO - Epoch[8] optimizer-step 700/4608: cls=0.020323, overall=0.020323
+2026-09-06 12:38:48,499 - INFO - Epoch[8] optimizer-step 800/4608: cls=0.019286, overall=0.019286
+2026-09-06 12:39:36,312 - INFO - Epoch[8] optimizer-step 900/4608: cls=0.019628, overall=0.019628
+2026-09-06 12:40:24,046 - INFO - Epoch[8] optimizer-step 1000/4608: cls=0.020692, overall=0.020692
+2026-09-06 12:41:12,048 - INFO - Epoch[8] optimizer-step 1100/4608: cls=0.021030, overall=0.021030
+2026-09-06 12:41:59,970 - INFO - Epoch[8] optimizer-step 1200/4608: cls=0.020916, overall=0.020916
+2026-09-06 12:42:47,871 - INFO - Epoch[8] optimizer-step 1300/4608: cls=0.020601, overall=0.020601
+2026-09-06 12:43:35,693 - INFO - Epoch[8] optimizer-step 1400/4608: cls=0.020475, overall=0.020475
+2026-09-06 12:44:23,311 - INFO - Epoch[8] optimizer-step 1500/4608: cls=0.019952, overall=0.019952
+2026-09-06 12:45:10,795 - INFO - Epoch[8] optimizer-step 1600/4608: cls=0.019903, overall=0.019903
+2026-09-06 12:45:58,332 - INFO - Epoch[8] optimizer-step 1700/4608: cls=0.020062, overall=0.020062
+2026-09-06 12:46:46,239 - INFO - Epoch[8] optimizer-step 1800/4608: cls=0.020702, overall=0.020702
+2026-09-06 12:47:33,855 - INFO - Epoch[8] optimizer-step 1900/4608: cls=0.020531, overall=0.020531
+2026-09-06 12:48:21,553 - INFO - Epoch[8] optimizer-step 2000/4608: cls=0.020865, overall=0.020865
+2026-09-06 12:49:09,484 - INFO - Epoch[8] optimizer-step 2100/4608: cls=0.021079, overall=0.021079
+2026-09-06 12:49:57,273 - INFO - Epoch[8] optimizer-step 2200/4608: cls=0.020886, overall=0.020886
+2026-09-06 12:50:45,012 - INFO - Epoch[8] optimizer-step 2300/4608: cls=0.021501, overall=0.021501
+2026-09-06 12:51:32,716 - INFO - Epoch[8] optimizer-step 2400/4608: cls=0.021619, overall=0.021619
+2026-09-06 12:52:20,552 - INFO - Epoch[8] optimizer-step 2500/4608: cls=0.021250, overall=0.021250
+2026-09-06 12:53:07,984 - INFO - Epoch[8] optimizer-step 2600/4608: cls=0.021405, overall=0.021405
+2026-09-06 12:53:55,557 - INFO - Epoch[8] optimizer-step 2700/4608: cls=0.021259, overall=0.021259
+2026-09-06 12:54:43,112 - INFO - Epoch[8] optimizer-step 2800/4608: cls=0.021347, overall=0.021347
+2026-09-06 12:55:31,020 - INFO - Epoch[8] optimizer-step 2900/4608: cls=0.021314, overall=0.021314
+2026-09-06 12:56:18,483 - INFO - Epoch[8] optimizer-step 3000/4608: cls=0.021080, overall=0.021080
+2026-09-06 12:57:06,042 - INFO - Epoch[8] optimizer-step 3100/4608: cls=0.020973, overall=0.020973
+2026-09-06 12:57:53,587 - INFO - Epoch[8] optimizer-step 3200/4608: cls=0.021172, overall=0.021172
+2026-09-06 12:58:41,245 - INFO - Epoch[8] optimizer-step 3300/4608: cls=0.021142, overall=0.021142
+2026-09-06 12:59:29,058 - INFO - Epoch[8] optimizer-step 3400/4608: cls=0.021099, overall=0.021099
+2026-09-06 13:00:16,737 - INFO - Epoch[8] optimizer-step 3500/4608: cls=0.020955, overall=0.020955
+2026-09-06 13:01:04,575 - INFO - Epoch[8] optimizer-step 3600/4608: cls=0.021192, overall=0.021192
+2026-09-06 13:01:52,416 - INFO - Epoch[8] optimizer-step 3700/4608: cls=0.021253, overall=0.021253
+2026-09-06 13:02:40,593 - INFO - Epoch[8] optimizer-step 3800/4608: cls=0.021487, overall=0.021487
+2026-09-06 13:03:28,516 - INFO - Epoch[8] optimizer-step 3900/4608: cls=0.021425, overall=0.021425
+2026-09-06 13:04:16,408 - INFO - Epoch[8] optimizer-step 4000/4608: cls=0.021350, overall=0.021350
+2026-09-06 13:05:03,951 - INFO - Epoch[8] optimizer-step 4100/4608: cls=0.021384, overall=0.021384
+2026-09-06 13:05:51,647 - INFO - Epoch[8] optimizer-step 4200/4608: cls=0.021388, overall=0.021388
+2026-09-06 13:06:39,443 - INFO - Epoch[8] optimizer-step 4300/4608: cls=0.021280, overall=0.021280
+2026-09-06 13:07:27,155 - INFO - Epoch[8] optimizer-step 4400/4608: cls=0.021210, overall=0.021210
+2026-09-06 13:08:15,173 - INFO - Epoch[8] optimizer-step 4500/4608: cls=0.021112, overall=0.021112
+2026-09-06 13:09:02,633 - INFO - Epoch[8] optimizer-step 4600/4608: cls=0.021074, overall=0.021074
+2026-09-06 13:09:06,438 - INFO - Epoch[8] optimizer-step 4608/4608: cls=0.021085, overall=0.021085
+2026-09-06 13:10:37,636 - INFO - ===> Epoch[8] completed; DEV frame_auc=0.986147, video_auc=0.998505, videos=720, best=False
+2026-09-06 13:10:37,637 - INFO - ===> Epoch[8] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988667052469136  frame_auc=0.9904769688088321  completed_epoch=3  optimizer_steps_completed=18432  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 13:10:37,637 - INFO - ===> Epoch[9] start
+2026-09-06 13:10:38,596 - INFO - Epoch[9] optimizer-step 1/4608: cls=0.030692, overall=0.030692
+2026-09-06 13:11:25,674 - INFO - Epoch[9] optimizer-step 100/4608: cls=0.023166, overall=0.023166
+2026-09-06 13:12:13,509 - INFO - Epoch[9] optimizer-step 200/4608: cls=0.019022, overall=0.019022
+2026-09-06 13:13:01,138 - INFO - Epoch[9] optimizer-step 300/4608: cls=0.019540, overall=0.019540
+2026-09-06 13:13:48,952 - INFO - Epoch[9] optimizer-step 400/4608: cls=0.018857, overall=0.018857
+2026-09-06 13:14:36,441 - INFO - Epoch[9] optimizer-step 500/4608: cls=0.019769, overall=0.019769
+2026-09-06 13:15:23,649 - INFO - Epoch[9] optimizer-step 600/4608: cls=0.018981, overall=0.018981
+2026-09-06 13:16:10,946 - INFO - Epoch[9] optimizer-step 700/4608: cls=0.017766, overall=0.017766
+2026-09-06 13:16:58,587 - INFO - Epoch[9] optimizer-step 800/4608: cls=0.018839, overall=0.018839
+2026-09-06 13:17:46,137 - INFO - Epoch[9] optimizer-step 900/4608: cls=0.018259, overall=0.018259
+2026-09-06 13:18:33,832 - INFO - Epoch[9] optimizer-step 1000/4608: cls=0.018944, overall=0.018944
+2026-09-06 13:19:21,654 - INFO - Epoch[9] optimizer-step 1100/4608: cls=0.018261, overall=0.018261
+2026-09-06 13:20:09,783 - INFO - Epoch[9] optimizer-step 1200/4608: cls=0.017879, overall=0.017879
+2026-09-06 13:20:57,589 - INFO - Epoch[9] optimizer-step 1300/4608: cls=0.018236, overall=0.018236
+2026-09-06 13:21:45,660 - INFO - Epoch[9] optimizer-step 1400/4608: cls=0.018613, overall=0.018613
+2026-09-06 13:22:33,813 - INFO - Epoch[9] optimizer-step 1500/4608: cls=0.018942, overall=0.018942
+2026-09-06 13:23:22,069 - INFO - Epoch[9] optimizer-step 1600/4608: cls=0.018968, overall=0.018968
+2026-09-06 13:24:10,249 - INFO - Epoch[9] optimizer-step 1700/4608: cls=0.019313, overall=0.019313
+2026-09-06 13:24:58,201 - INFO - Epoch[9] optimizer-step 1800/4608: cls=0.019270, overall=0.019270
+2026-09-06 13:25:46,293 - INFO - Epoch[9] optimizer-step 1900/4608: cls=0.019111, overall=0.019111
+2026-09-06 13:26:34,294 - INFO - Epoch[9] optimizer-step 2000/4608: cls=0.019445, overall=0.019445
+2026-09-06 13:27:22,475 - INFO - Epoch[9] optimizer-step 2100/4608: cls=0.019448, overall=0.019448
+2026-09-06 13:28:10,572 - INFO - Epoch[9] optimizer-step 2200/4608: cls=0.018987, overall=0.018987
+2026-09-06 13:28:58,475 - INFO - Epoch[9] optimizer-step 2300/4608: cls=0.019177, overall=0.019177
+2026-09-06 13:29:46,781 - INFO - Epoch[9] optimizer-step 2400/4608: cls=0.018850, overall=0.018850
+2026-09-06 13:30:34,835 - INFO - Epoch[9] optimizer-step 2500/4608: cls=0.018858, overall=0.018858
+2026-09-06 13:31:22,850 - INFO - Epoch[9] optimizer-step 2600/4608: cls=0.018727, overall=0.018727
+2026-09-06 13:32:11,164 - INFO - Epoch[9] optimizer-step 2700/4608: cls=0.018430, overall=0.018430
+2026-09-06 13:32:59,081 - INFO - Epoch[9] optimizer-step 2800/4608: cls=0.018778, overall=0.018778
+2026-09-06 13:33:47,358 - INFO - Epoch[9] optimizer-step 2900/4608: cls=0.019009, overall=0.019009
+2026-09-06 13:34:35,171 - INFO - Epoch[9] optimizer-step 3000/4608: cls=0.018976, overall=0.018976
+2026-09-06 13:35:23,295 - INFO - Epoch[9] optimizer-step 3100/4608: cls=0.018936, overall=0.018936
+2026-09-06 13:36:11,526 - INFO - Epoch[9] optimizer-step 3200/4608: cls=0.018924, overall=0.018924
+2026-09-06 13:36:59,661 - INFO - Epoch[9] optimizer-step 3300/4608: cls=0.018899, overall=0.018899
+2026-09-06 13:37:47,683 - INFO - Epoch[9] optimizer-step 3400/4608: cls=0.018793, overall=0.018793
+2026-09-06 13:38:35,947 - INFO - Epoch[9] optimizer-step 3500/4608: cls=0.018768, overall=0.018768
+2026-09-06 13:39:23,856 - INFO - Epoch[9] optimizer-step 3600/4608: cls=0.018874, overall=0.018874
+2026-09-06 13:40:12,268 - INFO - Epoch[9] optimizer-step 3700/4608: cls=0.019219, overall=0.019219
+2026-09-06 13:41:00,261 - INFO - Epoch[9] optimizer-step 3800/4608: cls=0.019468, overall=0.019468
+2026-09-06 13:41:48,754 - INFO - Epoch[9] optimizer-step 3900/4608: cls=0.019376, overall=0.019376
+2026-09-06 13:42:36,731 - INFO - Epoch[9] optimizer-step 4000/4608: cls=0.019374, overall=0.019374
+2026-09-06 13:43:25,064 - INFO - Epoch[9] optimizer-step 4100/4608: cls=0.019470, overall=0.019470
+2026-09-06 13:44:13,249 - INFO - Epoch[9] optimizer-step 4200/4608: cls=0.019557, overall=0.019557
+2026-09-06 13:45:01,341 - INFO - Epoch[9] optimizer-step 4300/4608: cls=0.019479, overall=0.019479
+2026-09-06 13:45:49,865 - INFO - Epoch[9] optimizer-step 4400/4608: cls=0.019309, overall=0.019309
+2026-09-06 13:46:38,110 - INFO - Epoch[9] optimizer-step 4500/4608: cls=0.019206, overall=0.019206
+2026-09-06 13:47:26,345 - INFO - Epoch[9] optimizer-step 4600/4608: cls=0.019200, overall=0.019200
+2026-09-06 13:47:30,144 - INFO - Epoch[9] optimizer-step 4608/4608: cls=0.019189, overall=0.019189
+2026-09-06 13:49:01,875 - INFO - ===> Epoch[9] completed; DEV frame_auc=0.987064, video_auc=0.997444, videos=720, best=False
+2026-09-06 13:49:01,875 - INFO - ===> Epoch[9] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988667052469136  frame_auc=0.9904769688088321  completed_epoch=3  optimizer_steps_completed=18432  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-06 13:49:01,876 - INFO - Training completed. Best DEV metric: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988667052469136  frame_auc=0.9904769688088321  completed_epoch=3  optimizer_steps_completed=18432  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================

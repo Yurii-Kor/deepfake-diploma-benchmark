@@ -22,3 +22,7 @@ training/weights/
 # Local result archives
 *.tar.gz
 *.tgz
+
+# Local training runtime files
+logs/*_console.log
+logs/*.pid

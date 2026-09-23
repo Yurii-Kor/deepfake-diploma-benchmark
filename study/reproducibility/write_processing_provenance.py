@@ -150,12 +150,14 @@ def manifest_summary(path):
 
     return {
         "records": len(rows),
+
         "dataset_counts": {
             key: value
             for key, value in sorted(
                 dataset_counts.items()
             )
         },
+
         "dataset_role_counts": {
             "{}|{}".format(
                 dataset,
@@ -168,6 +170,7 @@ def manifest_summary(path):
                 role_counts.items()
             )
         },
+
         "dataset_role_subgroup_counts": {
             "{}|{}|{}".format(
                 dataset,
@@ -182,6 +185,7 @@ def manifest_summary(path):
                 subgroup_counts.items()
             )
         },
+
         "study_label_counts": {
             key: value
             for key, value in sorted(
@@ -194,7 +198,8 @@ def manifest_summary(path):
 def file_record(path):
     if not path.is_file():
         raise FileNotFoundError(
-            "Required provenance file does not exist: {}".format(
+            "Required provenance file does not exist: {}"
+            .format(
                 path
             )
         )
@@ -282,6 +287,11 @@ def main():
         processing_root
         / "run_processing_corpus.py",
 
+        #
+        # The provenance generator itself is part of
+        # the reproducibility chain and must therefore
+        # be fingerprinted as well.
+        #
         processing_root
         / "write_processing_provenance.py",
     ]
@@ -308,6 +318,7 @@ def main():
 
         "repository": {
             "root": str(repo_root),
+
             **git_information(
                 repo_root
             ),
@@ -317,27 +328,34 @@ def main():
             "python": (
                 sys.version
             ),
+
             "python_executable": (
                 sys.executable
             ),
+
             "platform": (
                 platform.platform()
             ),
+
             "opencv": (
                 cv2.__version__
             ),
+
             "numpy": (
                 np.__version__
             ),
+
             "pyyaml": (
                 yaml.__version__
             ),
+
             "ffmpeg": first_line(
                 [
                     "ffmpeg",
                     "-version",
                 ]
             ),
+
             "ffprobe": first_line(
                 [
                     "ffprobe",
@@ -355,7 +373,9 @@ def main():
 
             "ffpp_official_splits": {
                 path.name: (
-                    file_record(path)
+                    file_record(
+                        path
+                    )
                 )
                 for path in split_files
             },
@@ -369,7 +389,9 @@ def main():
 
         "processing_implementation": {
             path.name: (
-                file_record(path)
+                file_record(
+                    path
+                )
             )
             for path in (
                 tracked_processing_files

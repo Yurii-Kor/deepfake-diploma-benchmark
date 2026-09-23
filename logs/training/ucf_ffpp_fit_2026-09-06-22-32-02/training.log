@@ -1,0 +1,608 @@
+2026-09-06 22:32:02,220 - INFO - Save log to ./logs/training/ucf_ffpp_fit_2026-09-06-22-32-02
+2026-09-06 22:32:02,220 - INFO - --------------- Study Configuration ---------------
+2026-09-06 22:32:02,220 - INFO - mode: train
+2026-09-06 22:32:02,220 - INFO - lmdb: False
+2026-09-06 22:32:02,220 - INFO - dry_run: False
+2026-09-06 22:32:02,220 - INFO - rgb_dir: ./study/training/materialized/rgb
+2026-09-06 22:32:02,220 - INFO - lmdb_dir: ./datasets/lmdb
+2026-09-06 22:32:02,220 - INFO - dataset_json_folder: ./study/training/materialized/dataset_json
+2026-09-06 22:32:02,220 - INFO - SWA: False
+2026-09-06 22:32:02,220 - INFO - save_avg: True
+2026-09-06 22:32:02,220 - INFO - log_dir: ./logs/training/
+2026-09-06 22:32:02,220 - INFO - label_dict: {'FF-real': 0, 'FF-DF': 1, 'FF-F2F': 2, 'FF-FS': 3, 'FF-NT': 4}
+2026-09-06 22:32:02,220 - INFO - study_controlled_training: True
+2026-09-06 22:32:02,220 - INFO - train_dataset: ['FF-F2F', 'FF-DF', 'FF-FS', 'FF-NT']
+2026-09-06 22:32:02,220 - INFO - test_dataset: ['FaceForensics++']
+2026-09-06 22:32:02,220 - INFO - dataset_type: pair
+2026-09-06 22:32:02,220 - INFO - compression: raw
+2026-09-06 22:32:02,221 - INFO - frame_num: {'train': 32, 'test': 32}
+2026-09-06 22:32:02,221 - INFO - resolution: 256
+2026-09-06 22:32:02,221 - INFO - with_mask: False
+2026-09-06 22:32:02,221 - INFO - with_landmark: False
+2026-09-06 22:32:02,221 - INFO - model_name: ucf
+2026-09-06 22:32:02,221 - INFO - backbone_name: xception
+2026-09-06 22:32:02,221 - INFO - pretrained: ./training/pretrained/xception-b5690688.pth
+2026-09-06 22:32:02,221 - INFO - encoder_feat_dim: 512
+2026-09-06 22:32:02,221 - INFO - backbone_config: {'mode': 'adjust_channel', 'num_classes': 2, 'inc': 3, 'dropout': False}
+2026-09-06 22:32:02,221 - INFO - mean: [0.5, 0.5, 0.5]
+2026-09-06 22:32:02,221 - INFO - std: [0.5, 0.5, 0.5]
+2026-09-06 22:32:02,221 - INFO - use_data_augmentation: False
+2026-09-06 22:32:02,221 - INFO - data_aug: {'flip_prob': 0.5, 'rotate_prob': 0.0, 'rotate_limit': [-10, 10], 'blur_prob': 0.0, 'blur_limit': [3, 7], 'brightness_limit': [-0.1, 0.1], 'contrast_limit': [-0.1, 0.1], 'quality_lower': 40, 'quality_upper': 100}
+2026-09-06 22:32:02,221 - INFO - train_batchSize: 16
+2026-09-06 22:32:02,221 - INFO - test_batchSize: 32
+2026-09-06 22:32:02,221 - INFO - workers: 8
+2026-09-06 22:32:02,221 - INFO - optimizer: {'type': 'adam', 'adam': {'lr': 0.0002, 'beta1': 0.9, 'beta2': 0.999, 'eps': 1e-08, 'weight_decay': 0.0005, 'amsgrad': False}}
+2026-09-06 22:32:02,221 - INFO - lr_scheduler: None
+2026-09-06 22:32:02,221 - INFO - nEpochs: 10
+2026-09-06 22:32:02,221 - INFO - start_epoch: 0
+2026-09-06 22:32:02,221 - INFO - save_epoch: 1
+2026-09-06 22:32:02,221 - INFO - rec_iter: 100
+2026-09-06 22:32:02,221 - INFO - logdir: ./logs
+2026-09-06 22:32:02,221 - INFO - manualSeed: 1024
+2026-09-06 22:32:02,221 - INFO - loss_func: {'cls_loss': 'cross_entropy', 'spe_loss': 'cross_entropy', 'con_loss': 'contrastive_regularization', 'rec_loss': 'l1loss'}
+2026-09-06 22:32:02,221 - INFO - losstype: None
+2026-09-06 22:32:02,221 - INFO - metric_scoring: video_auc
+2026-09-06 22:32:02,221 - INFO - cuda: True
+2026-09-06 22:32:02,221 - INFO - cudnn: True
+2026-09-06 22:32:02,221 - INFO - local_rank: 0
+2026-09-06 22:32:02,221 - INFO - ddp: False
+2026-09-06 22:32:02,221 - INFO - save_ckpt: True
+2026-09-06 22:32:02,221 - INFO - save_feat: False
+2026-09-06 22:32:02,221 - INFO - task_target: ffpp_fit
+2026-09-06 22:32:02,571 - INFO - Study training loader contract: {'model_name': 'ucf', 'loader_batch_size': 16, 'effective_image_batch_size': 32, 'workers': 8, 'seed': 1024, 'optimizer_steps_per_epoch': 4608, 'image_exposures_per_epoch': 147456, 'fake_source_items': 73651, 'fake_method_source_counts': {'FF-DF': 18398, 'FF-F2F': 18423, 'FF-FS': 18423, 'FF-NT': 18407}, 'fake_method_target_exposures': {'FF-DF': 18432, 'FF-F2F': 18432, 'FF-FS': 18432, 'FF-NT': 18432}, 'fake_method_repeat_counts': {'FF-DF': 34, 'FF-F2F': 9, 'FF-FS': 9, 'FF-NT': 25}, 'pair_exposures_per_epoch': 73728, 'epoch': 0, 'sampling_mode': 'ucf_fixed_method_exposure', 'pair_items_per_step': 16, 'real_exposures_per_epoch': 73728, 'fake_exposures_per_epoch': 73728}
+2026-09-06 22:32:03,000 - INFO - Load pretrained model successfully!
+2026-09-06 22:32:03,200 - INFO - Load pretrained model successfully!
+2026-09-06 22:32:07,812 - INFO - Controlled Trainer initialized.
+2026-09-06 22:32:07,812 - INFO - Checkpoint selection metric: video_auc
+2026-09-06 22:32:07,812 - INFO - Checkpoint tie policy: retain earlier checkpoint.
+2026-09-06 22:32:07,813 - INFO - Study training budget: {'start_epoch': 0, 'n_epochs': 10, 'completed_epochs_this_run': 10, 'steps_per_epoch': 4608, 'effective_images_per_step': 32, 'optimizer_steps_this_run': 46080, 'image_exposures_this_run': 1474560}
+2026-09-06 22:32:07,813 - INFO - ===> Epoch[0] start
+2026-09-06 22:32:40,921 - INFO - Epoch[0] optimizer-step 1/4608: common=0.692610, contrastive=11.943842, overall=1.990145, reconstruction=1.791259, specific=1.629649
+2026-09-06 23:09:08,968 - INFO - Epoch[0] optimizer-step 100/4608: common=0.691992, contrastive=11.305517, overall=1.838672, reconstruction=1.455432, specific=1.447746
+2026-09-06 23:46:05,400 - INFO - Epoch[0] optimizer-step 200/4608: common=0.615491, contrastive=9.942469, overall=1.626265, reconstruction=1.260998, specific=1.353517
+2026-09-07 00:23:36,312 - INFO - Epoch[0] optimizer-step 300/4608: common=0.521361, contrastive=8.259520, overall=1.402446, reconstruction=1.141633, specific=1.256186
+2026-09-07 01:01:16,642 - INFO - Epoch[0] optimizer-step 400/4608: common=0.451655, contrastive=6.988534, overall=1.237341, reconstruction=1.062188, specific=1.176031
+2026-09-07 01:38:21,506 - INFO - Epoch[0] optimizer-step 500/4608: common=0.405945, contrastive=6.107866, overall=1.121952, reconstruction=1.002079, specific=1.099893
+2026-09-07 02:15:25,793 - INFO - Epoch[0] optimizer-step 600/4608: common=0.372137, contrastive=5.495166, overall=1.036613, reconstruction=0.955267, specific=1.031375
+2026-09-07 02:53:21,032 - INFO - Epoch[0] optimizer-step 700/4608: common=0.341945, contrastive=4.959527, overall=0.962755, reconstruction=0.919684, specific=0.969282
+2026-09-07 03:31:24,539 - INFO - Epoch[0] optimizer-step 800/4608: common=0.321477, contrastive=4.581285, overall=0.908753, reconstruction=0.887576, specific=0.919390
+2026-09-07 04:07:21,609 - INFO - Epoch[0] optimizer-step 900/4608: common=0.304601, contrastive=4.288965, overall=0.864877, reconstruction=0.859732, specific=0.879080
+2026-09-07 04:43:18,654 - INFO - Epoch[0] optimizer-step 1000/4608: common=0.289478, contrastive=4.012580, overall=0.825283, reconstruction=0.836438, specific=0.842440
+2026-09-07 05:19:11,521 - INFO - Epoch[0] optimizer-step 1100/4608: common=0.276666, contrastive=3.784222, overall=0.791349, reconstruction=0.816300, specific=0.805810
+2026-09-07 05:55:00,879 - INFO - Epoch[0] optimizer-step 1200/4608: common=0.265220, contrastive=3.599017, overall=0.762230, reconstruction=0.798258, specific=0.775816
+2026-09-07 06:30:56,950 - INFO - Epoch[0] optimizer-step 1300/4608: common=0.254955, contrastive=3.423583, overall=0.735199, reconstruction=0.781927, specific=0.744867
+2026-09-07 07:06:54,577 - INFO - Epoch[0] optimizer-step 1400/4608: common=0.245302, contrastive=3.265519, overall=0.710761, reconstruction=0.767765, specific=0.718534
+2026-09-07 07:42:55,473 - INFO - Epoch[0] optimizer-step 1500/4608: common=0.237770, contrastive=3.135853, overall=0.690189, reconstruction=0.754460, specific=0.692883
+2026-09-07 08:18:53,756 - INFO - Epoch[0] optimizer-step 1600/4608: common=0.230310, contrastive=3.009919, overall=0.670507, reconstruction=0.742358, specific=0.669933
+2026-09-07 08:54:52,190 - INFO - Epoch[0] optimizer-step 1700/4608: common=0.223619, contrastive=2.897559, overall=0.652848, reconstruction=0.731532, specific=0.648916
+2026-09-07 09:30:44,576 - INFO - Epoch[0] optimizer-step 1800/4608: common=0.217572, contrastive=2.792921, overall=0.636611, reconstruction=0.721629, specific=0.629042
+2026-09-07 10:06:50,367 - INFO - Epoch[0] optimizer-step 1900/4608: common=0.211250, contrastive=2.688688, overall=0.620419, reconstruction=0.712090, specific=0.611078
+2026-09-07 10:42:51,983 - INFO - Epoch[0] optimizer-step 2000/4608: common=0.206470, contrastive=2.602431, overall=0.607159, reconstruction=0.703398, specific=0.595484
+2026-09-07 11:20:04,352 - INFO - Epoch[0] optimizer-step 2100/4608: common=0.202556, contrastive=2.535667, overall=0.596101, reconstruction=0.694992, specific=0.582632
+2026-09-07 11:57:40,397 - INFO - Epoch[0] optimizer-step 2200/4608: common=0.197925, contrastive=2.462163, overall=0.584228, reconstruction=0.687618, specific=0.569095
+2026-09-07 12:34:54,297 - INFO - Epoch[0] optimizer-step 2300/4608: common=0.193968, contrastive=2.399236, overall=0.573617, reconstruction=0.680215, specific=0.556229
+2026-09-07 13:11:08,787 - INFO - Epoch[0] optimizer-step 2400/4608: common=0.190394, contrastive=2.337034, overall=0.563629, reconstruction=0.673204, specific=0.544219
+2026-09-07 13:47:22,215 - INFO - Epoch[0] optimizer-step 2500/4608: common=0.187069, contrastive=2.284063, overall=0.554660, reconstruction=0.666833, specific=0.533371
+2026-09-07 14:24:12,694 - INFO - Epoch[0] optimizer-step 2600/4608: common=0.184350, contrastive=2.235954, overall=0.546808, reconstruction=0.660978, specific=0.523670
+2026-09-07 15:00:51,902 - INFO - Epoch[0] optimizer-step 2700/4608: common=0.180841, contrastive=2.180828, overall=0.537745, reconstruction=0.655063, specific=0.513445
+2026-09-07 15:37:34,815 - INFO - Epoch[0] optimizer-step 2800/4608: common=0.177781, contrastive=2.129443, overall=0.529575, reconstruction=0.649548, specific=0.504582
+2026-09-07 16:14:10,726 - INFO - Epoch[0] optimizer-step 2900/4608: common=0.175502, contrastive=2.090325, overall=0.523084, reconstruction=0.644515, specific=0.497118
+2026-09-07 16:50:57,977 - INFO - Epoch[0] optimizer-step 3000/4608: common=0.173106, contrastive=2.049535, overall=0.516464, reconstruction=0.639699, specific=0.489718
+2026-09-07 17:28:05,591 - INFO - Epoch[0] optimizer-step 3100/4608: common=0.170398, contrastive=2.006918, overall=0.509378, reconstruction=0.634864, specific=0.481754
+2026-09-07 18:05:36,867 - INFO - Epoch[0] optimizer-step 3200/4608: common=0.168245, contrastive=1.971995, overall=0.503527, reconstruction=0.630299, specific=0.475934
+2026-09-07 18:43:55,756 - INFO - Epoch[0] optimizer-step 3300/4608: common=0.166096, contrastive=1.937659, overall=0.497871, reconstruction=0.626379, specific=0.469786
+2026-09-07 19:20:15,275 - INFO - Epoch[0] optimizer-step 3400/4608: common=0.163729, contrastive=1.903573, overall=0.491948, reconstruction=0.622424, specific=0.463132
+2026-09-07 19:56:19,353 - INFO - Epoch[0] optimizer-step 3500/4608: common=0.161615, contrastive=1.870254, overall=0.486362, reconstruction=0.618408, specific=0.457127
+2026-09-07 20:33:20,893 - INFO - Epoch[0] optimizer-step 3600/4608: common=0.159671, contrastive=1.840911, overall=0.481203, reconstruction=0.614545, specific=0.451231
+2026-09-07 21:09:51,493 - INFO - Epoch[0] optimizer-step 3700/4608: common=0.157807, contrastive=1.811437, overall=0.476158, reconstruction=0.610765, specific=0.445501
+2026-09-07 21:45:42,600 - INFO - Epoch[0] optimizer-step 3800/4608: common=0.155954, contrastive=1.781016, overall=0.471126, reconstruction=0.607122, specific=0.439848
+2026-09-07 22:21:42,604 - INFO - Epoch[0] optimizer-step 3900/4608: common=0.154393, contrastive=1.753985, overall=0.466772, reconstruction=0.603791, specific=0.435422
+2026-09-07 22:57:51,757 - INFO - Epoch[0] optimizer-step 4000/4608: common=0.152748, contrastive=1.728018, overall=0.462356, reconstruction=0.600418, specific=0.430813
+2026-09-07 23:34:06,985 - INFO - Epoch[0] optimizer-step 4100/4608: common=0.151057, contrastive=1.701333, overall=0.457786, reconstruction=0.596945, specific=0.425785
+2026-09-08 00:11:17,871 - INFO - Epoch[0] optimizer-step 4200/4608: common=0.149752, contrastive=1.678655, overall=0.454004, reconstruction=0.593750, specific=0.421947
+2026-09-08 00:48:07,583 - INFO - Epoch[0] optimizer-step 4300/4608: common=0.148406, contrastive=1.656927, overall=0.450245, reconstruction=0.590507, specific=0.418398
+2026-09-08 01:24:25,148 - INFO - Epoch[0] optimizer-step 4400/4608: common=0.147110, contrastive=1.636498, overall=0.446704, reconstruction=0.587722, specific=0.414515
+2026-09-08 02:00:48,232 - INFO - Epoch[0] optimizer-step 4500/4608: common=0.145856, contrastive=1.615430, overall=0.443121, reconstruction=0.584836, specific=0.410424
+2026-09-08 02:36:52,907 - INFO - Epoch[0] optimizer-step 4600/4608: common=0.144705, contrastive=1.596501, overall=0.439883, reconstruction=0.582223, specific=0.406862
+2026-09-08 02:39:44,787 - INFO - Epoch[0] optimizer-step 4608/4608: common=0.144633, contrastive=1.595396, overall=0.439664, reconstruction=0.581986, specific=0.406653
+2026-09-08 03:49:41,566 - INFO - Best checkpoint saved: ./logs/training/ucf_ffpp_fit_2026-09-06-22-32-02/checkpoints/best.pth
+2026-09-08 03:49:41,568 - INFO - Best checkpoint metadata saved: ./logs/training/ucf_ffpp_fit_2026-09-06-22-32-02/checkpoints/best_metadata.json
+2026-09-08 03:49:41,570 - INFO - ===> Epoch[0] completed; DEV frame_auc=0.987944, video_auc=0.998119, videos=720, best=True
+2026-09-08 03:49:41,575 - INFO - ===> Epoch[0] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.998119212962963  frame_auc=0.9879441206796158  completed_epoch=0  optimizer_steps_completed=4608  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-08 03:49:41,576 - INFO - ===> Epoch[1] start
+2026-09-08 03:50:05,972 - INFO - Epoch[1] optimizer-step 1/4608: common=0.050218, contrastive=0.171757, overall=0.198745, reconstruction=0.402860, specific=0.190811
+2026-09-08 04:27:17,086 - INFO - Epoch[1] optimizer-step 100/4608: common=0.071134, contrastive=0.525513, overall=0.254218, reconstruction=0.450734, specific=0.215882
+2026-09-08 05:04:19,459 - INFO - Epoch[1] optimizer-step 200/4608: common=0.080640, contrastive=0.569274, overall=0.266089, reconstruction=0.447963, specific=0.225966
+2026-09-08 05:41:15,116 - INFO - Epoch[1] optimizer-step 300/4608: common=0.080681, contrastive=0.577304, overall=0.267772, reconstruction=0.451535, specific=0.227656
+2026-09-08 06:17:28,293 - INFO - Epoch[1] optimizer-step 400/4608: common=0.081886, contrastive=0.606316, overall=0.269979, reconstruction=0.448624, specific=0.231892
+2026-09-08 06:53:27,365 - INFO - Epoch[1] optimizer-step 500/4608: common=0.081058, contrastive=0.602517, overall=0.268880, reconstruction=0.448103, specific=0.232646
+2026-09-08 07:29:31,908 - INFO - Epoch[1] optimizer-step 600/4608: common=0.081267, contrastive=0.594244, overall=0.268078, reconstruction=0.446590, specific=0.231214
+2026-09-08 08:05:34,246 - INFO - Epoch[1] optimizer-step 700/4608: common=0.080151, contrastive=0.575954, overall=0.265368, reconstruction=0.445774, specific=0.226874
+2026-09-08 08:41:39,071 - INFO - Epoch[1] optimizer-step 800/4608: common=0.081019, contrastive=0.584529, overall=0.266220, reconstruction=0.444339, specific=0.226731
+2026-09-08 09:17:49,174 - INFO - Epoch[1] optimizer-step 900/4608: common=0.081088, contrastive=0.594432, overall=0.266829, reconstruction=0.444363, specific=0.227102
+2026-09-08 09:53:51,604 - INFO - Epoch[1] optimizer-step 1000/4608: common=0.080207, contrastive=0.591994, overall=0.265789, reconstruction=0.444620, specific=0.225960
+2026-09-08 10:29:50,648 - INFO - Epoch[1] optimizer-step 1100/4608: common=0.081482, contrastive=0.603253, overall=0.267418, reconstruction=0.443708, specific=0.226606
+2026-09-08 11:05:52,878 - INFO - Epoch[1] optimizer-step 1200/4608: common=0.080716, contrastive=0.599223, overall=0.265919, reconstruction=0.442545, specific=0.224780
+2026-09-08 11:41:59,277 - INFO - Epoch[1] optimizer-step 1300/4608: common=0.080453, contrastive=0.599985, overall=0.265481, reconstruction=0.441939, specific=0.224471
+2026-09-08 12:18:00,419 - INFO - Epoch[1] optimizer-step 1400/4608: common=0.080099, contrastive=0.596701, overall=0.264493, reconstruction=0.440058, specific=0.225421
+2026-09-08 12:54:56,976 - INFO - Epoch[1] optimizer-step 1500/4608: common=0.080191, contrastive=0.596576, overall=0.264743, reconstruction=0.440277, specific=0.226403
+2026-09-08 13:32:18,187 - INFO - Epoch[1] optimizer-step 1600/4608: common=0.079902, contrastive=0.594353, overall=0.264139, reconstruction=0.440040, specific=0.225072
+2026-09-08 14:09:58,142 - INFO - Epoch[1] optimizer-step 1700/4608: common=0.079390, contrastive=0.592520, overall=0.263167, reconstruction=0.438913, specific=0.224769
+2026-09-08 14:47:30,933 - INFO - Epoch[1] optimizer-step 1800/4608: common=0.079036, contrastive=0.590957, overall=0.262338, reconstruction=0.437918, specific=0.223784
+2026-09-08 15:25:16,309 - INFO - Epoch[1] optimizer-step 1900/4608: common=0.079201, contrastive=0.590903, overall=0.262251, reconstruction=0.436816, specific=0.224601
+2026-09-08 16:02:39,272 - INFO - Epoch[1] optimizer-step 2000/4608: common=0.079167, contrastive=0.588140, overall=0.261711, reconstruction=0.435961, specific=0.223480
+2026-09-08 16:39:21,846 - INFO - Epoch[1] optimizer-step 2100/4608: common=0.078719, contrastive=0.580093, overall=0.260598, reconstruction=0.435488, specific=0.222281
+2026-09-08 17:15:41,062 - INFO - Epoch[1] optimizer-step 2200/4608: common=0.078285, contrastive=0.575908, overall=0.259513, reconstruction=0.434597, specific=0.220545
+2026-09-08 17:51:47,972 - INFO - Epoch[1] optimizer-step 2300/4608: common=0.078127, contrastive=0.572688, overall=0.259013, reconstruction=0.433843, specific=0.220988
+2026-09-08 18:28:37,023 - INFO - Epoch[1] optimizer-step 2400/4608: common=0.077603, contrastive=0.566090, overall=0.257843, reconstruction=0.432947, specific=0.220510
+2026-09-08 19:04:46,445 - INFO - Epoch[1] optimizer-step 2500/4608: common=0.077838, contrastive=0.570415, overall=0.258089, reconstruction=0.432097, specific=0.221007
+2026-09-08 19:41:04,645 - INFO - Epoch[1] optimizer-step 2600/4608: common=0.077826, contrastive=0.571048, overall=0.257893, reconstruction=0.431507, specific=0.220626
+2026-09-08 20:17:35,270 - INFO - Epoch[1] optimizer-step 2700/4608: common=0.077720, contrastive=0.567122, overall=0.257309, reconstruction=0.430691, specific=0.220266
+2026-09-08 20:55:10,950 - INFO - Epoch[1] optimizer-step 2800/4608: common=0.077471, contrastive=0.564395, overall=0.256558, reconstruction=0.429851, specific=0.219117
+2026-09-08 21:31:15,815 - INFO - Epoch[1] optimizer-step 2900/4608: common=0.077575, contrastive=0.566160, overall=0.256673, reconstruction=0.429331, specific=0.219909
+2026-09-08 22:09:02,072 - INFO - Epoch[1] optimizer-step 3000/4608: common=0.077585, contrastive=0.564000, overall=0.256326, reconstruction=0.428797, specific=0.219017
+2026-09-08 22:46:10,432 - INFO - Epoch[1] optimizer-step 3100/4608: common=0.077884, contrastive=0.563901, overall=0.256383, reconstruction=0.428081, specific=0.218794
+2026-09-08 23:23:07,434 - INFO - Epoch[1] optimizer-step 3200/4608: common=0.077919, contrastive=0.562625, overall=0.256103, reconstruction=0.427388, specific=0.218363
+2026-09-09 00:00:03,757 - INFO - Epoch[1] optimizer-step 3300/4608: common=0.077537, contrastive=0.560263, overall=0.255310, reconstruction=0.426774, specific=0.217269
+2026-09-09 00:36:47,439 - INFO - Epoch[1] optimizer-step 3400/4608: common=0.077710, contrastive=0.562516, overall=0.255419, reconstruction=0.426098, specific=0.217536
+2026-09-09 01:13:39,228 - INFO - Epoch[1] optimizer-step 3500/4608: common=0.077542, contrastive=0.561934, overall=0.254965, reconstruction=0.425519, specific=0.216705
+2026-09-09 01:50:21,227 - INFO - Epoch[1] optimizer-step 3600/4608: common=0.077428, contrastive=0.560649, overall=0.254600, reconstruction=0.424956, specific=0.216528
+2026-09-09 02:27:00,101 - INFO - Epoch[1] optimizer-step 3700/4608: common=0.077220, contrastive=0.558292, overall=0.254046, reconstruction=0.424424, specific=0.215843
+2026-09-09 03:03:38,989 - INFO - Epoch[1] optimizer-step 3800/4608: common=0.077119, contrastive=0.557064, overall=0.253635, reconstruction=0.423687, specific=0.215567
+2026-09-09 03:40:12,618 - INFO - Epoch[1] optimizer-step 3900/4608: common=0.076894, contrastive=0.554167, overall=0.253032, reconstruction=0.423066, specific=0.215108
+2026-09-09 04:17:01,984 - INFO - Epoch[1] optimizer-step 4000/4608: common=0.076978, contrastive=0.553714, overall=0.252897, reconstruction=0.422395, specific=0.215152
+2026-09-09 04:53:50,384 - INFO - Epoch[1] optimizer-step 4100/4608: common=0.076805, contrastive=0.553428, overall=0.252540, reconstruction=0.421850, specific=0.215086
+2026-09-09 05:30:30,334 - INFO - Epoch[1] optimizer-step 4200/4608: common=0.076882, contrastive=0.551846, overall=0.252301, reconstruction=0.421206, specific=0.214652
+2026-09-09 06:07:02,090 - INFO - Epoch[1] optimizer-step 4300/4608: common=0.076538, contrastive=0.547992, overall=0.251487, reconstruction=0.420463, specific=0.214102
+2026-09-09 06:43:28,945 - INFO - Epoch[1] optimizer-step 4400/4608: common=0.076374, contrastive=0.547026, overall=0.251094, reconstruction=0.419911, specific=0.213948
+2026-09-09 07:19:40,428 - INFO - Epoch[1] optimizer-step 4500/4608: common=0.076164, contrastive=0.545251, overall=0.250623, reconstruction=0.419573, specific=0.213244
+2026-09-09 07:55:48,580 - INFO - Epoch[1] optimizer-step 4600/4608: common=0.076201, contrastive=0.543488, overall=0.250375, reconstruction=0.419016, specific=0.212958
+2026-09-09 07:58:40,012 - INFO - Epoch[1] optimizer-step 4608/4608: common=0.076153, contrastive=0.543265, overall=0.250314, reconstruction=0.419017, specific=0.212927
+2026-09-09 09:08:06,574 - INFO - ===> Epoch[1] completed; DEV frame_auc=0.990878, video_auc=0.996998, videos=720, best=False
+2026-09-09 09:08:06,575 - INFO - ===> Epoch[1] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.998119212962963  frame_auc=0.9879441206796158  completed_epoch=0  optimizer_steps_completed=4608  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-09 09:08:06,575 - INFO - ===> Epoch[2] start
+2026-09-09 09:08:29,306 - INFO - Epoch[2] optimizer-step 1/4608: common=0.005689, contrastive=0.000000, overall=0.151703, reconstruction=0.424645, specific=0.186205
+2026-09-09 09:43:56,538 - INFO - Epoch[2] optimizer-step 100/4608: common=0.057237, contrastive=0.412085, overall=0.216606, reconstruction=0.401223, specific=0.183977
+2026-09-09 10:19:46,358 - INFO - Epoch[2] optimizer-step 200/4608: common=0.069244, contrastive=0.497303, overall=0.233824, reconstruction=0.399505, specific=0.198635
+2026-09-09 10:55:39,542 - INFO - Epoch[2] optimizer-step 300/4608: common=0.068466, contrastive=0.461789, overall=0.230237, reconstruction=0.396721, specific=0.196654
+2026-09-09 11:31:34,799 - INFO - Epoch[2] optimizer-step 400/4608: common=0.064516, contrastive=0.415748, overall=0.222769, reconstruction=0.394410, specific=0.191423
+2026-09-09 12:07:22,811 - INFO - Epoch[2] optimizer-step 500/4608: common=0.063788, contrastive=0.422353, overall=0.221941, reconstruction=0.393847, specific=0.188815
+2026-09-09 12:43:09,526 - INFO - Epoch[2] optimizer-step 600/4608: common=0.062374, contrastive=0.409453, overall=0.219803, reconstruction=0.393492, specific=0.189085
+2026-09-09 13:19:08,404 - INFO - Epoch[2] optimizer-step 700/4608: common=0.064602, contrastive=0.419527, overall=0.222242, reconstruction=0.391804, specific=0.191226
+2026-09-09 13:54:57,433 - INFO - Epoch[2] optimizer-step 800/4608: common=0.065328, contrastive=0.421661, overall=0.223097, reconstruction=0.392014, specific=0.190819
+2026-09-09 14:30:47,996 - INFO - Epoch[2] optimizer-step 900/4608: common=0.064384, contrastive=0.414416, overall=0.221511, reconstruction=0.391262, specific=0.190272
+2026-09-09 15:07:14,082 - INFO - Epoch[2] optimizer-step 1000/4608: common=0.063904, contrastive=0.406137, overall=0.220348, reconstruction=0.390835, specific=0.188864
+2026-09-09 15:44:15,589 - INFO - Epoch[2] optimizer-step 1100/4608: common=0.064468, contrastive=0.410204, overall=0.221109, reconstruction=0.390833, specific=0.188806
+2026-09-09 16:20:49,284 - INFO - Epoch[2] optimizer-step 1200/4608: common=0.063978, contrastive=0.404381, overall=0.220325, reconstruction=0.390838, specific=0.188764
+2026-09-09 16:56:33,331 - INFO - Epoch[2] optimizer-step 1300/4608: common=0.064364, contrastive=0.412947, overall=0.221261, reconstruction=0.390769, specific=0.190190
+2026-09-09 17:33:33,146 - INFO - Epoch[2] optimizer-step 1400/4608: common=0.064856, contrastive=0.414516, overall=0.221849, reconstruction=0.390643, specific=0.190738
+2026-09-09 18:10:38,778 - INFO - Epoch[2] optimizer-step 1500/4608: common=0.064205, contrastive=0.408578, overall=0.220711, reconstruction=0.390445, specific=0.189437
+2026-09-09 18:48:05,738 - INFO - Epoch[2] optimizer-step 1600/4608: common=0.063716, contrastive=0.407579, overall=0.219973, reconstruction=0.389863, specific=0.189187
+2026-09-09 19:25:36,116 - INFO - Epoch[2] optimizer-step 1700/4608: common=0.064037, contrastive=0.412503, overall=0.220609, reconstruction=0.389956, specific=0.189601
+2026-09-09 20:02:15,678 - INFO - Epoch[2] optimizer-step 1800/4608: common=0.064235, contrastive=0.411939, overall=0.220679, reconstruction=0.389803, specific=0.189056
+2026-09-09 20:38:24,739 - INFO - Epoch[2] optimizer-step 1900/4608: common=0.063754, contrastive=0.411521, overall=0.220232, reconstruction=0.390122, specific=0.188654
+2026-09-09 21:14:44,567 - INFO - Epoch[2] optimizer-step 2000/4608: common=0.063156, contrastive=0.403879, overall=0.219290, reconstruction=0.390611, specific=0.187566
+2026-09-09 21:50:54,062 - INFO - Epoch[2] optimizer-step 2100/4608: common=0.062950, contrastive=0.400784, overall=0.218971, reconstruction=0.390549, specific=0.188170
+2026-09-09 22:27:45,543 - INFO - Epoch[2] optimizer-step 2200/4608: common=0.062876, contrastive=0.399481, overall=0.219041, reconstruction=0.391150, specific=0.188457
+2026-09-09 23:05:08,010 - INFO - Epoch[2] optimizer-step 2300/4608: common=0.062388, contrastive=0.396064, overall=0.218370, reconstruction=0.391184, specific=0.188232
+2026-09-09 23:42:17,872 - INFO - Epoch[2] optimizer-step 2400/4608: common=0.062379, contrastive=0.394917, overall=0.218162, reconstruction=0.390926, specific=0.187588
+2026-09-10 00:19:25,877 - INFO - Epoch[2] optimizer-step 2500/4608: common=0.062304, contrastive=0.392840, overall=0.217900, reconstruction=0.390914, specific=0.186800
+2026-09-10 00:56:43,942 - INFO - Epoch[2] optimizer-step 2600/4608: common=0.062097, contrastive=0.391060, overall=0.217623, reconstruction=0.390990, specific=0.186758
+2026-09-10 01:33:37,387 - INFO - Epoch[2] optimizer-step 2700/4608: common=0.062430, contrastive=0.392762, overall=0.217843, reconstruction=0.390464, specific=0.186358
+2026-09-10 02:10:45,902 - INFO - Epoch[2] optimizer-step 2800/4608: common=0.062561, contrastive=0.392635, overall=0.217901, reconstruction=0.390272, specific=0.186268
+2026-09-10 02:47:58,960 - INFO - Epoch[2] optimizer-step 2900/4608: common=0.062526, contrastive=0.392552, overall=0.217641, reconstruction=0.389757, specific=0.185605
+2026-09-10 03:25:18,339 - INFO - Epoch[2] optimizer-step 3000/4608: common=0.062484, contrastive=0.392480, overall=0.217536, reconstruction=0.389604, specific=0.185463
+2026-09-10 04:02:22,123 - INFO - Epoch[2] optimizer-step 3100/4608: common=0.062264, contrastive=0.390283, overall=0.217059, reconstruction=0.389176, specific=0.185280
+2026-09-10 04:39:18,210 - INFO - Epoch[2] optimizer-step 3200/4608: common=0.062136, contrastive=0.388852, overall=0.216726, reconstruction=0.388815, specific=0.185031
+2026-09-10 05:16:08,855 - INFO - Epoch[2] optimizer-step 3300/4608: common=0.062055, contrastive=0.387505, overall=0.216539, reconstruction=0.388723, specific=0.184915
+2026-09-10 05:53:04,414 - INFO - Epoch[2] optimizer-step 3400/4608: common=0.062695, contrastive=0.394612, overall=0.217635, reconstruction=0.388591, specific=0.186322
+2026-09-10 06:29:49,553 - INFO - Epoch[2] optimizer-step 3500/4608: common=0.062725, contrastive=0.397324, overall=0.217840, reconstruction=0.388616, specific=0.186637
+2026-09-10 07:06:06,848 - INFO - Epoch[2] optimizer-step 3600/4608: common=0.062557, contrastive=0.394069, overall=0.217428, reconstruction=0.388526, specific=0.186101
+2026-09-10 07:42:28,568 - INFO - Epoch[2] optimizer-step 3700/4608: common=0.062731, contrastive=0.394985, overall=0.217542, reconstruction=0.388044, specific=0.186483
+2026-09-10 08:18:45,012 - INFO - Epoch[2] optimizer-step 3800/4608: common=0.062562, contrastive=0.392951, overall=0.217143, reconstruction=0.387696, specific=0.186248
+2026-09-10 08:55:03,404 - INFO - Epoch[2] optimizer-step 3900/4608: common=0.062558, contrastive=0.392233, overall=0.216973, reconstruction=0.387358, specific=0.185969
+2026-09-10 09:31:17,194 - INFO - Epoch[2] optimizer-step 4000/4608: common=0.062202, contrastive=0.389364, overall=0.216385, reconstruction=0.387089, specific=0.185881
+2026-09-10 10:07:35,042 - INFO - Epoch[2] optimizer-step 4100/4608: common=0.062269, contrastive=0.389623, overall=0.216426, reconstruction=0.386942, specific=0.185934
+2026-09-10 10:43:41,271 - INFO - Epoch[2] optimizer-step 4200/4608: common=0.062532, contrastive=0.392006, overall=0.216747, reconstruction=0.386668, specific=0.186142
+2026-09-10 11:19:59,999 - INFO - Epoch[2] optimizer-step 4300/4608: common=0.062645, contrastive=0.393570, overall=0.216850, reconstruction=0.386338, specific=0.186249
+2026-09-10 11:56:16,607 - INFO - Epoch[2] optimizer-step 4400/4608: common=0.062551, contrastive=0.393976, overall=0.216695, reconstruction=0.386096, specific=0.186165
+2026-09-10 12:33:07,028 - INFO - Epoch[2] optimizer-step 4500/4608: common=0.062271, contrastive=0.391670, overall=0.216137, reconstruction=0.385750, specific=0.185579
+2026-09-10 13:10:35,769 - INFO - Epoch[2] optimizer-step 4600/4608: common=0.062285, contrastive=0.390460, overall=0.216005, reconstruction=0.385548, specific=0.185331
+2026-09-10 13:13:29,259 - INFO - Epoch[2] optimizer-step 4608/4608: common=0.062277, contrastive=0.390228, overall=0.215988, reconstruction=0.385554, specific=0.185339
+2026-09-10 14:25:17,064 - INFO - Best checkpoint saved: ./logs/training/ucf_ffpp_fit_2026-09-06-22-32-02/checkpoints/best.pth
+2026-09-10 14:25:17,066 - INFO - Best checkpoint metadata saved: ./logs/training/ucf_ffpp_fit_2026-09-06-22-32-02/checkpoints/best_metadata.json
+2026-09-10 14:25:17,068 - INFO - ===> Epoch[2] completed; DEV frame_auc=0.992210, video_auc=0.998855, videos=720, best=True
+2026-09-10 14:25:17,072 - INFO - ===> Epoch[2] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988546489197531  frame_auc=0.9922102691339924  completed_epoch=2  optimizer_steps_completed=13824  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-10 14:25:17,073 - INFO - ===> Epoch[3] start
+2026-09-10 14:25:40,591 - INFO - Epoch[3] optimizer-step 1/4608: common=0.047629, contrastive=0.000000, overall=0.175825, reconstruction=0.379544, specific=0.143329
+2026-09-10 15:02:11,739 - INFO - Epoch[3] optimizer-step 100/4608: common=0.054777, contrastive=0.385641, overall=0.206683, reconstruction=0.378750, specific=0.189994
+2026-09-10 15:38:36,794 - INFO - Epoch[3] optimizer-step 200/4608: common=0.060539, contrastive=0.425598, overall=0.216001, reconstruction=0.383501, specific=0.191323
+2026-09-10 16:15:07,836 - INFO - Epoch[3] optimizer-step 300/4608: common=0.059021, contrastive=0.403373, overall=0.212533, reconstruction=0.381515, specific=0.188887
+2026-09-10 16:51:29,016 - INFO - Epoch[3] optimizer-step 400/4608: common=0.058705, contrastive=0.391486, overall=0.210889, reconstruction=0.380725, specific=0.183917
+2026-09-10 17:27:59,569 - INFO - Epoch[3] optimizer-step 500/4608: common=0.060083, contrastive=0.391417, overall=0.211997, reconstruction=0.379457, specific=0.185061
+2026-09-10 18:04:24,300 - INFO - Epoch[3] optimizer-step 600/4608: common=0.059302, contrastive=0.375412, overall=0.210180, reconstruction=0.378358, specific=0.185994
+2026-09-10 18:40:44,836 - INFO - Epoch[3] optimizer-step 700/4608: common=0.060076, contrastive=0.390541, overall=0.211489, reconstruction=0.377360, specific=0.186782
+2026-09-10 19:17:07,269 - INFO - Epoch[3] optimizer-step 800/4608: common=0.059511, contrastive=0.379718, overall=0.210316, reconstruction=0.377657, specific=0.185216
+2026-09-10 19:53:42,572 - INFO - Epoch[3] optimizer-step 900/4608: common=0.058404, contrastive=0.371418, overall=0.208466, reconstruction=0.377647, specific=0.181975
+2026-09-10 20:30:18,709 - INFO - Epoch[3] optimizer-step 1000/4608: common=0.057662, contrastive=0.366038, overall=0.207148, reconstruction=0.377116, specific=0.180492
+2026-09-10 21:06:46,514 - INFO - Epoch[3] optimizer-step 1100/4608: common=0.058349, contrastive=0.363012, overall=0.207407, reconstruction=0.376544, specific=0.179440
+2026-09-10 21:43:29,804 - INFO - Epoch[3] optimizer-step 1200/4608: common=0.058145, contrastive=0.359831, overall=0.206820, reconstruction=0.375787, specific=0.179473
+2026-09-10 22:27:24,839 - INFO - Epoch[3] optimizer-step 1300/4608: common=0.057916, contrastive=0.355356, overall=0.206475, reconstruction=0.376136, specific=0.179506
+2026-09-10 23:04:09,668 - INFO - Epoch[3] optimizer-step 1400/4608: common=0.058942, contrastive=0.361612, overall=0.207890, reconstruction=0.375512, specific=0.182132
+2026-09-10 23:40:59,271 - INFO - Epoch[3] optimizer-step 1500/4608: common=0.058596, contrastive=0.355198, overall=0.207056, reconstruction=0.375368, specific=0.180898
+2026-09-11 00:17:12,013 - INFO - Epoch[3] optimizer-step 1600/4608: common=0.058636, contrastive=0.352553, overall=0.206736, reconstruction=0.374755, specific=0.180454
+2026-09-11 00:53:26,876 - INFO - Epoch[3] optimizer-step 1700/4608: common=0.058366, contrastive=0.351381, overall=0.206374, reconstruction=0.374572, specific=0.180670
+2026-09-11 01:30:09,567 - INFO - Epoch[3] optimizer-step 1800/4608: common=0.057898, contrastive=0.344391, overall=0.205457, reconstruction=0.374230, specific=0.180701
+2026-09-11 02:07:11,537 - INFO - Epoch[3] optimizer-step 1900/4608: common=0.057694, contrastive=0.342902, overall=0.205005, reconstruction=0.373908, specific=0.179935
+2026-09-11 02:44:09,553 - INFO - Epoch[3] optimizer-step 2000/4608: common=0.057683, contrastive=0.340763, overall=0.204808, reconstruction=0.373590, specific=0.180093
+2026-09-11 03:21:25,790 - INFO - Epoch[3] optimizer-step 2100/4608: common=0.057613, contrastive=0.338535, overall=0.204479, reconstruction=0.373270, specific=0.179580
+2026-09-11 03:58:28,635 - INFO - Epoch[3] optimizer-step 2200/4608: common=0.057677, contrastive=0.336099, overall=0.204302, reconstruction=0.372733, specific=0.179998
+2026-09-11 04:35:33,542 - INFO - Epoch[3] optimizer-step 2300/4608: common=0.057911, contrastive=0.334946, overall=0.204495, reconstruction=0.372994, specific=0.179390
+2026-09-11 05:12:13,808 - INFO - Epoch[3] optimizer-step 2400/4608: common=0.058268, contrastive=0.338259, overall=0.205055, reconstruction=0.372933, specific=0.179943
+2026-09-11 05:48:34,539 - INFO - Epoch[3] optimizer-step 2500/4608: common=0.058304, contrastive=0.338200, overall=0.205010, reconstruction=0.372713, specific=0.179821
+2026-09-11 06:24:57,860 - INFO - Epoch[3] optimizer-step 2600/4608: common=0.058241, contrastive=0.337763, overall=0.204769, reconstruction=0.372229, specific=0.179710
+2026-09-11 07:01:20,831 - INFO - Epoch[3] optimizer-step 2700/4608: common=0.058508, contrastive=0.339022, overall=0.204984, reconstruction=0.371868, specific=0.179649
+2026-09-11 07:37:46,263 - INFO - Epoch[3] optimizer-step 2800/4608: common=0.058297, contrastive=0.336917, overall=0.204563, reconstruction=0.371628, specific=0.179325
+2026-09-11 08:14:11,075 - INFO - Epoch[3] optimizer-step 2900/4608: common=0.058121, contrastive=0.336222, overall=0.204224, reconstruction=0.371361, specific=0.178833
+2026-09-11 08:50:36,531 - INFO - Epoch[3] optimizer-step 3000/4608: common=0.058053, contrastive=0.336159, overall=0.204198, reconstruction=0.371600, specific=0.178569
+2026-09-11 09:27:10,998 - INFO - Epoch[3] optimizer-step 3100/4608: common=0.058108, contrastive=0.336214, overall=0.204190, reconstruction=0.371339, specific=0.178700
+2026-09-11 10:03:45,331 - INFO - Epoch[3] optimizer-step 3200/4608: common=0.057844, contrastive=0.333601, overall=0.203780, reconstruction=0.371299, specific=0.178663
+2026-09-11 10:40:22,189 - INFO - Epoch[3] optimizer-step 3300/4608: common=0.057842, contrastive=0.335929, overall=0.203806, reconstruction=0.371025, specific=0.178600
+2026-09-11 11:16:44,334 - INFO - Epoch[3] optimizer-step 3400/4608: common=0.057763, contrastive=0.334733, overall=0.203585, reconstruction=0.370839, specific=0.178334
+2026-09-11 11:53:20,259 - INFO - Epoch[3] optimizer-step 3500/4608: common=0.058183, contrastive=0.338410, overall=0.204127, reconstruction=0.370593, specific=0.178459
+2026-09-11 12:29:52,812 - INFO - Epoch[3] optimizer-step 3600/4608: common=0.058254, contrastive=0.338668, overall=0.204137, reconstruction=0.370302, specific=0.178589
+2026-09-11 13:06:30,300 - INFO - Epoch[3] optimizer-step 3700/4608: common=0.058244, contrastive=0.337381, overall=0.204070, reconstruction=0.370306, specific=0.178647
+2026-09-11 13:44:37,967 - INFO - Epoch[3] optimizer-step 3800/4608: common=0.058202, contrastive=0.336024, overall=0.203882, reconstruction=0.370168, specific=0.178276
+2026-09-11 14:22:10,518 - INFO - Epoch[3] optimizer-step 3900/4608: common=0.058085, contrastive=0.334779, overall=0.203639, reconstruction=0.369932, specific=0.178353
+2026-09-11 14:59:34,633 - INFO - Epoch[3] optimizer-step 4000/4608: common=0.057792, contrastive=0.333166, overall=0.203159, reconstruction=0.369782, specific=0.177735
+2026-09-11 15:36:50,306 - INFO - Epoch[3] optimizer-step 4100/4608: common=0.057983, contrastive=0.335967, overall=0.203526, reconstruction=0.369883, specific=0.177803
+2026-09-11 16:14:15,906 - INFO - Epoch[3] optimizer-step 4200/4608: common=0.057871, contrastive=0.335033, overall=0.203309, reconstruction=0.369766, specific=0.177560
+2026-09-11 16:51:21,260 - INFO - Epoch[3] optimizer-step 4300/4608: common=0.058352, contrastive=0.340326, overall=0.204096, reconstruction=0.369759, specific=0.178005
+2026-09-11 17:27:49,904 - INFO - Epoch[3] optimizer-step 4400/4608: common=0.058322, contrastive=0.338513, overall=0.203909, reconstruction=0.369648, specific=0.177670
+2026-09-11 18:04:04,236 - INFO - Epoch[3] optimizer-step 4500/4608: common=0.058137, contrastive=0.338423, overall=0.203665, reconstruction=0.369471, specific=0.177654
+2026-09-11 18:39:52,607 - INFO - Epoch[3] optimizer-step 4600/4608: common=0.057790, contrastive=0.334356, overall=0.202985, reconstruction=0.369279, specific=0.176934
+2026-09-11 18:42:46,619 - INFO - Epoch[3] optimizer-step 4608/4608: common=0.057739, contrastive=0.333898, overall=0.202898, reconstruction=0.369262, specific=0.176851
+2026-09-11 19:52:13,913 - INFO - ===> Epoch[3] completed; DEV frame_auc=0.989997, video_auc=0.998541, videos=720, best=False
+2026-09-11 19:52:13,922 - INFO - ===> Epoch[3] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988546489197531  frame_auc=0.9922102691339924  completed_epoch=2  optimizer_steps_completed=13824  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-11 19:52:13,923 - INFO - ===> Epoch[4] start
+2026-09-11 19:52:35,201 - INFO - Epoch[4] optimizer-step 1/4608: common=0.022797, contrastive=0.165980, overall=0.161879, reconstruction=0.387063, specific=0.146633
+2026-09-11 20:28:35,349 - INFO - Epoch[4] optimizer-step 100/4608: common=0.047042, contrastive=0.185898, overall=0.180042, reconstruction=0.362412, specific=0.149813
+2026-09-11 21:04:46,158 - INFO - Epoch[4] optimizer-step 200/4608: common=0.046642, contrastive=0.196958, overall=0.180519, reconstruction=0.362185, specific=0.153732
+2026-09-11 21:41:12,335 - INFO - Epoch[4] optimizer-step 300/4608: common=0.051962, contrastive=0.242378, overall=0.189565, reconstruction=0.362245, specific=0.168105
+2026-09-11 22:17:25,670 - INFO - Epoch[4] optimizer-step 400/4608: common=0.055504, contrastive=0.266316, overall=0.194741, reconstruction=0.362417, specific=0.171963
+2026-09-11 22:53:21,016 - INFO - Epoch[4] optimizer-step 500/4608: common=0.054339, contrastive=0.249845, overall=0.192114, reconstruction=0.362171, specific=0.166312
+2026-09-11 23:29:40,114 - INFO - Epoch[4] optimizer-step 600/4608: common=0.054015, contrastive=0.244605, overall=0.191815, reconstruction=0.364030, specific=0.163613
+2026-09-12 00:05:37,656 - INFO - Epoch[4] optimizer-step 700/4608: common=0.052800, contrastive=0.243660, overall=0.190598, reconstruction=0.364007, specific=0.164127
+2026-09-12 00:41:46,039 - INFO - Epoch[4] optimizer-step 800/4608: common=0.053114, contrastive=0.250438, overall=0.191140, reconstruction=0.363423, specific=0.164770
+2026-09-12 01:17:44,360 - INFO - Epoch[4] optimizer-step 900/4608: common=0.053530, contrastive=0.253638, overall=0.191775, reconstruction=0.363322, specific=0.165659
+2026-09-12 01:54:01,693 - INFO - Epoch[4] optimizer-step 1000/4608: common=0.054075, contrastive=0.258704, overall=0.192409, reconstruction=0.362623, specific=0.166115
+2026-09-12 02:30:36,865 - INFO - Epoch[4] optimizer-step 1100/4608: common=0.054127, contrastive=0.259197, overall=0.192565, reconstruction=0.362489, specific=0.167313
+2026-09-12 03:06:57,265 - INFO - Epoch[4] optimizer-step 1200/4608: common=0.053374, contrastive=0.254862, overall=0.191473, reconstruction=0.362385, specific=0.166409
+2026-09-12 03:43:33,287 - INFO - Epoch[4] optimizer-step 1300/4608: common=0.053867, contrastive=0.258126, overall=0.192227, reconstruction=0.362643, specific=0.166606
+2026-09-12 04:20:14,622 - INFO - Epoch[4] optimizer-step 1400/4608: common=0.053489, contrastive=0.259571, overall=0.191819, reconstruction=0.362345, specific=0.166484
+2026-09-12 04:57:06,135 - INFO - Epoch[4] optimizer-step 1500/4608: common=0.053117, contrastive=0.257946, overall=0.191371, reconstruction=0.362347, specific=0.166525
+2026-09-12 05:33:39,087 - INFO - Epoch[4] optimizer-step 1600/4608: common=0.053608, contrastive=0.262929, overall=0.192274, reconstruction=0.362569, specific=0.167487
+2026-09-12 06:10:12,537 - INFO - Epoch[4] optimizer-step 1700/4608: common=0.054098, contrastive=0.269205, overall=0.193070, reconstruction=0.362136, specific=0.168711
+2026-09-12 06:46:02,957 - INFO - Epoch[4] optimizer-step 1800/4608: common=0.054468, contrastive=0.274678, overall=0.193785, reconstruction=0.362025, specific=0.169763
+2026-09-12 07:22:04,119 - INFO - Epoch[4] optimizer-step 1900/4608: common=0.054716, contrastive=0.275035, overall=0.193999, reconstruction=0.362044, specific=0.169173
+2026-09-12 07:58:03,588 - INFO - Epoch[4] optimizer-step 2000/4608: common=0.054865, contrastive=0.276551, overall=0.194227, reconstruction=0.361948, specific=0.169496
+2026-09-12 08:33:59,839 - INFO - Epoch[4] optimizer-step 2100/4608: common=0.054941, contrastive=0.277664, overall=0.194283, reconstruction=0.361644, specific=0.169660
+2026-09-12 09:09:56,462 - INFO - Epoch[4] optimizer-step 2200/4608: common=0.055105, contrastive=0.278061, overall=0.194521, reconstruction=0.361403, specific=0.170929
+2026-09-12 09:45:55,573 - INFO - Epoch[4] optimizer-step 2300/4608: common=0.055457, contrastive=0.279462, overall=0.194950, reconstruction=0.361338, specific=0.171193
+2026-09-12 10:21:55,927 - INFO - Epoch[4] optimizer-step 2400/4608: common=0.055793, contrastive=0.281772, overall=0.195484, reconstruction=0.361508, specific=0.171504
+2026-09-12 10:57:51,435 - INFO - Epoch[4] optimizer-step 2500/4608: common=0.055464, contrastive=0.279800, overall=0.194979, reconstruction=0.361342, specific=0.171224
+2026-09-12 11:33:51,173 - INFO - Epoch[4] optimizer-step 2600/4608: common=0.055523, contrastive=0.281251, overall=0.194970, reconstruction=0.360996, specific=0.170859
+2026-09-12 12:09:48,738 - INFO - Epoch[4] optimizer-step 2700/4608: common=0.055124, contrastive=0.279631, overall=0.194337, reconstruction=0.360476, specific=0.170881
+2026-09-12 12:45:46,937 - INFO - Epoch[4] optimizer-step 2800/4608: common=0.055148, contrastive=0.279002, overall=0.194234, reconstruction=0.360255, specific=0.170595
+2026-09-12 13:21:43,892 - INFO - Epoch[4] optimizer-step 2900/4608: common=0.055457, contrastive=0.281629, overall=0.194667, reconstruction=0.360238, specific=0.170573
+2026-09-12 13:57:59,413 - INFO - Epoch[4] optimizer-step 3000/4608: common=0.055483, contrastive=0.280120, overall=0.194628, reconstruction=0.360303, specific=0.170475
+2026-09-12 14:34:52,058 - INFO - Epoch[4] optimizer-step 3100/4608: common=0.055355, contrastive=0.278530, overall=0.194397, reconstruction=0.360282, specific=0.170304
+2026-09-12 15:11:18,214 - INFO - Epoch[4] optimizer-step 3200/4608: common=0.055379, contrastive=0.279258, overall=0.194510, reconstruction=0.360474, specific=0.170262
+2026-09-12 15:47:09,429 - INFO - Epoch[4] optimizer-step 3300/4608: common=0.055369, contrastive=0.280549, overall=0.194536, reconstruction=0.360323, specific=0.170425
+2026-09-12 16:22:57,887 - INFO - Epoch[4] optimizer-step 3400/4608: common=0.055248, contrastive=0.281593, overall=0.194376, reconstruction=0.360079, specific=0.170244
+2026-09-12 16:58:57,496 - INFO - Epoch[4] optimizer-step 3500/4608: common=0.055540, contrastive=0.283025, overall=0.194681, reconstruction=0.359837, specific=0.170385
+2026-09-12 17:35:19,477 - INFO - Epoch[4] optimizer-step 3600/4608: common=0.055431, contrastive=0.282690, overall=0.194524, reconstruction=0.359692, specific=0.170506
+2026-09-12 18:12:13,387 - INFO - Epoch[4] optimizer-step 3700/4608: common=0.055531, contrastive=0.284152, overall=0.194723, reconstruction=0.359565, specific=0.171149
+2026-09-12 18:48:33,533 - INFO - Epoch[4] optimizer-step 3800/4608: common=0.055864, contrastive=0.287942, overall=0.195252, reconstruction=0.359557, specific=0.171245
+2026-09-12 19:25:21,336 - INFO - Epoch[4] optimizer-step 3900/4608: common=0.055783, contrastive=0.286662, overall=0.195035, reconstruction=0.359426, specific=0.170909
+2026-09-12 20:02:31,502 - INFO - Epoch[4] optimizer-step 4000/4608: common=0.055504, contrastive=0.285570, overall=0.194643, reconstruction=0.359299, specific=0.170708
+2026-09-12 20:38:48,476 - INFO - Epoch[4] optimizer-step 4100/4608: common=0.055465, contrastive=0.284457, overall=0.194493, reconstruction=0.359270, specific=0.170246
+2026-09-12 21:14:57,000 - INFO - Epoch[4] optimizer-step 4200/4608: common=0.055322, contrastive=0.282675, overall=0.194202, reconstruction=0.359087, specific=0.170200
+2026-09-12 21:52:05,242 - INFO - Epoch[4] optimizer-step 4300/4608: common=0.055120, contrastive=0.282080, overall=0.193916, reconstruction=0.359061, specific=0.169741
+2026-09-12 22:28:24,263 - INFO - Epoch[4] optimizer-step 4400/4608: common=0.055238, contrastive=0.283859, overall=0.194091, reconstruction=0.358990, specific=0.169627
+2026-09-12 23:04:46,026 - INFO - Epoch[4] optimizer-step 4500/4608: common=0.055333, contrastive=0.283160, overall=0.194139, reconstruction=0.358887, specific=0.169815
+2026-09-12 23:40:58,048 - INFO - Epoch[4] optimizer-step 4600/4608: common=0.055343, contrastive=0.283684, overall=0.194125, reconstruction=0.358708, specific=0.169851
+2026-09-12 23:43:52,629 - INFO - Epoch[4] optimizer-step 4608/4608: common=0.055309, contrastive=0.283671, overall=0.194094, reconstruction=0.358744, specific=0.169784
+2026-09-13 00:52:30,836 - INFO - ===> Epoch[4] completed; DEV frame_auc=0.991441, video_auc=0.997625, videos=720, best=False
+2026-09-13 00:52:30,847 - INFO - ===> Epoch[4] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988546489197531  frame_auc=0.9922102691339924  completed_epoch=2  optimizer_steps_completed=13824  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-13 00:52:30,848 - INFO - ===> Epoch[5] start
+2026-09-13 00:52:52,245 - INFO - Epoch[5] optimizer-step 1/4608: common=0.101217, contrastive=0.182399, overall=0.244441, reconstruction=0.404501, specific=0.127536
+2026-09-13 01:28:52,312 - INFO - Epoch[5] optimizer-step 100/4608: common=0.050209, contrastive=0.238563, overall=0.186803, reconstruction=0.357628, specific=0.173771
+2026-09-13 02:04:56,877 - INFO - Epoch[5] optimizer-step 200/4608: common=0.051898, contrastive=0.278283, overall=0.189388, reconstruction=0.354964, specific=0.170874
+2026-09-13 02:41:13,175 - INFO - Epoch[5] optimizer-step 300/4608: common=0.049700, contrastive=0.262090, overall=0.185276, reconstruction=0.352531, specific=0.167121
+2026-09-13 03:17:17,129 - INFO - Epoch[5] optimizer-step 400/4608: common=0.050586, contrastive=0.269450, overall=0.186889, reconstruction=0.352085, specific=0.172052
+2026-09-13 03:53:46,815 - INFO - Epoch[5] optimizer-step 500/4608: common=0.052581, contrastive=0.275627, overall=0.189342, reconstruction=0.351766, specific=0.174505
+2026-09-13 04:29:41,360 - INFO - Epoch[5] optimizer-step 600/4608: common=0.052343, contrastive=0.267574, overall=0.188757, reconstruction=0.352313, specific=0.173416
+2026-09-13 05:05:42,633 - INFO - Epoch[5] optimizer-step 700/4608: common=0.051470, contrastive=0.258035, overall=0.187254, reconstruction=0.352522, specific=0.171257
+2026-09-13 05:42:01,481 - INFO - Epoch[5] optimizer-step 800/4608: common=0.052942, contrastive=0.268374, overall=0.189302, reconstruction=0.352647, specific=0.171471
+2026-09-13 06:18:00,811 - INFO - Epoch[5] optimizer-step 900/4608: common=0.051838, contrastive=0.254171, overall=0.187424, reconstruction=0.353523, specific=0.168199
+2026-09-13 06:55:14,399 - INFO - Epoch[5] optimizer-step 1000/4608: common=0.051525, contrastive=0.248133, overall=0.186586, reconstruction=0.353412, specific=0.166308
+2026-09-13 07:31:39,693 - INFO - Epoch[5] optimizer-step 1100/4608: common=0.050573, contrastive=0.240648, overall=0.185189, reconstruction=0.353717, specific=0.164676
+2026-09-13 08:08:21,458 - INFO - Epoch[5] optimizer-step 1200/4608: common=0.051130, contrastive=0.248263, overall=0.186199, reconstruction=0.353552, specific=0.165906
+2026-09-13 08:44:57,813 - INFO - Epoch[5] optimizer-step 1300/4608: common=0.051556, contrastive=0.249462, overall=0.186438, reconstruction=0.352751, specific=0.165843
+2026-09-13 09:21:32,607 - INFO - Epoch[5] optimizer-step 1400/4608: common=0.052231, contrastive=0.252932, overall=0.187239, reconstruction=0.352185, specific=0.167064
+2026-09-13 09:57:25,564 - INFO - Epoch[5] optimizer-step 1500/4608: common=0.052285, contrastive=0.252475, overall=0.187226, reconstruction=0.352398, specific=0.165987
+2026-09-13 10:33:24,267 - INFO - Epoch[5] optimizer-step 1600/4608: common=0.052861, contrastive=0.254245, overall=0.187968, reconstruction=0.352524, specific=0.166380
+2026-09-13 11:09:21,895 - INFO - Epoch[5] optimizer-step 1700/4608: common=0.053102, contrastive=0.255589, overall=0.188398, reconstruction=0.352723, specific=0.166990
+2026-09-13 11:45:19,205 - INFO - Epoch[5] optimizer-step 1800/4608: common=0.052821, contrastive=0.258052, overall=0.188379, reconstruction=0.352814, specific=0.168112
+2026-09-13 12:21:19,472 - INFO - Epoch[5] optimizer-step 1900/4608: common=0.052573, contrastive=0.255548, overall=0.187984, reconstruction=0.352645, specific=0.168402
+2026-09-13 12:57:19,202 - INFO - Epoch[5] optimizer-step 2000/4608: common=0.052320, contrastive=0.253995, overall=0.187578, reconstruction=0.352636, specific=0.167675
+2026-09-13 13:33:46,324 - INFO - Epoch[5] optimizer-step 2100/4608: common=0.052348, contrastive=0.255210, overall=0.187622, reconstruction=0.352608, specific=0.167309
+2026-09-13 14:10:14,960 - INFO - Epoch[5] optimizer-step 2200/4608: common=0.052909, contrastive=0.260743, overall=0.188543, reconstruction=0.352499, specific=0.168475
+2026-09-13 14:46:15,470 - INFO - Epoch[5] optimizer-step 2300/4608: common=0.052829, contrastive=0.257170, overall=0.188155, reconstruction=0.352315, specific=0.167735
+2026-09-13 15:22:15,901 - INFO - Epoch[5] optimizer-step 2400/4608: common=0.052945, contrastive=0.258893, overall=0.188328, reconstruction=0.352205, specific=0.167772
+2026-09-13 15:58:04,297 - INFO - Epoch[5] optimizer-step 2500/4608: common=0.052711, contrastive=0.258780, overall=0.188124, reconstruction=0.352316, specific=0.167784
+2026-09-13 16:33:50,523 - INFO - Epoch[5] optimizer-step 2600/4608: common=0.052485, contrastive=0.256614, overall=0.187736, reconstruction=0.352311, specific=0.167264
+2026-09-13 17:10:19,655 - INFO - Epoch[5] optimizer-step 2700/4608: common=0.052764, contrastive=0.261358, overall=0.188276, reconstruction=0.352260, specific=0.167664
+2026-09-13 17:46:54,456 - INFO - Epoch[5] optimizer-step 2800/4608: common=0.052875, contrastive=0.262859, overall=0.188422, reconstruction=0.352193, specific=0.167455
+2026-09-13 18:23:09,721 - INFO - Epoch[5] optimizer-step 2900/4608: common=0.052952, contrastive=0.263945, overall=0.188579, reconstruction=0.352284, specific=0.167447
+2026-09-13 18:59:43,762 - INFO - Epoch[5] optimizer-step 3000/4608: common=0.052887, contrastive=0.262616, overall=0.188392, reconstruction=0.352199, specific=0.167149
+2026-09-13 19:36:02,640 - INFO - Epoch[5] optimizer-step 3100/4608: common=0.053401, contrastive=0.266180, overall=0.189060, reconstruction=0.352156, specific=0.167032
+2026-09-13 20:12:26,782 - INFO - Epoch[5] optimizer-step 3200/4608: common=0.053447, contrastive=0.266632, overall=0.189104, reconstruction=0.352017, specific=0.167209
+2026-09-13 20:48:40,076 - INFO - Epoch[5] optimizer-step 3300/4608: common=0.053167, contrastive=0.264475, overall=0.188670, reconstruction=0.352038, specific=0.166681
+2026-09-13 21:25:20,533 - INFO - Epoch[5] optimizer-step 3400/4608: common=0.052933, contrastive=0.263534, overall=0.188344, reconstruction=0.351979, specific=0.166410
+2026-09-13 22:02:05,655 - INFO - Epoch[5] optimizer-step 3500/4608: common=0.052777, contrastive=0.262428, overall=0.188039, reconstruction=0.351750, specific=0.166152
+2026-09-13 22:39:09,512 - INFO - Epoch[5] optimizer-step 3600/4608: common=0.052666, contrastive=0.260534, overall=0.187750, reconstruction=0.351531, specific=0.165984
+2026-09-13 23:15:51,129 - INFO - Epoch[5] optimizer-step 3700/4608: common=0.052742, contrastive=0.262519, overall=0.187921, reconstruction=0.351499, specific=0.166036
+2026-09-13 23:52:58,505 - INFO - Epoch[5] optimizer-step 3800/4608: common=0.052590, contrastive=0.259786, overall=0.187589, reconstruction=0.351437, specific=0.165778
+2026-09-14 00:29:50,852 - INFO - Epoch[5] optimizer-step 3900/4608: common=0.052727, contrastive=0.261762, overall=0.187863, reconstruction=0.351423, specific=0.166207
+2026-09-14 01:06:28,283 - INFO - Epoch[5] optimizer-step 4000/4608: common=0.052970, contrastive=0.264290, overall=0.188254, reconstruction=0.351477, specific=0.166271
+2026-09-14 01:42:55,607 - INFO - Epoch[5] optimizer-step 4100/4608: common=0.052959, contrastive=0.263974, overall=0.188193, reconstruction=0.351420, specific=0.166094
+2026-09-14 02:19:38,230 - INFO - Epoch[5] optimizer-step 4200/4608: common=0.052925, contrastive=0.264606, overall=0.188195, reconstruction=0.351342, specific=0.166373
+2026-09-14 02:56:31,555 - INFO - Epoch[5] optimizer-step 4300/4608: common=0.052879, contrastive=0.265298, overall=0.188176, reconstruction=0.351370, specific=0.166214
+2026-09-14 03:33:15,113 - INFO - Epoch[5] optimizer-step 4400/4608: common=0.052853, contrastive=0.265241, overall=0.188179, reconstruction=0.351361, specific=0.166557
+2026-09-14 04:10:02,377 - INFO - Epoch[5] optimizer-step 4500/4608: common=0.052929, contrastive=0.265672, overall=0.188264, reconstruction=0.351270, specific=0.166710
+2026-09-14 04:46:30,871 - INFO - Epoch[5] optimizer-step 4600/4608: common=0.053063, contrastive=0.265340, overall=0.188379, reconstruction=0.351399, specific=0.166288
+2026-09-14 04:49:26,100 - INFO - Epoch[5] optimizer-step 4608/4608: common=0.053027, contrastive=0.264968, overall=0.188319, reconstruction=0.351398, specific=0.166237
+2026-09-14 05:58:39,312 - INFO - ===> Epoch[5] completed; DEV frame_auc=0.992157, video_auc=0.998397, videos=720, best=False
+2026-09-14 05:58:39,314 - INFO - ===> Epoch[5] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.9988546489197531  frame_auc=0.9922102691339924  completed_epoch=2  optimizer_steps_completed=13824  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-14 05:58:39,315 - INFO - ===> Epoch[6] start
+2026-09-14 05:59:01,772 - INFO - Epoch[6] optimizer-step 1/4608: common=0.002446, contrastive=0.000000, overall=0.126705, reconstruction=0.369312, specific=0.134661
+2026-09-14 06:35:05,063 - INFO - Epoch[6] optimizer-step 100/4608: common=0.041517, contrastive=0.128343, overall=0.170098, reconstruction=0.358363, specific=0.146553
+2026-09-14 07:11:07,591 - INFO - Epoch[6] optimizer-step 200/4608: common=0.043080, contrastive=0.151247, overall=0.171191, reconstruction=0.349997, specific=0.155499
+2026-09-14 07:46:56,495 - INFO - Epoch[6] optimizer-step 300/4608: common=0.042202, contrastive=0.147228, overall=0.169681, reconstruction=0.349504, specific=0.152665
+2026-09-14 08:22:34,126 - INFO - Epoch[6] optimizer-step 400/4608: common=0.041548, contrastive=0.144925, overall=0.168101, reconstruction=0.347373, specific=0.150944
+2026-09-14 08:58:21,735 - INFO - Epoch[6] optimizer-step 500/4608: common=0.044171, contrastive=0.162055, overall=0.171680, reconstruction=0.346689, specific=0.153996
+2026-09-14 09:34:13,834 - INFO - Epoch[6] optimizer-step 600/4608: common=0.045289, contrastive=0.171765, overall=0.173827, reconstruction=0.347825, specific=0.156029
+2026-09-14 10:10:10,156 - INFO - Epoch[6] optimizer-step 700/4608: common=0.046492, contrastive=0.182521, overall=0.175748, reconstruction=0.347714, specific=0.158159
+2026-09-14 10:46:04,139 - INFO - Epoch[6] optimizer-step 800/4608: common=0.045386, contrastive=0.185367, overall=0.174740, reconstruction=0.347592, specific=0.158079
+2026-09-14 11:21:58,239 - INFO - Epoch[6] optimizer-step 900/4608: common=0.047464, contrastive=0.203987, overall=0.177974, reconstruction=0.347563, specific=0.160421
+2026-09-14 11:57:57,304 - INFO - Epoch[6] optimizer-step 1000/4608: common=0.046726, contrastive=0.202994, overall=0.176979, reconstruction=0.347271, specific=0.159215
+2026-09-14 12:33:52,928 - INFO - Epoch[6] optimizer-step 1100/4608: common=0.047087, contrastive=0.203231, overall=0.177438, reconstruction=0.347691, specific=0.158819
+2026-09-14 13:10:30,887 - INFO - Epoch[6] optimizer-step 1200/4608: common=0.047389, contrastive=0.205928, overall=0.177886, reconstruction=0.347864, specific=0.158414
+2026-09-14 13:47:21,839 - INFO - Epoch[6] optimizer-step 1300/4608: common=0.047399, contrastive=0.204276, overall=0.177721, reconstruction=0.347385, specific=0.158933
+2026-09-14 14:24:16,347 - INFO - Epoch[6] optimizer-step 1400/4608: common=0.047851, contrastive=0.212954, overall=0.178720, reconstruction=0.347388, specific=0.160049
+2026-09-14 15:00:51,200 - INFO - Epoch[6] optimizer-step 1500/4608: common=0.047194, contrastive=0.208990, overall=0.177661, reconstruction=0.347084, specific=0.158929
+2026-09-14 15:37:44,797 - INFO - Epoch[6] optimizer-step 1600/4608: common=0.047336, contrastive=0.209166, overall=0.177832, reconstruction=0.347141, specific=0.158946
+2026-09-14 16:14:17,933 - INFO - Epoch[6] optimizer-step 1700/4608: common=0.047012, contrastive=0.208920, overall=0.177357, reconstruction=0.346782, specific=0.158640
+2026-09-14 16:50:51,712 - INFO - Epoch[6] optimizer-step 1800/4608: common=0.046875, contrastive=0.212053, overall=0.177308, reconstruction=0.346437, specific=0.158988
+2026-09-14 17:27:50,224 - INFO - Epoch[6] optimizer-step 1900/4608: common=0.047281, contrastive=0.214586, overall=0.177925, reconstruction=0.346351, specific=0.160085
+2026-09-14 18:04:40,762 - INFO - Epoch[6] optimizer-step 2000/4608: common=0.047293, contrastive=0.214772, overall=0.177993, reconstruction=0.346366, specific=0.160520
+2026-09-14 18:41:46,195 - INFO - Epoch[6] optimizer-step 2100/4608: common=0.047626, contrastive=0.216975, overall=0.178461, reconstruction=0.346148, specific=0.161420
+2026-09-14 19:18:48,849 - INFO - Epoch[6] optimizer-step 2200/4608: common=0.048391, contrastive=0.223482, overall=0.179712, reconstruction=0.346359, specific=0.162396
+2026-09-14 19:55:40,763 - INFO - Epoch[6] optimizer-step 2300/4608: common=0.048512, contrastive=0.226295, overall=0.179964, reconstruction=0.346246, specific=0.162634
+2026-09-14 20:32:35,521 - INFO - Epoch[6] optimizer-step 2400/4608: common=0.048509, contrastive=0.224510, overall=0.179873, reconstruction=0.346182, specific=0.162849
+2026-09-14 21:08:41,786 - INFO - Epoch[6] optimizer-step 2500/4608: common=0.048519, contrastive=0.223806, overall=0.179851, reconstruction=0.346236, specific=0.162708
+2026-09-14 21:44:27,613 - INFO - Epoch[6] optimizer-step 2600/4608: common=0.048500, contrastive=0.224807, overall=0.179841, reconstruction=0.345943, specific=0.163183
+2026-09-14 22:20:53,386 - INFO - Epoch[6] optimizer-step 2700/4608: common=0.048254, contrastive=0.222841, overall=0.179407, reconstruction=0.345860, specific=0.162527
+2026-09-14 22:56:47,606 - INFO - Epoch[6] optimizer-step 2800/4608: common=0.048820, contrastive=0.227296, overall=0.180256, reconstruction=0.345854, specific=0.163159
+2026-09-14 23:32:52,992 - INFO - Epoch[6] optimizer-step 2900/4608: common=0.048996, contrastive=0.230740, overall=0.180638, reconstruction=0.345877, specific=0.163420
+2026-09-15 00:08:58,978 - INFO - Epoch[6] optimizer-step 3000/4608: common=0.049281, contrastive=0.232234, overall=0.180955, reconstruction=0.345678, specific=0.163583
+2026-09-15 00:45:02,894 - INFO - Epoch[6] optimizer-step 3100/4608: common=0.049251, contrastive=0.233020, overall=0.181000, reconstruction=0.345673, specific=0.163958
+2026-09-15 01:20:57,934 - INFO - Epoch[6] optimizer-step 3200/4608: common=0.049769, contrastive=0.237512, overall=0.181827, reconstruction=0.345763, specific=0.164539
+2026-09-15 01:56:53,970 - INFO - Epoch[6] optimizer-step 3300/4608: common=0.049736, contrastive=0.236521, overall=0.181645, reconstruction=0.345577, specific=0.164097
+2026-09-15 02:32:57,869 - INFO - Epoch[6] optimizer-step 3400/4608: common=0.049668, contrastive=0.234161, overall=0.181412, reconstruction=0.345564, specific=0.163665
+2026-09-15 03:09:06,566 - INFO - Epoch[6] optimizer-step 3500/4608: common=0.049699, contrastive=0.235298, overall=0.181525, reconstruction=0.345566, specific=0.163909
+2026-09-15 03:45:55,383 - INFO - Epoch[6] optimizer-step 3600/4608: common=0.049504, contrastive=0.235337, overall=0.181297, reconstruction=0.345540, specific=0.163645
+2026-09-15 04:22:06,775 - INFO - Epoch[6] optimizer-step 3700/4608: common=0.049560, contrastive=0.235533, overall=0.181286, reconstruction=0.345313, specific=0.163558
+2026-09-15 04:58:03,234 - INFO - Epoch[6] optimizer-step 3800/4608: common=0.049690, contrastive=0.235258, overall=0.181405, reconstruction=0.345282, specific=0.163676
+2026-09-15 05:33:59,054 - INFO - Epoch[6] optimizer-step 3900/4608: common=0.049606, contrastive=0.235576, overall=0.181317, reconstruction=0.345206, specific=0.163702
+2026-09-15 06:10:30,327 - INFO - Epoch[6] optimizer-step 4000/4608: common=0.049591, contrastive=0.236144, overall=0.181271, reconstruction=0.345125, specific=0.163347
+2026-09-15 06:47:01,115 - INFO - Epoch[6] optimizer-step 4100/4608: common=0.049545, contrastive=0.235318, overall=0.181167, reconstruction=0.345105, specific=0.163243
+2026-09-15 07:23:44,557 - INFO - Epoch[6] optimizer-step 4200/4608: common=0.049663, contrastive=0.235310, overall=0.181276, reconstruction=0.345119, specific=0.163122
+2026-09-15 07:59:48,657 - INFO - Epoch[6] optimizer-step 4300/4608: common=0.049488, contrastive=0.234245, overall=0.181004, reconstruction=0.345019, specific=0.162985
+2026-09-15 08:35:44,650 - INFO - Epoch[6] optimizer-step 4400/4608: common=0.049525, contrastive=0.234394, overall=0.181013, reconstruction=0.344873, specific=0.163064
+2026-09-15 09:11:49,518 - INFO - Epoch[6] optimizer-step 4500/4608: common=0.049282, contrastive=0.233076, overall=0.180677, reconstruction=0.344882, specific=0.162762
+2026-09-15 09:47:51,723 - INFO - Epoch[6] optimizer-step 4600/4608: common=0.049472, contrastive=0.233095, overall=0.180902, reconstruction=0.345014, specific=0.162703
+2026-09-15 09:50:45,516 - INFO - Epoch[6] optimizer-step 4608/4608: common=0.049465, contrastive=0.233125, overall=0.180902, reconstruction=0.345031, specific=0.162712
+2026-09-15 11:00:00,079 - INFO - Best checkpoint saved: ./logs/training/ucf_ffpp_fit_2026-09-06-22-32-02/checkpoints/best.pth
+2026-09-15 11:00:00,079 - INFO - Best checkpoint metadata saved: ./logs/training/ucf_ffpp_fit_2026-09-06-22-32-02/checkpoints/best_metadata.json
+2026-09-15 11:00:00,080 - INFO - ===> Epoch[6] completed; DEV frame_auc=0.990709, video_auc=0.999168, videos=720, best=True
+2026-09-15 11:00:00,086 - INFO - ===> Epoch[6] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.999168113425926  frame_auc=0.9907087319581721  completed_epoch=6  optimizer_steps_completed=32256  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-15 11:00:00,087 - INFO - ===> Epoch[7] start
+2026-09-15 11:00:22,330 - INFO - Epoch[7] optimizer-step 1/4608: common=0.077698, contrastive=0.000000, overall=0.188072, reconstruction=0.323159, specific=0.134261
+2026-09-15 11:36:01,055 - INFO - Epoch[7] optimizer-step 100/4608: common=0.051390, contrastive=0.224548, overall=0.186230, reconstruction=0.356821, specific=0.165665
+2026-09-15 12:12:05,701 - INFO - Epoch[7] optimizer-step 200/4608: common=0.051833, contrastive=0.234824, overall=0.184523, reconstruction=0.351011, specific=0.156454
+2026-09-15 12:48:42,970 - INFO - Epoch[7] optimizer-step 300/4608: common=0.051921, contrastive=0.233914, overall=0.183506, reconstruction=0.347229, specific=0.157210
+2026-09-15 13:25:22,922 - INFO - Epoch[7] optimizer-step 400/4608: common=0.054491, contrastive=0.272125, overall=0.187795, reconstruction=0.345354, specific=0.160907
+2026-09-15 14:01:44,528 - INFO - Epoch[7] optimizer-step 500/4608: common=0.052776, contrastive=0.258487, overall=0.184937, reconstruction=0.343514, specific=0.161818
+2026-09-15 14:37:33,027 - INFO - Epoch[7] optimizer-step 600/4608: common=0.053057, contrastive=0.255686, overall=0.184703, reconstruction=0.342423, specific=0.161346
+2026-09-15 15:13:19,950 - INFO - Epoch[7] optimizer-step 700/4608: common=0.053003, contrastive=0.250662, overall=0.184249, reconstruction=0.341690, specific=0.162053
+2026-09-15 15:49:59,658 - INFO - Epoch[7] optimizer-step 800/4608: common=0.052005, contrastive=0.247076, overall=0.182801, reconstruction=0.341374, specific=0.160302
+2026-09-15 16:25:51,418 - INFO - Epoch[7] optimizer-step 900/4608: common=0.051643, contrastive=0.245262, overall=0.182450, reconstruction=0.341622, specific=0.160570
+2026-09-15 17:02:16,379 - INFO - Epoch[7] optimizer-step 1000/4608: common=0.050429, contrastive=0.235278, overall=0.180765, reconstruction=0.341595, specific=0.160939
+2026-09-15 17:38:36,202 - INFO - Epoch[7] optimizer-step 1100/4608: common=0.052397, contrastive=0.247760, overall=0.183840, reconstruction=0.342674, specific=0.162525
+2026-09-15 18:16:17,984 - INFO - Epoch[7] optimizer-step 1200/4608: common=0.051862, contrastive=0.246775, overall=0.183211, reconstruction=0.342428, specific=0.162814
+2026-09-15 18:53:05,146 - INFO - Epoch[7] optimizer-step 1300/4608: common=0.050799, contrastive=0.236245, overall=0.181328, reconstruction=0.342069, specific=0.160962
+2026-09-15 19:28:56,504 - INFO - Epoch[7] optimizer-step 1400/4608: common=0.050908, contrastive=0.236992, overall=0.181608, reconstruction=0.342011, specific=0.162470
+2026-09-15 20:05:54,530 - INFO - Epoch[7] optimizer-step 1500/4608: common=0.051072, contrastive=0.237928, overall=0.181769, reconstruction=0.341727, specific=0.162825
+2026-09-15 20:42:14,427 - INFO - Epoch[7] optimizer-step 1600/4608: common=0.050377, contrastive=0.232278, overall=0.180792, reconstruction=0.342003, specific=0.162009
+2026-09-15 21:26:35,894 - INFO - Epoch[7] optimizer-step 1700/4608: common=0.049847, contrastive=0.228768, overall=0.179966, reconstruction=0.341608, specific=0.161981
+2026-09-15 22:02:27,771 - INFO - Epoch[7] optimizer-step 1800/4608: common=0.050045, contrastive=0.232232, overall=0.180308, reconstruction=0.341599, specific=0.161716
+2026-09-15 22:37:59,535 - INFO - Epoch[7] optimizer-step 1900/4608: common=0.050259, contrastive=0.235463, overall=0.180857, reconstruction=0.341823, specific=0.162777
+2026-09-15 23:14:09,205 - INFO - Epoch[7] optimizer-step 2000/4608: common=0.049920, contrastive=0.235349, overall=0.180558, reconstruction=0.341829, specific=0.163214
+2026-09-15 23:50:59,327 - INFO - Epoch[7] optimizer-step 2100/4608: common=0.049872, contrastive=0.235853, overall=0.180387, reconstruction=0.341385, specific=0.163069
+2026-09-16 00:27:58,154 - INFO - Epoch[7] optimizer-step 2200/4608: common=0.049974, contrastive=0.237434, overall=0.180767, reconstruction=0.341630, specific=0.164327
+2026-09-16 01:04:43,385 - INFO - Epoch[7] optimizer-step 2300/4608: common=0.049710, contrastive=0.235031, overall=0.180427, reconstruction=0.341693, specific=0.164572
+2026-09-16 01:41:21,735 - INFO - Epoch[7] optimizer-step 2400/4608: common=0.049918, contrastive=0.234742, overall=0.180633, reconstruction=0.341758, specific=0.164499
+2026-09-16 02:17:46,290 - INFO - Epoch[7] optimizer-step 2500/4608: common=0.049904, contrastive=0.234468, overall=0.180601, reconstruction=0.341786, specific=0.164380
+2026-09-16 02:54:21,715 - INFO - Epoch[7] optimizer-step 2600/4608: common=0.050010, contrastive=0.233991, overall=0.180578, reconstruction=0.341565, specific=0.163990
+2026-09-16 03:30:53,680 - INFO - Epoch[7] optimizer-step 2700/4608: common=0.049554, contrastive=0.232383, overall=0.179894, reconstruction=0.341205, specific=0.163590
+2026-09-16 04:07:41,001 - INFO - Epoch[7] optimizer-step 2800/4608: common=0.049835, contrastive=0.232765, overall=0.180201, reconstruction=0.341240, specific=0.163558
+2026-09-16 04:44:19,237 - INFO - Epoch[7] optimizer-step 2900/4608: common=0.049795, contrastive=0.233211, overall=0.180143, reconstruction=0.341186, specific=0.163320
+2026-09-16 05:21:04,257 - INFO - Epoch[7] optimizer-step 3000/4608: common=0.049470, contrastive=0.229755, overall=0.179478, reconstruction=0.340954, specific=0.162343
+2026-09-16 05:57:36,636 - INFO - Epoch[7] optimizer-step 3100/4608: common=0.049533, contrastive=0.229730, overall=0.179504, reconstruction=0.340756, specific=0.162577
+2026-09-16 06:34:10,150 - INFO - Epoch[7] optimizer-step 3200/4608: common=0.049428, contrastive=0.229930, overall=0.179423, reconstruction=0.340639, specific=0.163070
+2026-09-16 07:10:48,776 - INFO - Epoch[7] optimizer-step 3300/4608: common=0.049290, contrastive=0.228105, overall=0.179097, reconstruction=0.340514, specific=0.162476
+2026-09-16 07:47:27,346 - INFO - Epoch[7] optimizer-step 3400/4608: common=0.049454, contrastive=0.229285, overall=0.179366, reconstruction=0.340519, specific=0.162917
+2026-09-16 08:24:05,845 - INFO - Epoch[7] optimizer-step 3500/4608: common=0.049394, contrastive=0.229763, overall=0.179239, reconstruction=0.340324, specific=0.162603
+2026-09-16 09:00:48,145 - INFO - Epoch[7] optimizer-step 3600/4608: common=0.049490, contrastive=0.231475, overall=0.179446, reconstruction=0.340170, specific=0.163312
+2026-09-16 09:37:27,164 - INFO - Epoch[7] optimizer-step 3700/4608: common=0.049445, contrastive=0.232235, overall=0.179445, reconstruction=0.340135, specific=0.163477
+2026-09-16 10:14:06,765 - INFO - Epoch[7] optimizer-step 3800/4608: common=0.049633, contrastive=0.233615, overall=0.179675, reconstruction=0.339940, specific=0.163793
+2026-09-16 10:50:47,537 - INFO - Epoch[7] optimizer-step 3900/4608: common=0.049348, contrastive=0.231307, overall=0.179216, reconstruction=0.339937, specific=0.163214
+2026-09-16 11:26:41,935 - INFO - Epoch[7] optimizer-step 4000/4608: common=0.049574, contrastive=0.231621, overall=0.179453, reconstruction=0.339881, specific=0.163338
+2026-09-16 12:02:36,379 - INFO - Epoch[7] optimizer-step 4100/4608: common=0.049665, contrastive=0.232851, overall=0.179516, reconstruction=0.339594, specific=0.163301
+2026-09-16 12:38:37,903 - INFO - Epoch[7] optimizer-step 4200/4608: common=0.049665, contrastive=0.233633, overall=0.179510, reconstruction=0.339507, specific=0.163113
+2026-09-16 13:14:34,511 - INFO - Epoch[7] optimizer-step 4300/4608: common=0.049611, contrastive=0.233102, overall=0.179359, reconstruction=0.339356, specific=0.162857
+2026-09-16 13:50:32,310 - INFO - Epoch[7] optimizer-step 4400/4608: common=0.049840, contrastive=0.234713, overall=0.179614, reconstruction=0.339111, specific=0.163049
+2026-09-16 14:27:14,712 - INFO - Epoch[7] optimizer-step 4500/4608: common=0.050014, contrastive=0.236544, overall=0.179805, reconstruction=0.338896, specific=0.162946
+2026-09-16 15:04:29,365 - INFO - Epoch[7] optimizer-step 4600/4608: common=0.050084, contrastive=0.239348, overall=0.180063, reconstruction=0.338895, specific=0.163436
+2026-09-16 15:07:25,091 - INFO - Epoch[7] optimizer-step 4608/4608: common=0.050061, contrastive=0.239323, overall=0.180037, reconstruction=0.338899, specific=0.163405
+2026-09-16 16:18:06,964 - INFO - ===> Epoch[7] completed; DEV frame_auc=0.987399, video_auc=0.998372, videos=720, best=False
+2026-09-16 16:18:06,975 - INFO - ===> Epoch[7] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.999168113425926  frame_auc=0.9907087319581721  completed_epoch=6  optimizer_steps_completed=32256  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-16 16:18:06,976 - INFO - ===> Epoch[8] start
+2026-09-16 16:18:30,482 - INFO - Epoch[8] optimizer-step 1/4608: common=0.084753, contrastive=0.000000, overall=0.204398, reconstruction=0.356447, specific=0.127105
+2026-09-16 16:55:01,211 - INFO - Epoch[8] optimizer-step 100/4608: common=0.050549, contrastive=0.268114, overall=0.180123, reconstruction=0.335102, specific=0.156375
+2026-09-16 17:31:02,271 - INFO - Epoch[8] optimizer-step 200/4608: common=0.048677, contrastive=0.238909, overall=0.178060, reconstruction=0.338469, specific=0.158970
+2026-09-16 18:07:28,810 - INFO - Epoch[8] optimizer-step 300/4608: common=0.043466, contrastive=0.178472, overall=0.168913, reconstruction=0.337379, specific=0.153097
+2026-09-16 18:43:37,541 - INFO - Epoch[8] optimizer-step 400/4608: common=0.045240, contrastive=0.187606, overall=0.171126, reconstruction=0.337015, specific=0.154013
+2026-09-16 19:19:15,987 - INFO - Epoch[8] optimizer-step 500/4608: common=0.045297, contrastive=0.183483, overall=0.170596, reconstruction=0.336124, specific=0.152885
+2026-09-16 19:55:17,997 - INFO - Epoch[8] optimizer-step 600/4608: common=0.044188, contrastive=0.177515, overall=0.168641, reconstruction=0.334835, specific=0.151266
+2026-09-16 20:31:17,410 - INFO - Epoch[8] optimizer-step 700/4608: common=0.043653, contrastive=0.177442, overall=0.167951, reconstruction=0.334059, specific=0.152078
+2026-09-16 21:07:30,278 - INFO - Epoch[8] optimizer-step 800/4608: common=0.043461, contrastive=0.176601, overall=0.167694, reconstruction=0.333861, specific=0.152449
+2026-09-16 21:43:15,084 - INFO - Epoch[8] optimizer-step 900/4608: common=0.043332, contrastive=0.175963, overall=0.167265, reconstruction=0.333267, specific=0.151541
+2026-09-16 22:19:26,117 - INFO - Epoch[8] optimizer-step 1000/4608: common=0.042485, contrastive=0.170836, overall=0.166183, reconstruction=0.333504, specific=0.151057
+2026-09-16 22:56:29,518 - INFO - Epoch[8] optimizer-step 1100/4608: common=0.042809, contrastive=0.174598, overall=0.166812, reconstruction=0.333518, specific=0.152177
+2026-09-16 23:33:16,972 - INFO - Epoch[8] optimizer-step 1200/4608: common=0.044119, contrastive=0.192570, overall=0.169201, reconstruction=0.333398, specific=0.154342
+2026-09-17 00:09:37,503 - INFO - Epoch[8] optimizer-step 1300/4608: common=0.044259, contrastive=0.193018, overall=0.169428, reconstruction=0.333372, specific=0.155061
+2026-09-17 00:46:37,693 - INFO - Epoch[8] optimizer-step 1400/4608: common=0.044446, contrastive=0.195209, overall=0.169818, reconstruction=0.333536, specific=0.155498
+2026-09-17 01:23:01,146 - INFO - Epoch[8] optimizer-step 1500/4608: common=0.044355, contrastive=0.193998, overall=0.169614, reconstruction=0.333674, specific=0.154571
+2026-09-17 01:59:07,655 - INFO - Epoch[8] optimizer-step 1600/4608: common=0.045519, contrastive=0.203477, overall=0.171594, reconstruction=0.334020, specific=0.156957
+2026-09-17 02:35:11,895 - INFO - Epoch[8] optimizer-step 1700/4608: common=0.045314, contrastive=0.200878, overall=0.171125, reconstruction=0.333719, specific=0.156520
+2026-09-17 03:11:18,191 - INFO - Epoch[8] optimizer-step 1800/4608: common=0.045317, contrastive=0.202718, overall=0.171220, reconstruction=0.333606, specific=0.156851
+2026-09-17 03:47:34,066 - INFO - Epoch[8] optimizer-step 1900/4608: common=0.045762, contrastive=0.204436, overall=0.171855, reconstruction=0.333617, specific=0.157860
+2026-09-17 04:23:46,769 - INFO - Epoch[8] optimizer-step 2000/4608: common=0.046195, contrastive=0.204322, overall=0.172326, reconstruction=0.333649, specific=0.158198
+2026-09-17 04:59:45,421 - INFO - Epoch[8] optimizer-step 2100/4608: common=0.045827, contrastive=0.200992, overall=0.171777, reconstruction=0.333745, specific=0.157767
+2026-09-17 05:36:32,079 - INFO - Epoch[8] optimizer-step 2200/4608: common=0.045834, contrastive=0.200119, overall=0.171664, reconstruction=0.333640, specific=0.157331
+2026-09-17 06:14:43,387 - INFO - Epoch[8] optimizer-step 2300/4608: common=0.046015, contrastive=0.199976, overall=0.171860, reconstruction=0.333725, specific=0.157285
+2026-09-17 06:52:57,206 - INFO - Epoch[8] optimizer-step 2400/4608: common=0.046432, contrastive=0.205108, overall=0.172503, reconstruction=0.333497, specific=0.157668
+2026-09-17 07:29:40,268 - INFO - Epoch[8] optimizer-step 2500/4608: common=0.046332, contrastive=0.205868, overall=0.172355, reconstruction=0.333181, specific=0.157761
+2026-09-17 08:05:34,167 - INFO - Epoch[8] optimizer-step 2600/4608: common=0.046428, contrastive=0.205922, overall=0.172398, reconstruction=0.332942, specific=0.157914
+2026-09-17 08:41:31,480 - INFO - Epoch[8] optimizer-step 2700/4608: common=0.046525, contrastive=0.205760, overall=0.172608, reconstruction=0.333212, specific=0.158317
+2026-09-17 09:17:26,984 - INFO - Epoch[8] optimizer-step 2800/4608: common=0.046988, contrastive=0.209864, overall=0.173455, reconstruction=0.333430, specific=0.159447
+2026-09-17 09:53:25,540 - INFO - Epoch[8] optimizer-step 2900/4608: common=0.047016, contrastive=0.210628, overall=0.173502, reconstruction=0.333399, specific=0.159354
+2026-09-17 10:29:19,921 - INFO - Epoch[8] optimizer-step 3000/4608: common=0.047192, contrastive=0.212736, overall=0.173774, reconstruction=0.333282, specific=0.159602
+2026-09-17 11:05:05,896 - INFO - Epoch[8] optimizer-step 3100/4608: common=0.047487, contrastive=0.214088, overall=0.174174, reconstruction=0.333345, specific=0.159795
+2026-09-17 11:41:02,116 - INFO - Epoch[8] optimizer-step 3200/4608: common=0.047427, contrastive=0.214392, overall=0.174066, reconstruction=0.333255, specific=0.159428
+2026-09-17 12:17:03,537 - INFO - Epoch[8] optimizer-step 3300/4608: common=0.047748, contrastive=0.215262, overall=0.174415, reconstruction=0.333127, specific=0.159660
+2026-09-17 12:52:57,346 - INFO - Epoch[8] optimizer-step 3400/4608: common=0.047860, contrastive=0.216145, overall=0.174550, reconstruction=0.332956, specific=0.159958
+2026-09-17 13:28:58,436 - INFO - Epoch[8] optimizer-step 3500/4608: common=0.048051, contrastive=0.216873, overall=0.174723, reconstruction=0.332768, specific=0.159988
+2026-09-17 14:04:58,794 - INFO - Epoch[8] optimizer-step 3600/4608: common=0.047832, contrastive=0.215908, overall=0.174407, reconstruction=0.332631, specific=0.159912
+2026-09-17 14:41:49,542 - INFO - Epoch[8] optimizer-step 3700/4608: common=0.047901, contrastive=0.217040, overall=0.174495, reconstruction=0.332521, specific=0.159852
+2026-09-17 15:18:53,284 - INFO - Epoch[8] optimizer-step 3800/4608: common=0.047757, contrastive=0.215208, overall=0.174226, reconstruction=0.332456, specific=0.159722
+2026-09-17 15:54:52,221 - INFO - Epoch[8] optimizer-step 3900/4608: common=0.047792, contrastive=0.215991, overall=0.174301, reconstruction=0.332451, specific=0.159748
+2026-09-17 16:30:48,061 - INFO - Epoch[8] optimizer-step 4000/4608: common=0.047650, contrastive=0.213567, overall=0.173973, reconstruction=0.332410, specific=0.159218
+2026-09-17 17:06:45,721 - INFO - Epoch[8] optimizer-step 4100/4608: common=0.047706, contrastive=0.213508, overall=0.174023, reconstruction=0.332408, specific=0.159188
+2026-09-17 17:42:24,663 - INFO - Epoch[8] optimizer-step 4200/4608: common=0.047663, contrastive=0.213089, overall=0.173902, reconstruction=0.332269, specific=0.159031
+2026-09-17 18:18:21,305 - INFO - Epoch[8] optimizer-step 4300/4608: common=0.047658, contrastive=0.212682, overall=0.173796, reconstruction=0.332025, specific=0.158967
+2026-09-17 18:54:06,338 - INFO - Epoch[8] optimizer-step 4400/4608: common=0.047443, contrastive=0.211019, overall=0.173519, reconstruction=0.332114, specific=0.158903
+2026-09-17 19:30:35,968 - INFO - Epoch[8] optimizer-step 4500/4608: common=0.047778, contrastive=0.214169, overall=0.174075, reconstruction=0.332044, specific=0.159754
+2026-09-17 20:08:28,626 - INFO - Epoch[8] optimizer-step 4600/4608: common=0.047783, contrastive=0.214401, overall=0.174021, reconstruction=0.331893, specific=0.159496
+2026-09-17 20:11:21,397 - INFO - Epoch[8] optimizer-step 4608/4608: common=0.047735, contrastive=0.214071, overall=0.173956, reconstruction=0.331889, specific=0.159507
+2026-09-17 21:22:28,747 - INFO - ===> Epoch[8] completed; DEV frame_auc=0.989581, video_auc=0.998264, videos=720, best=False
+2026-09-17 21:22:28,761 - INFO - ===> Epoch[8] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.999168113425926  frame_auc=0.9907087319581721  completed_epoch=6  optimizer_steps_completed=32256  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-17 21:22:28,763 - INFO - ===> Epoch[9] start
+2026-09-17 21:22:53,222 - INFO - Epoch[9] optimizer-step 1/4608: common=0.044567, contrastive=0.000000, overall=0.167200, reconstruction=0.331655, specific=0.231362
+2026-09-17 21:59:02,894 - INFO - Epoch[9] optimizer-step 100/4608: common=0.040036, contrastive=0.131715, overall=0.160678, reconstruction=0.329700, specific=0.151468
+2026-09-17 22:35:19,387 - INFO - Epoch[9] optimizer-step 200/4608: common=0.044671, contrastive=0.164175, overall=0.169040, reconstruction=0.334348, specific=0.158560
+2026-09-17 23:12:26,726 - INFO - Epoch[9] optimizer-step 300/4608: common=0.043683, contrastive=0.164895, overall=0.167550, reconstruction=0.332690, specific=0.158154
+2026-09-17 23:49:19,763 - INFO - Epoch[9] optimizer-step 400/4608: common=0.043181, contrastive=0.172402, overall=0.166831, reconstruction=0.331124, specific=0.156920
+2026-09-18 00:25:55,608 - INFO - Epoch[9] optimizer-step 500/4608: common=0.043793, contrastive=0.163819, overall=0.166778, reconstruction=0.330605, specific=0.156125
+2026-09-18 01:02:39,114 - INFO - Epoch[9] optimizer-step 600/4608: common=0.045163, contrastive=0.169866, overall=0.168293, reconstruction=0.330668, specific=0.154359
+2026-09-18 01:40:38,759 - INFO - Epoch[9] optimizer-step 700/4608: common=0.045573, contrastive=0.169286, overall=0.168353, reconstruction=0.329800, specific=0.153759
+2026-09-18 02:18:22,841 - INFO - Epoch[9] optimizer-step 800/4608: common=0.045570, contrastive=0.170861, overall=0.168295, reconstruction=0.328850, specific=0.155261
+2026-09-18 02:54:33,582 - INFO - Epoch[9] optimizer-step 900/4608: common=0.046064, contrastive=0.173307, overall=0.168944, reconstruction=0.329169, specific=0.154644
+2026-09-18 03:32:01,685 - INFO - Epoch[9] optimizer-step 1000/4608: common=0.046473, contrastive=0.180945, overall=0.169983, reconstruction=0.329626, specific=0.155750
+2026-09-18 04:10:14,912 - INFO - Epoch[9] optimizer-step 1100/4608: common=0.047187, contrastive=0.191857, overall=0.171312, reconstruction=0.329456, specific=0.156947
+2026-09-18 04:48:26,150 - INFO - Epoch[9] optimizer-step 1200/4608: common=0.046822, contrastive=0.190649, overall=0.170953, reconstruction=0.329683, specific=0.156939
+2026-09-18 05:26:36,112 - INFO - Epoch[9] optimizer-step 1300/4608: common=0.046461, contrastive=0.189650, overall=0.170682, reconstruction=0.330102, specific=0.157072
+2026-09-18 06:04:42,315 - INFO - Epoch[9] optimizer-step 1400/4608: common=0.045917, contrastive=0.188054, overall=0.170020, reconstruction=0.330097, specific=0.156709
+2026-09-18 06:40:52,851 - INFO - Epoch[9] optimizer-step 1500/4608: common=0.046145, contrastive=0.190388, overall=0.170300, reconstruction=0.329888, specific=0.156691
+2026-09-18 07:16:58,352 - INFO - Epoch[9] optimizer-step 1600/4608: common=0.046578, contrastive=0.194971, overall=0.170836, reconstruction=0.329396, specific=0.156910
+2026-09-18 07:52:58,945 - INFO - Epoch[9] optimizer-step 1700/4608: common=0.046455, contrastive=0.194125, overall=0.170560, reconstruction=0.329023, specific=0.156916
+2026-09-18 08:28:56,345 - INFO - Epoch[9] optimizer-step 1800/4608: common=0.046161, contrastive=0.196788, overall=0.170350, reconstruction=0.328772, specific=0.157184
+2026-09-18 09:04:57,676 - INFO - Epoch[9] optimizer-step 1900/4608: common=0.046172, contrastive=0.196008, overall=0.170299, reconstruction=0.328599, specific=0.157470
+2026-09-18 09:40:54,985 - INFO - Epoch[9] optimizer-step 2000/4608: common=0.046783, contrastive=0.200546, overall=0.171226, reconstruction=0.328760, specific=0.157875
+2026-09-18 10:16:46,967 - INFO - Epoch[9] optimizer-step 2100/4608: common=0.047532, contrastive=0.209463, overall=0.172505, reconstruction=0.328638, specific=0.159092
+2026-09-18 10:52:37,427 - INFO - Epoch[9] optimizer-step 2200/4608: common=0.047649, contrastive=0.209947, overall=0.172602, reconstruction=0.328498, specific=0.159064
+2026-09-18 11:28:32,838 - INFO - Epoch[9] optimizer-step 2300/4608: common=0.047775, contrastive=0.213580, overall=0.173033, reconstruction=0.328666, specific=0.159795
+2026-09-18 12:04:19,600 - INFO - Epoch[9] optimizer-step 2400/4608: common=0.048114, contrastive=0.215229, overall=0.173459, reconstruction=0.328619, specific=0.159983
+2026-09-18 12:40:13,656 - INFO - Epoch[9] optimizer-step 2500/4608: common=0.047763, contrastive=0.212609, overall=0.172967, reconstruction=0.328701, specific=0.159629
+2026-09-18 13:16:50,544 - INFO - Epoch[9] optimizer-step 2600/4608: common=0.047644, contrastive=0.212336, overall=0.172787, reconstruction=0.328644, specific=0.159327
+2026-09-18 13:54:08,301 - INFO - Epoch[9] optimizer-step 2700/4608: common=0.048132, contrastive=0.217602, overall=0.173539, reconstruction=0.328313, specific=0.160331
+2026-09-18 14:30:52,683 - INFO - Epoch[9] optimizer-step 2800/4608: common=0.048447, contrastive=0.223250, overall=0.174175, reconstruction=0.328138, specific=0.161237
+2026-09-18 15:06:55,824 - INFO - Epoch[9] optimizer-step 2900/4608: common=0.048328, contrastive=0.224160, overall=0.174096, reconstruction=0.328088, specific=0.161333
+2026-09-18 15:43:10,812 - INFO - Epoch[9] optimizer-step 3000/4608: common=0.048355, contrastive=0.225328, overall=0.174143, reconstruction=0.328013, specific=0.161175
+2026-09-18 16:18:59,635 - INFO - Epoch[9] optimizer-step 3100/4608: common=0.048452, contrastive=0.225463, overall=0.174224, reconstruction=0.327895, specific=0.161305
+2026-09-18 16:55:22,575 - INFO - Epoch[9] optimizer-step 3200/4608: common=0.048438, contrastive=0.224927, overall=0.174103, reconstruction=0.327741, specific=0.160968
+2026-09-18 17:32:01,871 - INFO - Epoch[9] optimizer-step 3300/4608: common=0.048251, contrastive=0.222818, overall=0.173716, reconstruction=0.327599, specific=0.160447
+2026-09-18 18:08:14,189 - INFO - Epoch[9] optimizer-step 3400/4608: common=0.047892, contrastive=0.219886, overall=0.173095, reconstruction=0.327565, specific=0.159398
+2026-09-18 18:44:57,644 - INFO - Epoch[9] optimizer-step 3500/4608: common=0.047710, contrastive=0.218688, overall=0.172852, reconstruction=0.327627, specific=0.159189
+2026-09-18 19:21:21,476 - INFO - Epoch[9] optimizer-step 3600/4608: common=0.047559, contrastive=0.218002, overall=0.172638, reconstruction=0.327660, specific=0.158814
+2026-09-18 19:57:18,835 - INFO - Epoch[9] optimizer-step 3700/4608: common=0.047485, contrastive=0.216513, overall=0.172479, reconstruction=0.327594, specific=0.158903
+2026-09-18 20:33:25,155 - INFO - Epoch[9] optimizer-step 3800/4608: common=0.047482, contrastive=0.216698, overall=0.172464, reconstruction=0.327549, specific=0.158824
+2026-09-18 21:09:38,785 - INFO - Epoch[9] optimizer-step 3900/4608: common=0.047508, contrastive=0.216992, overall=0.172496, reconstruction=0.327410, specific=0.159159
+2026-09-18 21:46:11,553 - INFO - Epoch[9] optimizer-step 4000/4608: common=0.047765, contrastive=0.219460, overall=0.172849, reconstruction=0.327277, specific=0.159278
+2026-09-18 22:22:27,366 - INFO - Epoch[9] optimizer-step 4100/4608: common=0.047567, contrastive=0.217907, overall=0.172492, reconstruction=0.327131, specific=0.158903
+2026-09-18 23:00:01,229 - INFO - Epoch[9] optimizer-step 4200/4608: common=0.047489, contrastive=0.217877, overall=0.172362, reconstruction=0.327042, specific=0.158672
+2026-09-18 23:37:16,057 - INFO - Epoch[9] optimizer-step 4300/4608: common=0.047531, contrastive=0.217479, overall=0.172348, reconstruction=0.326958, specific=0.158561
+2026-09-19 00:14:06,149 - INFO - Epoch[9] optimizer-step 4400/4608: common=0.047591, contrastive=0.217618, overall=0.172357, reconstruction=0.326827, specific=0.158373
+2026-09-19 00:49:58,587 - INFO - Epoch[9] optimizer-step 4500/4608: common=0.047427, contrastive=0.216745, overall=0.172086, reconstruction=0.326705, specific=0.158102
+2026-09-19 01:26:08,011 - INFO - Epoch[9] optimizer-step 4600/4608: common=0.047371, contrastive=0.216617, overall=0.171957, reconstruction=0.326586, specific=0.157800
+2026-09-19 01:29:00,966 - INFO - Epoch[9] optimizer-step 4608/4608: common=0.047438, contrastive=0.217159, overall=0.172047, reconstruction=0.326562, specific=0.157822
+2026-09-19 02:38:40,974 - INFO - ===> Epoch[9] completed; DEV frame_auc=0.992591, video_auc=0.999084, videos=720, best=False
+2026-09-19 02:38:40,977 - INFO - ===> Epoch[9] end with DEV video_auc: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.999168113425926  frame_auc=0.9907087319581721  completed_epoch=6  optimizer_steps_completed=32256  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
+2026-09-19 02:38:40,977 - INFO - Training completed. Best DEV metric: 
+================================ Each dataset best metric ================================ 
+| DEV:  video_auc=0.999168113425926  frame_auc=0.9907087319581721  completed_epoch=6  optimizer_steps_completed=32256  video_count=720  real_video_count=144  fake_video_count=576 | 
+=============================================================================================
